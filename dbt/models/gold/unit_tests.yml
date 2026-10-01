@@ -6,24 +6,25 @@ version: 2
 unit_tests:
   - name: taxa_microdado_usa_peso_e_exclui_ausentes
     description: >
-      3 alunos no município: 1 avaliado alfabetizado (peso 3), 1 avaliado não alfabetizado (peso 1),
-      1 ausente (peso 4). Taxa correta = 3/(3+1) = 75%. Sem peso daria 50%; com ausentes no
-      denominador daria 3/8 = 37,5%.
+      4 alunos no município: 1 avaliado alfabetizado (peso 3), 1 avaliado não alfabetizado (peso 1),
+      2 ausentes (peso NULO, como na fonte). Taxa correta = 3/(3+1) = 75%. Sem peso daria 50%;
+      com ausentes no denominador daria 1/4 = 25%.
     model: agg_microdado_recorte
     given:
       - input: ref('alunos')
         rows:
           - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: true,  alfabetizado: true,  proficiencia: 800.0, peso_aluno: 3.0}
           - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: true,  alfabetizado: false, proficiencia: 700.0, peso_aluno: 1.0}
-          - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: false, alfabetizado: null,  proficiencia: null,  peso_aluno: 4.0}
+          - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: false, alfabetizado: null,  proficiencia: null,  peso_aluno: null}
+          - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: false, alfabetizado: null,  proficiencia: null,  peso_aluno: null}
       - input: ref('rede_recortes')
         rows:
           - {recorte: municipal, componente: municipal}
     expect:
       rows:
-        - {nivel: MUN, id_local: '3550308', recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 37.5, pct_abaixo_corte_743: 25.0}
-        - {nivel: UF,  id_local: SP,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 37.5, pct_abaixo_corte_743: 25.0}
-        - {nivel: BR,  id_local: BR,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 37.5, pct_abaixo_corte_743: 25.0}
+        - {nivel: MUN, id_local: '3550308', recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
+        - {nivel: UF,  id_local: SP,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
+        - {nivel: BR,  id_local: BR,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
 
   - name: status_meta_distingue_sem_meta_de_nao_atingiu
     description: >
@@ -36,15 +37,11 @@ unit_tests:
           - {nivel: MUN, id_local: 'A000001', rede_canonica: municipal, ano_meta: 2024, meta_pct: 60.0, ano_referencia: 2023}
           - {nivel: MUN, id_local: 'C000003', rede_canonica: municipal, ano_meta: 2024, meta_pct: 50.0, ano_referencia: 2023}
           - {nivel: MUN, id_local: 'A000001', rede_canonica: municipal, ano_meta: 2026, meta_pct: 70.0, ano_referencia: 2023}
-      - input: ref('fct_alfabetizacao_municipio')
+      - input: ref('resultado_oficial')
         rows:
-          - {id_municipio: 'A000001', nome_municipio: A, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 55.0}
-          - {id_municipio: 'B000002', nome_municipio: B, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 40.0}
-          - {id_municipio: 'C000003', nome_municipio: C, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 50.0}
-      - input: ref('fct_alfabetizacao_uf')
-        rows: []
-      - input: ref('fct_alfabetizacao_brasil')
-        rows: []
+          - {nivel: MUN, id_local: 'A000001', nome_local: A, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 55.0, fonte_resultado: tabela_indicador}
+          - {nivel: MUN, id_local: 'B000002', nome_local: B, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 40.0, fonte_resultado: tabela_indicador}
+          - {nivel: MUN, id_local: 'C000003', nome_local: C, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 50.0, fonte_resultado: tabela_indicador}
       - input: ref('diretorio_municipio')
         rows: []
     expect:

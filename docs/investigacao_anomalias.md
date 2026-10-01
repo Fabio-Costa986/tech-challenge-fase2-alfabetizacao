@@ -1,14 +1,19 @@
 # Investigação de anomalias
 
-> **Estado: roteiro.** Ainda não há achados registrados aqui, porque o pipeline ainda não foi executado
-> na nuvem. Cada hipótese abaixo vem com a evidência que a confirma ou descarta. Ao investigar, preencher
+> **Estado:** H1, H3, H7 e H8 investigadas com o profiling de 2026-10-01
+> (`python -m alfab profile`, resultados em `evidencias/profiling/`). As demais dependem da primeira
+> execução do pipeline. Cada hipótese abaixo vem com a evidência que a confirma ou descarta. Ao investigar, preencher
 > **Observado**, **Causa** e **Decisão** com números e `job_id`. Não registrar conclusão sem número.
 
 ## H1: o flag `alfabetizado` corresponde a proficiência ≥ 743?
 - **Por que importa:** o indicador é definido pelo corte de 743 pontos. Se o flag divergir da
   proficiência, a validação cruzada falha por definição, não por erro do pipeline.
 - **Evidência:** `evidencias/profiling/06_alfabetizado_vs_corte_743.csv`.
-- Observado: _a preencher_ · Causa: _a preencher_ · Decisão: _a preencher_
+- **Observado:** `alfabetizado = 1` -> 1.984.546 alunos, todos com proficiência ≥ 743 e nenhum abaixo.
+  `alfabetizado = 0` -> 1.370.115 com proficiência < 743, nenhum ≥ 743, e 513.338 sem proficiência
+  (ausentes ou prova não preenchida).
+- **Causa:** o flag é derivado do corte de 743 na própria fonte.
+- **Decisão:** usar o flag como numerador. A validação cruzada não terá divergência causada por definição.
 
 ## H2: a validação cruzada converge?
 - **Evidência:** `gold.validacao_cruzada_microdado`, colunas `diff_pp`, `diff_pp_sem_peso_ERRADA`,
@@ -24,7 +29,17 @@
   `n_significados`).
 - Esperado pela documentação da fonte: códigos nas tabelas de indicador e representação própria nas
   tabelas de meta.
-- Observado: _a preencher_ · Mapeamento adicionado em `rede_sinonimos.csv`: _a preencher_
+- **Observado:** as tabelas de indicador usam códigos (`municipio`: 0, 2, 3, 5; `uf`: 0, 2, 3, 5), e o
+  dicionário traduz `5` = "Pública (Estadual e Municipal)", `6` = "Pública (Federal, Estadual e
+  Municipal)" e `0` = "Total (Federal, Estadual, Municipal e Privada)". As tabelas de meta usam **texto**:
+  "Pública" (Brasil e UF) e "Municipal" (município). `alunos.rede` usa 2, 3, 4 (sem federal; 25 alunos
+  da rede privada).
+- **Causa:** representações diferentes da mesma dimensão no mesmo dataset.
+- **Decisão:** `rede_sinonimos.csv` mapeia as descrições reais. "Pública" das metas = código 5 (estadual
+  + municipal), e a pública com federal (código 6) virou uma categoria canônica própria
+  (`publica_com_federal`) para nunca ser confundida. `rede_recortes.csv` foi corrigido: o recorte
+  `publica` do microdado soma só estadual + municipal. A premissa inicial (incluir federal) estava errada
+  e teria gerado uma validação cruzada enviesada sem nenhum erro aparente.
 
 ## H4: municípios com indicador e sem meta pactuada
 - **Evidência:** `gold.meta_vs_resultado` com `status_meta = 'SEM_META'` no nível MUN, e
@@ -42,3 +57,22 @@
   `media_simples_ufs`).
 - Registrar a diferença em p.p. É o argumento numérico para nunca usar média simples.
 - Observado: _a preencher_
+
+## H7: o ano mais recente só existe nas tabelas de meta
+- **Observado:** `municipio` e `uf` vão de 2023 a 2024. `meta_alfabetizacao_brasil` e
+  `meta_alfabetizacao_uf` trazem `taxa_alfabetizacao` também para **2025** (Brasil, rede pública: 55,9 em
+  2023 → 59,2 em 2024 → 66,0 em 2025). A trajetória pactuada também muda conforme a linha de base:
+  `meta_alfabetizacao_2024` do Brasil = 59,9 nas linhas de 2023/2024 e 60,0 na de 2025.
+- **Causa:** as tabelas de meta são atualizadas com a nova publicação do ICA (última modificação
+  2026-03-24) antes das tabelas de indicador (2026-01-14).
+- **Decisão:** `gold.resultado_oficial` usa a tabela de indicador como fonte principal e completa, com a
+  taxa da tabela de meta, apenas as combinações ausentes, registrando `fonte_resultado`. Para a meta, vale
+  a trajetória da linha de base mais recente (`ano_referencia`). Sem isso, a comparação meta × resultado
+  perderia 2025, o único ano em que o Brasil aparece acima da meta.
+
+## H8: ausentes não têm peso amostral
+- **Observado:** os 512.153 ausentes e os 1.185 presentes com prova não preenchida têm `peso_aluno` e
+  `proficiencia` **nulos**.
+- **Decisão:** o denominador ponderado já os exclui naturalmente. A coluna didática
+  `taxa_denominador_com_ausentes_ERRADA` passou a ser calculada por contagem, porque por peso ela seria
+  igual à correta e não mostraria a armadilha.

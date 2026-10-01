@@ -2,12 +2,8 @@
 -- A projeção até 2030 é um CENÁRIO de tendência linear entre o primeiro e o último ponto observado,
 -- não uma previsão: com 2-3 anos de série ela é frágil, e a coluna n_pontos_serie deixa isso visível.
 WITH serie AS (
-  SELECT 'MUN' AS nivel, id_municipio AS id_local, sigla_uf, rede_canonica, ano, taxa_alfabetizacao
-  FROM {{ ref('fct_alfabetizacao_municipio') }}
-  UNION ALL
-  SELECT 'UF', sigla_uf, sigla_uf, rede_canonica, ano, taxa_alfabetizacao FROM {{ ref('fct_alfabetizacao_uf') }}
-  UNION ALL
-  SELECT 'BR', 'BR', NULL, rede_canonica, ano, taxa_oficial FROM {{ ref('fct_alfabetizacao_brasil') }}
+  SELECT nivel, id_local, sigla_uf, rede_canonica, ano, taxa_alfabetizacao, fonte_resultado
+  FROM {{ ref('resultado_oficial') }}
 ),
 com_janela AS (
   SELECT
@@ -27,7 +23,7 @@ com_janela AS (
            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
 )
 SELECT
-  nivel, id_local, sigla_uf, rede_canonica, ano, taxa_alfabetizacao,
+  nivel, id_local, sigla_uf, rede_canonica, ano, taxa_alfabetizacao, fonte_resultado,
   taxa_ano_anterior,
   IF(ano_anterior = ano - 1, taxa_alfabetizacao - taxa_ano_anterior, NULL) AS variacao_pp_ano_anterior,
   n_pontos_serie,

@@ -2,9 +2,8 @@ valor_normalizado,rede_canonica
 federal,federal
 estadual,estadual
 municipal,municipal
-publica,publica
 privada,privada
-total,total
-estadual e municipal,publica
-federal estadual e municipal,publica
-"federal, estadual e municipal",publica
+publica,publica
+publica (estadual e municipal),publica
+"publica (federal, estadual e municipal)",publica_com_federal
+"total (federal, estadual, municipal e privada)",total

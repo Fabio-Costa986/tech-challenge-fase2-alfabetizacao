@@ -26,8 +26,8 @@ SELECT
                     SUM(IF(avaliado AND alfabetizado IS NOT NULL, peso_aluno, 0))) AS taxa_microdado_ponderada,
   100 * SAFE_DIVIDE(COUNTIF(avaliado AND alfabetizado),
                     COUNTIF(avaliado AND alfabetizado IS NOT NULL)) AS taxa_microdado_sem_peso_ERRADA,
-  100 * SAFE_DIVIDE(SUM(IF(avaliado AND alfabetizado, peso_aluno, 0)),
-                    SUM(peso_aluno)) AS taxa_denominador_com_ausentes_ERRADA,
+  -- ausentes têm peso_aluno NULO na fonte (profiling 05), então esta variante só existe por contagem
+  100 * SAFE_DIVIDE(COUNTIF(avaliado AND alfabetizado), COUNT(*)) AS taxa_denominador_com_ausentes_ERRADA,
   SAFE_DIVIDE(SUM(IF(avaliado AND proficiencia IS NOT NULL, peso_aluno * proficiencia, 0)),
               SUM(IF(avaliado AND proficiencia IS NOT NULL, peso_aluno, 0))) AS proficiencia_media_ponderada,
   100 * SAFE_DIVIDE(SUM(IF(avaliado AND proficiencia < 743, peso_aluno, 0)),

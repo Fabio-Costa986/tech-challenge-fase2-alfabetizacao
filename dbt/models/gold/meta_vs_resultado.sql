@@ -12,15 +12,8 @@ WITH meta AS (
                              ORDER BY ano_referencia DESC) = 1
 ),
 resultado AS (
-  SELECT 'MUN' AS nivel, id_municipio AS id_local, nome_municipio AS nome_local, sigla_uf,
-         rede_canonica, ano, taxa_alfabetizacao
-  FROM {{ ref('fct_alfabetizacao_municipio') }}
-  UNION ALL
-  SELECT 'UF', sigla_uf, sigla_uf, sigla_uf, rede_canonica, ano, taxa_alfabetizacao
-  FROM {{ ref('fct_alfabetizacao_uf') }}
-  UNION ALL
-  SELECT 'BR', 'BR', 'Brasil', CAST(NULL AS STRING), rede_canonica, ano, taxa_oficial
-  FROM {{ ref('fct_alfabetizacao_brasil') }}
+  SELECT nivel, id_local, nome_local, sigla_uf, rede_canonica, ano, taxa_alfabetizacao, fonte_resultado
+  FROM {{ ref('resultado_oficial') }}
 ),
 -- só o universo comparável: níveis/redes que TÊM trajetória pactuada, nos anos da trajetória
 resultado_comparavel AS (
@@ -40,6 +33,7 @@ juntos AS (
     COALESCE(r.rede_canonica, m.rede_canonica) AS rede_canonica,
     COALESCE(r.ano, m.ano) AS ano,
     r.taxa_alfabetizacao,
+    r.fonte_resultado,
     m.meta_pct AS meta_pactuada_pct,
     m.ano_referencia AS ano_referencia_meta
   FROM resultado_comparavel r
@@ -54,6 +48,7 @@ SELECT
   j.rede_canonica,
   j.ano,
   j.taxa_alfabetizacao,
+  j.fonte_resultado,
   j.meta_pactuada_pct,
   j.taxa_alfabetizacao - j.meta_pactuada_pct AS gap_pp,
   CASE

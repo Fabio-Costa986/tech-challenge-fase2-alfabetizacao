@@ -42,6 +42,19 @@ models:
           tolerance: 1.0
           config: {severity: warn}
 
+  - name: resultado_oficial
+    description: Resultado oficial unificado; tabela de meta só completa (local, rede, ano) ausentes.
+    tests:
+      - not_empty
+      - unique_combination: {columns: [nivel, id_local, rede_canonica, ano]}
+    columns:
+      - name: fonte_resultado
+        tests:
+          - accepted_values: {values: ['tabela_indicador', 'tabela_meta']}
+      - name: taxa_alfabetizacao
+        tests:
+          - between: {min_value: 0, max_value: 100}
+
   - name: meta_vs_resultado
     tests:
       - not_empty
