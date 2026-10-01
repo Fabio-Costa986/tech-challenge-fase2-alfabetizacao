@@ -1,0 +1,105 @@
+version: 2
+
+# A Gold é construída em `gold_staging` e só é copiada para `gold` (publicação) se TODOS os testes
+# bloqueantes abaixo passarem (Write-Audit-Publish, src/alfab/ops/publish.py).
+
+models:
+  - name: agg_microdado_recorte
+    tests:
+      - not_empty
+      - unique_combination: {columns: [ano, nivel, id_local, recorte]}
+    columns:
+      - name: taxa_microdado_ponderada
+        tests:
+          - between: {min_value: 0, max_value: 100}
+
+  - name: fct_alfabetizacao_municipio
+    description: Indicador oficial por município (ano x município x rede).
+    tests:
+      - not_empty
+      - unique_combination: {columns: [ano, id_municipio, rede_codigo]}
+    columns:
+      - name: origem_dado
+        tests:
+          - accepted_values: {values: ['OFICIAL']}
+      - name: alunos_avaliados_ponderado
+        description: Sem peso = município sem microdado correspondente no recorte.
+        tests:
+          - null_rate_below: {max_rate: 0.05, where: "taxa_alfabetizacao IS NOT NULL", config: {severity: warn}}
+
+  - name: fct_alfabetizacao_uf
+    tests:
+      - not_empty
+      - unique_combination: {columns: [ano, sigla_uf, rede_codigo]}
+
+  - name: fct_alfabetizacao_brasil
+    description: Nacional oficial ao lado da agregação ponderada e da média simples (rotulada).
+    tests:
+      - unique_combination: {columns: [ano, rede_canonica]}
+      - abs_diff_within:
+          column_name: taxa_ponderada_ufs
+          other_column: taxa_oficial
+          tolerance: 1.0
+          config: {severity: warn}
+
+  - name: meta_vs_resultado
+    tests:
+      - not_empty
+      - unique_combination: {columns: [nivel, id_local, rede_canonica, ano]}
+    columns:
+      - name: status_meta
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['ATINGIU', 'NAO_ATINGIU', 'SEM_META', 'SEM_RESULTADO', 'AGUARDANDO_RESULTADO']
+      - name: tipo_meta
+        tests:
+          - accepted_values: {values: ['PACTUADA']}
+
+  - name: evolucao_temporal
+    tests:
+      - unique_combination: {columns: [nivel, id_local, rede_canonica, ano]}
+    columns:
+      - name: cenario_tendencia_linear_2030
+        tests:
+          - between: {min_value: 0, max_value: 100}
+
+  - name: cenario_universalizacao
+    tests:
+      - unique_combination: {columns: [nivel, id_local, rede_canonica]}
+
+  - name: validacao_cruzada_microdado
+    description: Microdado recalculado x indicador publicado (diferencial do enunciado).
+    tests:
+      - not_empty
+      - abs_diff_within:
+          name: validacao_cruzada_uf_converge
+          column_name: taxa_microdado_ponderada
+          other_column: taxa_oficial
+          tolerance: "{{ var('tolerancia_validacao_cruzada_pp') }}"
+          where: "nivel = 'UF'"
+      - abs_diff_within:
+          name: validacao_cruzada_brasil_converge
+          column_name: taxa_microdado_ponderada
+          other_column: taxa_oficial
+          tolerance: "{{ var('tolerancia_validacao_cruzada_pp') }}"
+          where: "nivel = 'BR'"
+      - abs_diff_within:
+          name: validacao_cruzada_municipio_converge
+          column_name: taxa_microdado_ponderada
+          other_column: taxa_oficial
+          tolerance: 2.0
+          where: "nivel = 'MUN' AND n_avaliados >= 30"
+          config: {severity: warn}
+
+  - name: ml_features_municipio
+    description: Features em t, alvo em t+1, sem colunas derivadas do alvo.
+    tests:
+      - unique_combination: {columns: [id_municipio, rede_canonica, ano_referencia]}
+    columns:
+      - name: origem_dado
+        tests:
+          - accepted_values: {values: ['OFICIAL']}
+      - name: particao
+        tests:
+          - accepted_values: {values: ['treino', 'inferencia']}

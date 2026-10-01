@@ -1,0 +1,37 @@
+version: 2
+
+seeds:
+  - name: uf_ibge
+    description: Códigos IBGE das 27 UFs (2 primeiros dígitos do id_municipio) -> sigla e região.
+    config:
+      column_types: {codigo_uf: string, sigla_uf: string, nome_uf: string, regiao: string}
+    columns:
+      - name: codigo_uf
+        tests: [unique, not_null]
+      - name: sigla_uf
+        tests: [unique, not_null]
+
+  - name: rede_sinonimos
+    description: >
+      Vocabulário canônico de rede. Toda representação de rede encontrada nas 6 tabelas (código traduzido
+      pelo dicionário ou texto livre das tabelas de meta) precisa cair aqui; senão vira DESCONHECIDO e o
+      teste bloqueante reprova. Novos valores da fonte entram por aqui, explicitamente.
+    config:
+      column_types: {valor_normalizado: string, rede_canonica: string}
+    columns:
+      - name: valor_normalizado
+        tests: [unique, not_null]
+
+  - name: rede_recortes
+    description: Composição de recortes (ex. pública = federal + estadual + municipal) para agregar o microdado.
+    config:
+      column_types: {recorte: string, componente: string}
+
+  - name: join_thresholds
+    description: Limiar mínimo da taxa de correspondência de cada junção, com severidade e justificativa.
+    config:
+      column_types: {join_name: string, min_rate: float64, severidade: string, justificativa: string}
+    columns:
+      - name: severidade
+        tests:
+          - accepted_values: {values: ['bloqueante', 'informativa']}

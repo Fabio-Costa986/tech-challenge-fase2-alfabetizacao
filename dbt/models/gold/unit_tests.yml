@@ -1,0 +1,55 @@
+version: 2
+
+# Testes unitários das transformações (dbt unit tests: entradas fixas -> saída esperada).
+# Executam no BigQuery com dados mockados (custo desprezível) durante `dbt build`.
+
+unit_tests:
+  - name: taxa_microdado_usa_peso_e_exclui_ausentes
+    description: >
+      3 alunos no município: 1 avaliado alfabetizado (peso 3), 1 avaliado não alfabetizado (peso 1),
+      1 ausente (peso 4). Taxa correta = 3/(3+1) = 75%. Sem peso daria 50%; com ausentes no
+      denominador daria 3/8 = 37,5%.
+    model: agg_microdado_recorte
+    given:
+      - input: ref('alunos')
+        rows:
+          - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: true,  alfabetizado: true,  proficiencia: 800.0, peso_aluno: 3.0}
+          - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: true,  alfabetizado: false, proficiencia: 700.0, peso_aluno: 1.0}
+          - {ano: 2024, id_municipio: '3550308', sigla_uf: SP, rede_canonica: municipal, avaliado: false, alfabetizado: null,  proficiencia: null,  peso_aluno: 4.0}
+      - input: ref('rede_recortes')
+        rows:
+          - {recorte: municipal, componente: municipal}
+    expect:
+      rows:
+        - {nivel: MUN, id_local: '3550308', recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 37.5, pct_abaixo_corte_743: 25.0}
+        - {nivel: UF,  id_local: SP,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 37.5, pct_abaixo_corte_743: 25.0}
+        - {nivel: BR,  id_local: BR,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 37.5, pct_abaixo_corte_743: 25.0}
+
+  - name: status_meta_distingue_sem_meta_de_nao_atingiu
+    description: >
+      Município A tem meta e não atingiu; B não tem meta (SEM_META, nunca NAO_ATINGIU);
+      C atingiu; meta de 2026 sem resultado ainda = AGUARDANDO_RESULTADO.
+    model: meta_vs_resultado
+    given:
+      - input: ref('meta_trajetoria')
+        rows:
+          - {nivel: MUN, id_local: 'A000001', rede_canonica: municipal, ano_meta: 2024, meta_pct: 60.0, ano_referencia: 2023}
+          - {nivel: MUN, id_local: 'C000003', rede_canonica: municipal, ano_meta: 2024, meta_pct: 50.0, ano_referencia: 2023}
+          - {nivel: MUN, id_local: 'A000001', rede_canonica: municipal, ano_meta: 2026, meta_pct: 70.0, ano_referencia: 2023}
+      - input: ref('fct_alfabetizacao_municipio')
+        rows:
+          - {id_municipio: 'A000001', nome_municipio: A, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 55.0}
+          - {id_municipio: 'B000002', nome_municipio: B, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 40.0}
+          - {id_municipio: 'C000003', nome_municipio: C, sigla_uf: SP, rede_canonica: municipal, ano: 2024, taxa_alfabetizacao: 50.0}
+      - input: ref('fct_alfabetizacao_uf')
+        rows: []
+      - input: ref('fct_alfabetizacao_brasil')
+        rows: []
+      - input: ref('diretorio_municipio')
+        rows: []
+    expect:
+      rows:
+        - {id_local: 'A000001', ano: 2024, status_meta: NAO_ATINGIU, gap_pp: -5.0}
+        - {id_local: 'B000002', ano: 2024, status_meta: SEM_META}
+        - {id_local: 'C000003', ano: 2024, status_meta: ATINGIU, gap_pp: 0.0}
+        - {id_local: 'A000001', ano: 2026, status_meta: AGUARDANDO_RESULTADO}

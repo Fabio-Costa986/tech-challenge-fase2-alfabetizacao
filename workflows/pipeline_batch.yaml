@@ -1,0 +1,100 @@
+# Cloud Workflows: pipeline batch com dependência, retentativa e portões de qualidade.
+# Templated pelo Terraform (infra/orchestration.tf): "$${...}" vira expressão do Workflows,
+# "${project}" e "${region}" são substituídos no deploy.
+#
+# Ordem: ingest-bronze -> dbt-silver -> dbt-gold -> publish-gold
+# - Cada passo só roda se o anterior terminou com sucesso.
+# - Retentativa em dois níveis:
+#     * Cloud Run Job: max_retries (ingest e publish = 1; dbt = 0, pois regra bloqueante reprovada é
+#       determinística e repetir só atrasaria o alerta);
+#     * Workflows: http.default_retry em erros transitórios da API (429/5xx/conexão).
+# - Falha encerra a execução como FAILED -> alerta (infra/monitoring.tf). A Gold publicada não muda.
+#
+# Argumentos opcionais: {"run_id": "...", "fault_injection": "duplicate_keys", "force": true}
+
+main:
+  params: [args]
+  steps:
+    - normalize_args:
+        switch:
+          - condition: "$${args == null}"
+            assign:
+              - args: {}
+    - init:
+        assign:
+          - project: "${project}"
+          - region: "${region}"
+          - ts: "$${time.format(sys.now())}"
+          - exec_id: '$${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}'
+          - generated_run_id: '$${text.substring(ts, 0, 4) + text.substring(ts, 5, 7) + text.substring(ts, 8, 10) + "T" + text.substring(ts, 11, 13) + text.substring(ts, 14, 16) + text.substring(ts, 17, 19) + "Z-" + text.substring(exec_id, 0, 6)}'
+          - run_id: '$${default(map.get(args, "run_id"), generated_run_id)}'
+          - fault: '$${default(map.get(args, "fault_injection"), "none")}'
+          - ingest_args: ["ingest-bronze"]
+    - force_flag:
+        switch:
+          - condition: '$${default(map.get(args, "force"), false)}'
+            assign:
+              - ingest_args: ["ingest-bronze", "--force"]
+
+    - log_start:
+        call: sys.log
+        args:
+          severity: INFO
+          json: {event: "workflow_started", run_id: "$${run_id}", fault_injection: "$${fault}"}
+
+    - pipeline:
+        try:
+          steps:
+            - ingest_bronze:
+                call: run_job
+                args: {project: "$${project}", region: "$${region}", job: "alfab-ingest-bronze", run_id: "$${run_id}", fault: "$${fault}", cli_args: "$${ingest_args}"}
+            - dbt_silver:
+                call: run_job
+                args: {project: "$${project}", region: "$${region}", job: "alfab-dbt-silver", run_id: "$${run_id}", fault: "$${fault}", cli_args: ["dbt", "--layer", "silver"]}
+            - dbt_gold:
+                call: run_job
+                args: {project: "$${project}", region: "$${region}", job: "alfab-dbt-gold", run_id: "$${run_id}", fault: "$${fault}", cli_args: ["dbt", "--layer", "gold"]}
+            - publish_gold:
+                call: run_job
+                args: {project: "$${project}", region: "$${region}", job: "alfab-publish-gold", run_id: "$${run_id}", fault: "$${fault}", cli_args: ["publish-gold"]}
+        except:
+          as: e
+          steps:
+            - log_failure:
+                call: sys.log
+                args:
+                  severity: ERROR
+                  json: {event: "workflow_failed", run_id: "$${run_id}", error: "$${e}"}
+            - reraise:
+                raise: "$${e}"
+
+    - log_end:
+        call: sys.log
+        args:
+          severity: INFO
+          json: {event: "workflow_succeeded", run_id: "$${run_id}"}
+    - done:
+        return: {run_id: "$${run_id}", status: "SUCCEEDED"}
+
+
+# Executa um Cloud Run Job com o run_id injetado e aguarda o término (o conector espera a operação
+# de longa duração e lança erro se a execução do job falhar).
+run_job:
+  params: [project, region, job, run_id, fault, cli_args]
+  steps:
+    - run:
+        try:
+          call: googleapis.run.v2.projects.locations.jobs.run
+          args:
+            name: '$${"projects/" + project + "/locations/" + region + "/jobs/" + job}'
+            body:
+              overrides:
+                containerOverrides:
+                  - args: "$${cli_args}"
+                    env:
+                      - {name: "ALFAB_RUN_ID", value: "$${run_id}"}
+                      - {name: "ALFAB_FAULT_INJECTION", value: "$${fault}"}
+          result: execution
+        retry: "$${http.default_retry}"
+    - ok:
+        return: "$${execution}"

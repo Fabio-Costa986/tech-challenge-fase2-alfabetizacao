@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: >
+      External tables BigLake sobre Parquet imutável no GCS (gs://<bucket>/bronze/<entidade>/
+      ingestion_date=<d>/run_id=<id>/). Criadas pelo job ingest-bronze. Cada execução que encontra a
+      fonte alterada cria um NOVO caminho; nada é sobrescrito.
+    schema: "{{ var('bronze_dataset') }}"
+    tables:
+      - name: alunos
+      - name: municipio
+      - name: uf
+      - name: meta_alfabetizacao_brasil
+      - name: meta_alfabetizacao_uf
+      - name: meta_alfabetizacao_municipio
+      - name: dicionario
+      - name: diretorio_municipio
+
+  - name: streaming
+    description: Tabelas mantidas pelo micro-lote de streaming (src/alfab/streaming/microbatch.py).
+    schema: silver
+    tables:
+      - name: eventos
+        description: Eventos simulados, deduplicados por event_id. origem_dado = 'SIMULADO'.

@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools==75.6.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alfab"
+version = "0.1.0"
+description = "Pipeline híbrido (batch + streaming) do Indicador Criança Alfabetizada no GCP"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "google-cloud-bigquery==3.27.0",
+  "google-cloud-pubsub==2.27.1",
+  "google-cloud-storage==2.19.0",
+  "pydantic==2.10.4",
+  "fastapi==0.115.6",
+  "uvicorn==0.34.0",
+  "pyyaml==6.0.2",
+  "python-dotenv==1.0.1",
+  "dbt-core==1.9.1",
+  "dbt-bigquery==1.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==8.3.4",
+  "httpx==0.28.1",
+  "ruff==0.8.4",
+]
+
+[project.scripts]
+alfab = "alfab.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "BLE"]

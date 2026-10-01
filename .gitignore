@@ -1,0 +1,32 @@
+# credenciais e configuração local
+.env
+*.json.key
+*-key.json
+service-account*.json
+credentials*.json
+
+# python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# dbt
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+logs/
+
+# terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/terraform.tfvars
+infra/.terraform.lock.hcl.bak
+infra/backend.hcl
+
+# sistema
+.DS_Store
+Thumbs.db

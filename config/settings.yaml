@@ -1,0 +1,65 @@
+# Configuração não sensível do pipeline. Identificadores de projeto/bucket vêm de variáveis de
+# ambiente (.env); este arquivo descreve O QUE ingerir e COMO, não ONDE.
+
+source:
+  project: basedosdados
+  dataset: br_inep_avaliacao_alfabetizacao
+
+datasets:
+  bronze: bronze
+  silver: silver
+  gold_staging: gold_staging
+  gold: gold
+  ops: ops
+
+# Entidades ingeridas em batch. `columns` explícitas = column pruning na origem (FinOps).
+# Nomes conferidos contra os modelos oficiais da Base dos Dados (basedosdados/pipelines,
+# models/br_inep_avaliacao_alfabetizacao/*.sql).
+entities:
+  alunos:
+    table: alunos
+    columns: [ano, id_municipio, id_escola, id_aluno, caderno, serie, rede, presenca,
+              preenchimento_caderno, alfabetizado, proficiencia, peso_aluno]
+  municipio:
+    table: municipio
+    columns: [ano, id_municipio, serie, rede, taxa_alfabetizacao, media_portugues,
+              proporcao_aluno_nivel_0, proporcao_aluno_nivel_1, proporcao_aluno_nivel_2,
+              proporcao_aluno_nivel_3, proporcao_aluno_nivel_4, proporcao_aluno_nivel_5,
+              proporcao_aluno_nivel_6, proporcao_aluno_nivel_7, proporcao_aluno_nivel_8]
+  uf:
+    table: uf
+    columns: [ano, sigla_uf, serie, rede, taxa_alfabetizacao, media_portugues,
+              proporcao_aluno_nivel_0, proporcao_aluno_nivel_1, proporcao_aluno_nivel_2,
+              proporcao_aluno_nivel_3, proporcao_aluno_nivel_4, proporcao_aluno_nivel_5,
+              proporcao_aluno_nivel_6, proporcao_aluno_nivel_7, proporcao_aluno_nivel_8]
+  meta_alfabetizacao_brasil:
+    table: meta_alfabetizacao_brasil
+    columns: [ano, rede, taxa_alfabetizacao, meta_alfabetizacao_2024, meta_alfabetizacao_2025,
+              meta_alfabetizacao_2026, meta_alfabetizacao_2027, meta_alfabetizacao_2028,
+              meta_alfabetizacao_2029, meta_alfabetizacao_2030, percentual_participacao]
+  meta_alfabetizacao_uf:
+    table: meta_alfabetizacao_uf
+    columns: [ano, sigla_uf, rede, taxa_alfabetizacao, meta_alfabetizacao_2024, meta_alfabetizacao_2025,
+              meta_alfabetizacao_2026, meta_alfabetizacao_2027, meta_alfabetizacao_2028,
+              meta_alfabetizacao_2029, meta_alfabetizacao_2030, percentual_participacao]
+  meta_alfabetizacao_municipio:
+    table: meta_alfabetizacao_municipio
+    columns: [ano, id_municipio, rede, taxa_alfabetizacao, meta_alfabetizacao_2024,
+              meta_alfabetizacao_2025, meta_alfabetizacao_2026, meta_alfabetizacao_2027,
+              meta_alfabetizacao_2028, meta_alfabetizacao_2029, meta_alfabetizacao_2030,
+              nivel_alfabetizacao, percentual_participacao]
+  dicionario:
+    table: dicionario
+    columns: [id_tabela, nome_coluna, chave, cobertura_temporal, valor]
+  # Dado territorial (pág. 3 do enunciado): nome, UF, região. Valida id_municipio.
+  diretorio_municipio:
+    project: basedosdados
+    dataset: br_bd_diretorios_brasil
+    table: municipio
+    columns: [id_municipio, nome, sigla_uf, nome_regiao, capital_uf]
+
+streaming:
+  # Proporções usadas pelo simulador para exercitar dedup e quarentena.
+  duplicate_rate: 0.05
+  invalid_rate: 0.03
+  quarantine_alert_rate: 0.10

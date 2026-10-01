@@ -1,0 +1,135 @@
+version: 2
+
+# Severidade: padrão `error` = BLOQUEANTE (dbt_project.yml). Informativas declaram `severity: warn`.
+
+models:
+  - name: dicionario
+    description: Tradução oficial de códigos (uma linha por tabela, coluna e chave).
+    tests:
+      - not_empty
+    columns:
+      - name: n_descricoes_na_fonte
+        description: Quantas descrições distintas a mesma chave tinha na fonte (coberturas temporais).
+        tests:
+          - between: {max_value: 1, config: {severity: warn}}
+
+  - name: diretorio_municipio
+    tests: [not_empty]
+    columns:
+      - name: id_municipio
+        tests: [unique, not_null]
+
+  - name: rede_map
+    description: Representações de rede das 6 tabelas -> vocabulário canônico.
+    tests:
+      - unique_combination: {columns: [tabela, valor_origem]}
+    columns:
+      - name: rede_canonica
+        tests: [no_unknown_category]
+      - name: n_significados
+        description: Código de rede com significados diferentes entre tabelas do dicionário.
+        tests:
+          - between: {max_value: 1, config: {severity: warn}}
+
+  - name: indicador_municipio
+    description: Indicador oficial por ano, município e rede.
+    tests:
+      - not_empty
+      - unique_combination: {columns: [ano, id_municipio, rede_codigo]}
+    columns:
+      - name: id_municipio
+        tests: [not_null]
+      - name: ano
+        tests: [not_null]
+      - name: rede_canonica
+        tests: [not_null, no_unknown_category]
+      - name: serie
+        tests: [no_unknown_category]
+      - name: sigla_uf
+        description: Nulo = id_municipio sem correspondência no diretório (medido em ops.join_match_rate).
+      - name: taxa_alfabetizacao
+        tests:
+          - between: {min_value: 0, max_value: 100}
+          - null_rate_below: {max_rate: 0.10, config: {severity: warn}}
+      - name: media_portugues
+        tests:
+          - between: {min_value: 0, exclusive_min: true}
+
+  - name: indicador_uf
+    tests:
+      - not_empty
+      - unique_combination: {columns: [ano, sigla_uf, rede_codigo]}
+    columns:
+      - name: sigla_uf
+        tests:
+          - not_null
+          - relationships: {to: ref('uf_ibge'), field: sigla_uf}
+      - name: rede_canonica
+        tests: [not_null, no_unknown_category]
+      - name: serie
+        tests: [no_unknown_category]
+      - name: taxa_alfabetizacao
+        tests:
+          - between: {min_value: 0, max_value: 100}
+          - null_rate_below: {max_rate: 0.05, config: {severity: warn}}
+
+  - name: meta_linha_base
+    tests:
+      - not_empty
+      - unique_combination: {columns: [nivel, id_local, rede_origem, ano]}
+    columns:
+      - name: rede_canonica
+        tests: [not_null, no_unknown_category]
+      - name: taxa_alfabetizacao
+        tests:
+          - between: {min_value: 0, max_value: 100}
+      - name: percentual_participacao
+        tests:
+          - between: {min_value: 0, max_value: 100}
+
+  - name: meta_trajetoria
+    description: Trajetória pactuada 2024-2030 em formato longo (sem linhas para metas nulas).
+    tests:
+      - not_empty
+      - unique_combination: {columns: [nivel, id_local, rede_origem, ano_referencia, ano_meta]}
+    columns:
+      - name: meta_pct
+        tests:
+          - not_null
+          - between: {min_value: 0, max_value: 100}
+      - name: rede_canonica
+        tests: [no_unknown_category]
+      - name: ano_meta
+        tests:
+          - between: {min_value: 2024, max_value: 2030}
+
+  - name: alunos
+    description: Microdado individual. `avaliado` = presente E caderno preenchido (denominador do indicador).
+    tests:
+      - not_empty
+      - unique_combination: {columns: [ano, id_municipio, id_escola, id_aluno]}
+    columns:
+      - name: sigla_uf
+        tests: [not_null]
+      - name: rede_canonica
+        tests: [no_unknown_category]
+      - name: serie
+        tests: [no_unknown_category]
+      - name: presenca
+        tests: [no_unknown_category]
+      - name: preenchimento_caderno
+        tests: [no_unknown_category]
+      - name: alfabetizado_descricao
+        tests: [no_unknown_category]
+      - name: proficiencia
+        description: Escala Saeb. Zero ou negativo é impossível -> bloqueante.
+        tests:
+          - between: {min_value: 0, exclusive_min: true}
+          - null_rate_below: {max_rate: 0.02, where: "avaliado", config: {severity: warn}}
+      - name: peso_aluno
+        tests:
+          - between: {min_value: 0, exclusive_min: true, config: {severity: warn}}
+      - name: alfabetizado
+        description: Entre avaliados, alfabetizado nulo distorce o numerador.
+        tests:
+          - null_rate_below: {max_rate: 0.01, where: "avaliado", config: {severity: warn}}

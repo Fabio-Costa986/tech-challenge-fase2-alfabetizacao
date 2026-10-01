@@ -1,0 +1,9 @@
+join_name,min_rate,severidade,justificativa
+indicador_municipio__diretorio,0.99,bloqueante,"id_municipio é chave IBGE de 7 dígitos; abaixo de 99% indica chave corrompida (tipo, zeros à esquerda) e não cobertura"
+meta_municipio__diretorio,0.99,bloqueante,"mesma chave IBGE; metas sem município válido não podem ser comparadas"
+alunos__diretorio,0.99,bloqueante,"microdado sem município válido some da validação cruzada"
+indicador_uf__uf,1.0,bloqueante,"são 27 UFs fixas; qualquer falha é chave errada"
+indicador_uf__meta_uf,0.95,bloqueante,"meta estadual é pactuada para todas as UFs na rede pública; total=0 indica rede em representação diferente"
+indicador_municipio__meta_municipio,0.50,bloqueante,"piso: abaixo disso o problema é a chave (rede/ano), não a adesão"
+indicador_municipio__meta_municipio,0.90,informativa,"nem todo município pactuou meta; queda abaixo do baseline merece investigação"
+alunos__indicador_uf,0.95,bloqueante,"a validação cruzada só tem valor se quase todo (ano, UF, rede) do microdado encontrar o indicador oficial"
