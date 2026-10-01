@@ -76,3 +76,25 @@
 - **Decisão:** o denominador ponderado já os exclui naturalmente. A coluna didática
   `taxa_denominador_com_ausentes_ERRADA` passou a ser calculada por contagem, porque por peso ela seria
   igual à correta e não mostraria a armadilha.
+
+## H9: recorte "total" não é recomponível a partir do microdado (achado da 1ª execução)
+- **Observado:** na execução `20261001T131455Z-325f14`, a regra bloqueante `alunos__indicador_uf` reprovou
+  com 142/192 grupos (74%). 48 dos 50 grupos sem par eram do recorte `total` (todas as redes, incluindo
+  a privada). O indicador UF só publica `total` para 1 UF em 2024, e o microdado tem só 25 alunos
+  da rede privada.
+- **Causa:** erro nosso de universo. O microdado da avaliação cobre as redes públicas; "total" não pode ser
+  recomposto a partir dele. O portão de qualidade funcionou: a Gold não foi construída.
+- **Decisão:** `total` foi removido de `rede_recortes.csv` (o limiar de 95% não foi alterado).
+
+## H10: DF sem indicador estadual/público em 2024
+- **Observado:** o microdado tem alunos avaliados da rede estadual do DF em 2024, mas `uf` não publica
+  linha para DF/estadual nem para DF/pública em 2024 (2023 existe).
+- **Decisão:** lacuna da fonte, mantida. Esses 2 grupos ficam sem validação cruzada (`tem_microdado`
+  / taxa de match de 142/144 = 98,6%).
+
+## H11: divergência entre tabela de meta e tabela de indicador em municípios do CE
+- **Observado:** regra informativa `assert_consistencia_meta_vs_indicador_municipio` com 3 casos em 2023
+  (rede municipal): 2305100 (55,6 na meta × 91,67 no indicador), 2304905 (83,1 × 99,15),
+  5106752 (68,0 × 65,94).
+- **Decisão:** a tabela de indicador é a fonte principal de `resultado_oficial` (ver H7). Os casos ficam
+  registrados como informativos e merecem consulta ao Inep. Não bloqueiam, porque são 3 em ~10 mil.
