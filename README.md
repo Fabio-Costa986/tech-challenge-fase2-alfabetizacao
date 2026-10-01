@@ -7,15 +7,19 @@ com portões de qualidade bloqueantes, observabilidade persistida, alertas e cus
 > ### Estado atual (leia primeiro)
 > | Item | Estado |
 > |---|---|
-> | Código do pipeline, modelos dbt, Terraform, workflow | **Implementado** |
-> | Testes automatizados (`pytest`, 40 testes) | **Passando localmente** |
-> | `dbt parse` (Jinja, refs, testes e unit tests) e `terraform validate` | **Passando localmente** |
-> | Provisionamento no GCP e execução na nuvem | **Pendente**: as seções marcadas com ⏳ serão preenchidas com job IDs, prints e contagens depois da primeira execução |
+> | Infraestrutura no GCP (Terraform, 82 recursos) | **Provisionada** no projeto `midyear-cursor-510311-v9` ([evidência](evidencias/infra/terraform_state.txt)) |
+> | Pipeline batch na nuvem (Workflows → Cloud Run Jobs) | **Executado**: 2 execuções publicaram a Gold (`20261001T162153Z-ca83f9`, `20261001T193739Z-f0dbac`); 4 foram barradas, e estão documentadas |
+> | Streaming na nuvem (Pub/Sub → Cloud Run → BigQuery) | **Executado**: 1.240 eventos publicados em 3 rodadas, 1.125 na Silver sem duplicatas |
+> | Demonstração de falha + alerta | **Executada**: [evidência](evidencias/qualidade/demo_falha.md); alerta em ~4 min ([incidentes](evidencias/monitoramento/incidentes.md)) |
+> | Custo medido | **Medido**: [tabela](evidencias/finops/custos_medidos.md) |
+> | Testes automatizados (`pytest`, 40 testes), `dbt parse`, `terraform validate` | Passando |
+> | Agendadores (Cloud Scheduler) | Criados **pausados** de propósito (`schedulers_paused = true`); as execuções acima foram disparadas manualmente |
 > | CI (`.github/workflows/ci.yml`) | Configurado; roda quando o repositório estiver no GitHub |
+> | Dashboard | Gerado por `python -m alfab dashboard` a partir da Gold ([evidencias/dashboard/](evidencias/dashboard/)). Looker Studio não foi usado |
 > | Vídeo executivo | Fora do escopo neste momento |
 >
-> Este README descreve no presente apenas o que existe no repositório. O que depende de execução na
-> nuvem está marcado como ⏳.
+> Este README descreve no presente apenas o que existe no repositório e foi executado. Os números citados
+> vêm de `evidencias/` e podem ser reproduzidos pelos comandos indicados.
 
 ---
 
@@ -142,8 +146,23 @@ Detalhes e justificativas: [docs/ARQUITETURA.md](docs/ARQUITETURA.md) e [docs/de
 **Latência medida de fato:** `produced_at` é carimbado pelo **simulador** ao criar o evento, e
 `ingested_at` pelo **ingestor** ao recebê-lo (processos e relógios diferentes). `silver_processed_at` é
 carimbado pelo `MERGE`. A view `ops.vw_latencia_streaming` calcula p50/p95/p99. Para provar que a métrica
-mede algo, `python -m alfab simulate --atraso 5` retém cada evento por 5 s antes de publicar, e o p95
-precisa subir na mesma medida. ⏳ evidência em `evidencias/streaming/`.
+mede algo, o simulador aceita `--atraso 5`, que retém cada evento por 5 s antes de publicar.
+
+**Medido na nuvem** (`ops.pipeline_runs`, etapa `microbatch.silver.eventos`):
+
+| Rodada | Eventos novos | Latência de ingestão p50 | p95 | Observação |
+|---|---|---|---|---|
+| Sem atraso | 542 | **0,066 s** | 21,8 s | o p95 é o cold start do ingestor (escala a zero) |
+| Com `--atraso 5` | 36 | **5,097 s** | 7,65 s | a mediana sobe os 5 s injetados |
+
+**Duplicatas e inválidos, medidos:** a Bronze recebeu 1.206 entregas para 1.135 `event_id` distintos.
+Das 71 duplicatas, o simulador gerou 39; **as outras 32 foram reentregas reais do Pub/Sub**
+(entrega at-least-once durante o cold start). A Silver ficou com 1.125 eventos, todos distintos. A
+quarentena tem 50 eventos, cada um com o motivo: 40 por estrutura/domínio (no ingestor) e 10 por
+município inexistente (no micro-lote). **O evento chega à camada analítica:** `gold.vw_indicador_consolidado`
+tem 23.995 linhas `OFICIAL` e 270 `SIMULADO` (último valor por município), separadas por `origem_dado`.
+A latência ponta a ponta até a Silver depende da cadência do micro-lote (5 min quando o agendador está
+ativo); nas rodadas acima ele foi disparado manualmente.
 
 ## 5. Como executar
 
@@ -209,8 +228,16 @@ Catálogo completo, limiares e justificativas: **[docs/qualidade_regras.md](docs
   Nenhum `except` engole erro: `tests/test_observability.py` e `tests/test_quality_gate.py` verificam isso.
 - **Persistência:** `ops.dq_results` (cada teste, a cada execução, inclusive reprovações) e
   `ops.join_match_rate` (histórico das taxas de match).
-- **Falha demonstrada:** `fault_injection=duplicate_keys` ou `unmapped_rede`. ⏳ evidência em
-  `evidencias/qualidade/`.
+- **Falha demonstrada na nuvem** ([evidencias/qualidade/demo_falha.md](evidencias/qualidade/demo_falha.md)):
+  com `fault_injection=duplicate_keys`, a regra `unique_combination_indicador_municipio_*` detectou 303
+  chaves duplicadas, o job saiu com código 3, o workflow terminou FAILED, `dbt.gold` e `publish.gold`
+  não executaram e as 10 tabelas da Gold publicada ficaram idênticas (`modified` e `published_run_id`).
+- **Falhas reais, não ensaiadas:** as 3 primeiras execuções foram barradas por regras/erros legítimos
+  (recorte de rede inválido, validação cruzada, unit test). Cada uma está em `ops.dq_results` e virou
+  um item da [investigação de anomalias](docs/investigacao_anomalias.md).
+- **Validação cruzada (microdado × oficial):** 141 grupos UF, desvio mediano de **0,003 p.p.**; os 107
+  grupos com ≥ 5.000 avaliados ficam dentro de 0,32 p.p. Sem peso amostral o desvio mediano seria
+  0,516 p.p.; com ausentes no denominador, 6,542 p.p.
 
 ## 7. Monitoramento e FinOps
 
@@ -231,9 +258,10 @@ Catálogo completo, limiares e justificativas: **[docs/qualidade_regras.md](docs
 Todos os alertas são recursos Terraform em [infra/monitoring.tf](infra/monitoring.tf).
 
 **Em produção, quem descobre que o pipeline quebrou, e em quanto tempo?**
-- **Falha ativa** (erro técnico ou regra bloqueante): o e-mail chega ao grupo pela alert policy, com
-  janela de alinhamento de 60 s. Estimativa: **poucos minutos** após o FAILED. ⏳ tempo medido na
-  demonstração de falha.
+- **Falha ativa** (erro técnico ou regra bloqueante): o grupo recebe o e-mail da alert policy.
+  **Tempo medido** entre a falha registrada e a abertura do incidente, nas 4 falhas do dia:
+  3 min 38 s, 4 min 14 s, 4 min 19 s e 4 min 31 s
+  ([evidencias/monitoramento/incidentes.md](evidencias/monitoramento/incidentes.md)).
 - **Falha silenciosa** (Scheduler parado, job que nunca inicia): alerta de ausência em **até 13 h**
   (duas janelas de 6 h sem sucesso).
 - **Streaming travado:** backlog acima de 5 min por 5 min, ou seja, **~10 min**.
@@ -247,11 +275,28 @@ Todos os alertas são recursos Terraform em [infra/monitoring.tf](infra/monitori
 - Labels `app`, `run_id`, `camada` e `etapa` em todo job, para custo por execução em `ops.vw_custo_por_execucao`.
 - Escala a zero (Cloud Run); copy jobs gratuitos na publicação da Gold.
 
-**Tabela de custo medida** ⏳ gerada por `python -m alfab finops` a partir de dry run,
-`INFORMATION_SCHEMA.JOBS`, `INFORMATION_SCHEMA.TABLE_STORAGE`, tamanho real dos objetos no GCS e duração
-real das etapas: **[evidencias/finops/custos_medidos.md](evidencias/finops/)**. Se a conta usada for
-trial/free tier, isso será informado, e a projeção usa a cadência de produção (batch 6/6 h, micro-lote
-5 min).
+**Custo medido** ([evidencias/finops/custos_medidos.md](evidencias/finops/custos_medidos.md), gerado
+por `python -m alfab finops`). Cadência projetada: batch a cada 6 h (120/mês) e micro-lote a cada 5 min
+(8.640/mês). A conta usada está dentro do nível gratuito, então a tabela traz as duas leituras.
+
+| Serviço | Unidade | Quantidade medida | Como foi medida | Preço unitário | Lista (US$/mês) | Com nível gratuito |
+|---|---|---:|---|---|---:|---:|
+| BigQuery: ingestão da fonte | GiB faturado por ingestão completa | 0,32 | `INFORMATION_SCHEMA.JOBS`, camada=bronze (dry run: 0,25 GiB); 1 ingestão/mês | US$ 6,25/TiB | 0,00 | 0,00 |
+| BigQuery: Silver + Gold + testes | GiB faturado por execução | 2,0 | `INFORMATION_SCHEMA.JOBS` por `run_id`, mediana das execuções publicadas | US$ 6,25/TiB (1 TiB grátis) | 1,47 | 0,00 |
+| BigQuery: armazenamento | GiB-mês | 0,87 | `<dataset>.__TABLES__` | US$ 0,02/GiB (10 GiB grátis) | 0,02 | 0,00 |
+| Cloud Storage (Bronze Parquet ZSTD) | GiB-mês | 0,056 | soma dos 18 objetos do bucket | US$ 0,026/GiB | 0,00 | 0,00 |
+| Pub/Sub + streaming insert | GiB/mês | 0,0014 | 1.206 entregas em `bronze.eventos_raw` | US$ 40/TiB + US$ 0,05/GiB | 0,00 | 0,00 |
+| Cloud Run Jobs | vCPU-s/mês | 156.500 | `ops.pipeline_runs`: 148 s por batch, 16,1 s por micro-lote | US$ 0,000018/vCPU-s + US$ 0,000002/GiB-s | 3,44 | 0,00 |
+| Workflows + Scheduler | passos/mês | 1.440 | 12 passos × 120 execuções; 2 jobs | US$ 0,01/1.000 passos; US$ 0,10/job | 0,21 | 0,00 |
+| **Total** | | | | | **5,15** | **0,00** |
+
+O que a medição mostrou:
+- **O watermark funciona:** numa execução com a fonte inalterada, as 8 entidades da Bronze são puladas em
+  ~0,2 s cada, sem byte faturado. A ingestão completa (3,9 milhões de alunos) fatura 0,32 GiB.
+- **O maior custo de BigQuery é reconstruir Silver e Gold a cada 6 h** (2,0 GiB por execução), mesmo sem
+  dado novo. Pular a transformação quando toda a Bronze foi pulada é a otimização seguinte (evolução futura).
+- **Cloud Run usa 156,5 mil dos 180 mil vCPU-s gratuitos.** O micro-lote a cada 5 min é quem consome; é o
+  primeiro item a virar custo se a cadência aumentar. A medição não inclui a inicialização do container.
 
 ## 8. Aplicação em IA
 
@@ -273,25 +318,43 @@ municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento qu
 
 ## 9. Limitações conhecidas
 
-- **Execução na nuvem pendente** neste momento (ver "Estado atual").
 - **Streaming é simulado.** Os eventos são gerados a partir de municípios e taxas reais, mas os valores
   são sintéticos e marcados como `SIMULADO` em todas as camadas. Nunca entram nos fatos oficiais nem na
   base de ML.
 - **Série histórica curta** (2 ou 3 anos): a projeção para 2030 é rotulada como cenário, não previsão. A
   base de ML terá poucos exemplos de treino.
-- **Limiares de qualidade** partem de premissas e devem ser recalibrados com o baseline do profiling.
-- **Premissas sobre códigos** (presença/preenchimento/alfabetizado = `"1"`) são verificadas por teste
-  bloqueante contra o dicionário, mas só serão confirmadas na primeira execução.
-- **Dashboard** (Looker Studio) não está automatizado.
+- **Critério da validação cruzada calibrado após a 1ª execução** (porte ≥ 5.000 avaliados e cobertura
+  completa de UFs), com a tolerância de 0,5 p.p. mantida. A decisão e os números estão na investigação (H2).
+- **Lacunas da fonte que permanecem:** o microdado de 2023 não tem São Paulo; o DF não tem indicador
+  estadual/público em 2024; 216 municípios não têm meta pactuada; os resultados de 2025 só existem nas
+  tabelas de meta, sem casas decimais; 3 municípios divergem entre a tabela de meta e a de indicador.
+- **Agendadores pausados:** as execuções foram manuais. O alerta de ausência (13 h) e a latência ponta a
+  ponta de ~5 min do streaming não foram observados em regime contínuo.
+- **Jobs demoram ~4 min para iniciar** (importação da imagem), o que alonga a execução batch para ~19 min,
+  dos quais ~2,5 min são processamento.
+- **`terraform apply` em duas fases** e bootstrap de 2 APIs via gcloud (documentados na seção 5).
+- **Dashboard** é uma página gerada pelo próprio pipeline; Looker Studio não foi configurado.
 - **Retention policy do bucket não travada**, para permitir desmontar o ambiente acadêmico.
-- Investigação de anomalias: roteiro em [docs/investigacao_anomalias.md](docs/investigacao_anomalias.md);
-  achados ⏳.
+- Investigação de anomalias com 11 hipóteses e números medidos:
+  [docs/investigacao_anomalias.md](docs/investigacao_anomalias.md).
 
 ## 10. Evidências
 
-⏳ Depois da execução: `evidencias/execucao.md` (contagens por tabela, execuções, qualidade, taxas de
-join, latência), `evidencias/profiling/*.csv`, prints em `evidencias/{batch,streaming,qualidade,monitoramento}/`
-e `evidencias/finops/custos_medidos.md`.
+| Evidência | Arquivo |
+|---|---|
+| Recursos provisionados (82) e outputs do Terraform | [evidencias/infra/terraform_state.txt](evidencias/infra/terraform_state.txt) |
+| Contagem de linhas por tabela, snapshots da Bronze, execuções, qualidade, joins, latência | [evidencias/execucao.md](evidencias/execucao.md) |
+| Estrutura das camadas (tabelas, colunas, grão) | [evidencias/estrutura/](evidencias/estrutura/) (`analises/02_estrutura_camadas.sql`) |
+| Profiling da fonte | [evidencias/profiling/](evidencias/profiling/) (`analises/01_profiling_fonte.sql`) |
+| Demonstração de falha (workflow FAILED, Gold intacta) | [evidencias/qualidade/demo_falha.md](evidencias/qualidade/demo_falha.md) |
+| Incidentes de alerta e tempo de detecção | [evidencias/monitoramento/incidentes.md](evidencias/monitoramento/incidentes.md) |
+| Custos medidos | [evidencias/finops/custos_medidos.md](evidencias/finops/custos_medidos.md) |
+| Dashboard e os dados que o alimentam | [evidencias/dashboard/](evidencias/dashboard/) |
+
+Identificadores para conferência no console: workflow `alfab-pipeline-batch`, execuções
+`ca83f9f2-0a88-4ea3-ac9a-287f05cd47be` (publicada) e `b2078429-4134-4fbe-843b-cb64a9a49e07` (falha
+demonstrada); builds do Cloud Build `14a4b3f7-6b19-4f4a-8b71-ed810b6bb6b9` e
+`02c8a925-d10a-4ecf-ad11-dabd91c01d9c`. Prints de console ainda não foram adicionados.
 
 ## 11. Estrutura do repositório
 
@@ -310,7 +373,8 @@ e `evidencias/finops/custos_medidos.md`.
 ├── analises/                  # profiling da fonte
 ├── tests/                     # pytest
 ├── docs/                      # ARQUITETURA.md, decisoes/ (ADRs), qualidade_regras.md, investigacao_anomalias.md
-├── evidencias/                # resultados de execução (⏳)
+├── evidencias/                # resultados de execução na nuvem
+├── dashboard/template.html    # template do painel (dados embutidos por python -m alfab dashboard)
 ├── config/settings.yaml       # o que ingerir (colunas explícitas por entidade)
 ├── .env.example               # identificadores (projeto, bucket, e-mail)
 ├── Dockerfile · Makefile · pyproject.toml (dependências com versão fixa)
