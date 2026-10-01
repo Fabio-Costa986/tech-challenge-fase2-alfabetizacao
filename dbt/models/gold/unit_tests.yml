@@ -47,6 +47,6 @@ unit_tests:
     expect:
       rows:
         - {id_local: 'A000001', ano: 2024, status_meta: NAO_ATINGIU, gap_pp: -5.0}
-        - {id_local: 'B000002', ano: 2024, status_meta: SEM_META}
+        - {id_local: 'B000002', ano: 2024, status_meta: SEM_META, gap_pp: null}
         - {id_local: 'C000003', ano: 2024, status_meta: ATINGIU, gap_pp: 0.0}
-        - {id_local: 'A000001', ano: 2026, status_meta: AGUARDANDO_RESULTADO}
+        - {id_local: 'A000001', ano: 2026, status_meta: AGUARDANDO_RESULTADO, gap_pp: null}
