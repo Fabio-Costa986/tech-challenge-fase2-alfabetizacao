@@ -309,8 +309,9 @@ O que a medição mostrou:
 - **Alvo:** `alvo_taxa_t_mais_1`. Coluna `particao` = treino/inferência.
 - **Anti-vazamento:** nenhuma coluna derivada do alvo (gap, status, atingiu). O teste bloqueante
   `assert_ml_sem_vazamento` lê o schema real e reprova se aparecer alguma. O split deve ser temporal.
-- **Guardada para a Fase 3:** `python -m alfab export-ml` cria um snapshot BigQuery
-  (`gold.ml_features_municipio_fase3_<data>`) e Parquet em `gs://<bucket>/gold/ml/fase3/versao=<data>/`.
+- **Guardada para a Fase 3** (`python -m alfab export-ml`, executado em 2026-10-01): snapshot BigQuery
+  `gold.ml_features_municipio_fase3_20261001` e Parquet em
+  `gs://midyear-cursor-510311-v9-alfab-lake/gold/ml/fase3/versao=2026-10-01/` (23.995 linhas, 877 KiB).
 
 Outros usos da Gold: ranking de desigualdade intra-UF (dispersão entre municípios), priorização de
 municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento quase em tempo real via
