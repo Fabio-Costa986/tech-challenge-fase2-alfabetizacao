@@ -6,8 +6,9 @@ resource "google_pubsub_topic" "eventos" {
 }
 
 resource "google_pubsub_topic" "dlq" {
-  name   = "alfab-eventos-dlq"
-  labels = { app = "alfab" }
+  name       = "alfab-eventos-dlq"
+  labels     = { app = "alfab" }
+  depends_on = [google_project_service.apis]
 }
 
 # Subscription de inspeção da DLQ (mensagens que falharam N entregas). O alerta observa o backlog dela.

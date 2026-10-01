@@ -1,5 +1,9 @@
+# Bootstrap (antes do primeiro apply, via gcloud; ver README):
+#   cloudresourcemanager.googleapis.com e serviceusage.googleapis.com
 locals {
   services = [
+    "cloudresourcemanager.googleapis.com",
+    "serviceusage.googleapis.com",
     "bigquery.googleapis.com",
     "bigquerystorage.googleapis.com",
     "storage.googleapis.com",

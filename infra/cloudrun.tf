@@ -104,5 +104,10 @@ resource "google_cloud_run_v2_service" "ingestor" {
     }
   }
 
+  # A API devolve um bloco `scaling` no nível do serviço (não declarado aqui): evita diff perpétuo.
+  lifecycle {
+    ignore_changes = [scaling]
+  }
+
   depends_on = [google_project_service.apis]
 }

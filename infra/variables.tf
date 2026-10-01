@@ -79,3 +79,9 @@ variable "deletion_protection" {
   type        = bool
   default     = true
 }
+
+variable "schedulers_paused" {
+  description = "Cria os Cloud Scheduler pausados. Ativar (false) só depois do deploy da imagem real e de um pipeline bem-sucedido."
+  type        = bool
+  default     = true
+}

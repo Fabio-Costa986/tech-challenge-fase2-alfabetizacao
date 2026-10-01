@@ -13,13 +13,16 @@
 # Argumentos opcionais: {"run_id": "...", "fault_injection": "duplicate_keys", "force": true}
 
 main:
-  params: [args]
+  params: [input]
   steps:
     - normalize_args:
+        assign:
+          - opts: {}
+    - copy_input:
         switch:
-          - condition: "$${args == null}"
+          - condition: "$${input != null}"
             assign:
-              - args: {}
+              - opts: "$${input}"
     - init:
         assign:
           - project: "${project}"
@@ -27,12 +30,12 @@ main:
           - ts: "$${time.format(sys.now())}"
           - exec_id: '$${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}'
           - generated_run_id: '$${text.substring(ts, 0, 4) + text.substring(ts, 5, 7) + text.substring(ts, 8, 10) + "T" + text.substring(ts, 11, 13) + text.substring(ts, 14, 16) + text.substring(ts, 17, 19) + "Z-" + text.substring(exec_id, 0, 6)}'
-          - run_id: '$${default(map.get(args, "run_id"), generated_run_id)}'
-          - fault: '$${default(map.get(args, "fault_injection"), "none")}'
+          - run_id: '$${default(map.get(opts, "run_id"), generated_run_id)}'
+          - fault: '$${default(map.get(opts, "fault_injection"), "none")}'
           - ingest_args: ["ingest-bronze"]
     - force_flag:
         switch:
-          - condition: '$${default(map.get(args, "force"), false)}'
+          - condition: '$${default(map.get(opts, "force"), false)}'
             assign:
               - ingest_args: ["ingest-bronze", "--force"]
 

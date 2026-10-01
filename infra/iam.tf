@@ -4,21 +4,25 @@
 resource "google_service_account" "pipeline" {
   account_id   = "alfab-pipeline"
   display_name = "alfab - jobs batch/dbt/micro-lote/simulador"
+  depends_on   = [google_project_service.apis]
 }
 
 resource "google_service_account" "ingestor" {
   account_id   = "alfab-ingestor"
   display_name = "alfab - event-ingestor (Cloud Run service)"
+  depends_on   = [google_project_service.apis]
 }
 
 resource "google_service_account" "pubsub_push" {
   account_id   = "alfab-pubsub-push"
   display_name = "alfab - identidade OIDC do push do Pub/Sub"
+  depends_on   = [google_project_service.apis]
 }
 
 resource "google_service_account" "orchestrator" {
   account_id   = "alfab-orchestrator"
   display_name = "alfab - Workflows e Cloud Scheduler"
+  depends_on   = [google_project_service.apis]
 }
 
 # --- pipeline: executa queries, escreve nos datasets, lê/escreve o lake, publica eventos

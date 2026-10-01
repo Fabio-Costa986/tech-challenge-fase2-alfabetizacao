@@ -164,6 +164,8 @@ pip install -e ".[dev]"
 pytest -q
 
 # 2. infraestrutura (fase 1: imagem placeholder)
+#    bootstrap: APIs que o próprio Terraform precisa para ler o projeto e habilitar as demais
+gcloud services enable cloudresourcemanager.googleapis.com serviceusage.googleapis.com --project <PROJETO>
 terraform -chdir=infra init
 terraform -chdir=infra apply
 

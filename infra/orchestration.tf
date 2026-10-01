@@ -17,6 +17,7 @@ resource "google_cloud_scheduler_job" "batch" {
   region      = var.region
   description = "Dispara o workflow batch (o watermark pula fontes inalteradas)"
   schedule    = var.batch_schedule
+  paused      = var.schedulers_paused
   time_zone   = "America/Sao_Paulo"
 
   retry_config {
@@ -39,6 +40,7 @@ resource "google_cloud_scheduler_job" "microbatch" {
   region      = var.region
   description = "Micro-lote Bronze -> Silver dos eventos de streaming"
   schedule    = var.microbatch_schedule
+  paused      = var.schedulers_paused
   time_zone   = "America/Sao_Paulo"
 
   http_target {
