@@ -25,11 +25,11 @@ complemento AS (
     'tabela_meta' AS fonte_resultado
   FROM {{ ref('meta_linha_base') }} m
   LEFT JOIN {{ ref('diretorio_municipio') }} d ON m.nivel = 'MUN' AND d.id_municipio = m.id_local
+  -- anti-join explícito (o BigQuery não descorrelaciona NOT EXISTS sobre um UNION)
+  LEFT JOIN indicador i
+    ON i.nivel = m.nivel AND i.id_local = m.id_local AND i.rede_canonica = m.rede_canonica AND i.ano = m.ano
   WHERE m.taxa_alfabetizacao IS NOT NULL
-    AND NOT EXISTS (
-      SELECT 1 FROM indicador i
-      WHERE i.nivel = m.nivel AND i.id_local = m.id_local
-        AND i.rede_canonica = m.rede_canonica AND i.ano = m.ano)
+    AND i.id_local IS NULL
 )
 SELECT *, {{ lineage_columns() }} FROM indicador
 UNION ALL

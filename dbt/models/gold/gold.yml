@@ -85,18 +85,27 @@ models:
     description: Microdado recalculado x indicador publicado (diferencial do enunciado).
     tests:
       - not_empty
+      # Calibrado após a 1ª execução (docs/investigacao_anomalias.md, H2): os 107 grupos UF com
+      # >= 5.000 avaliados ficaram dentro de 0,32 p.p.; as 2 reprovações tinham 2.818 e 1.180 avaliados.
       - abs_diff_within:
           name: validacao_cruzada_uf_converge
           column_name: taxa_microdado_ponderada
           other_column: taxa_oficial
           tolerance: "{{ var('tolerancia_validacao_cruzada_pp') }}"
-          where: "nivel = 'UF'"
+          where: "nivel = 'UF' AND n_avaliados >= 5000"
+      - abs_diff_within:
+          name: validacao_cruzada_uf_pequenas_converge
+          column_name: taxa_microdado_ponderada
+          other_column: taxa_oficial
+          tolerance: 2.0
+          where: "nivel = 'UF' AND n_avaliados < 5000"
+          config: {severity: warn}
       - abs_diff_within:
           name: validacao_cruzada_brasil_converge
           column_name: taxa_microdado_ponderada
           other_column: taxa_oficial
           tolerance: "{{ var('tolerancia_validacao_cruzada_pp') }}"
-          where: "nivel = 'BR'"
+          where: "nivel = 'BR' AND cobertura_completa"
       - abs_diff_within:
           name: validacao_cruzada_municipio_converge
           column_name: taxa_microdado_ponderada

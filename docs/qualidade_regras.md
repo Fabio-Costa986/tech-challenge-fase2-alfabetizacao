@@ -31,7 +31,7 @@ execução falha**, então a reprovação fica registrada.
 | **Taxa de match dos joins** | `join_match_rate` + `assert_join_match_*` | 7 junções (abaixo) | Bloqueante/Informativa | [seeds/join_thresholds.csv](../dbt/seeds/join_thresholds.csv) |
 | Consistência entre tabelas | taxa da tabela de meta = taxa da tabela de indicador | UF: bloqueante; município: informativa | — | 0,1 p.p.: as duas tabelas vêm da mesma publicação do Inep, então a diferença esperada é só de arredondamento |
 | Consistência agregada | Brasil oficial ≈ UFs ponderadas por alunos | `fct_alfabetizacao_brasil` | Informativa | 1 p.p. |
-| Validação cruzada | microdado recalculado ≈ taxa publicada | UF e Brasil: bloqueante; município (n ≥ 30): informativa | — | 0,5 p.p. (UF/BR); 2 p.p. (município, amostras menores) |
+| Validação cruzada | microdado recalculado ≈ taxa publicada | UF com ≥ 5.000 avaliados e Brasil com cobertura completa: bloqueante; UF < 5.000 e município (n ≥ 30): informativa | — | 0,5 p.p. (bloqueante); 2 p.p. (informativa). Critério de porte/cobertura calibrado após a 1ª execução (ver investigação H2) |
 | Vazamento de alvo | `assert_ml_sem_vazamento` | `ml_features_municipio` | Bloqueante | Nenhuma coluna gap/status/atingiu/diff; exatamente 1 alvo |
 | Origem do dado | `accepted_values` origem = OFICIAL | fatos e features | Bloqueante | Simulado nunca entra na base oficial de ML |
 

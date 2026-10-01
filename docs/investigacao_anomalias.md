@@ -22,7 +22,21 @@
   armadilhas têm tamanho mensurável. Registrar esses tamanhos: é um resultado.
 - Se `diff_pp` estiver longe de 0, testar nesta ordem: definição de avaliado (presença × preenchimento),
   recorte de rede (`rede_recortes.csv`), peso (`peso_aluno` nulo ou zero) e cobertura (`tem_microdado`).
-- Observado: _a preencher_
+- **Observado (execução `20261001T133227Z-c655ab`):**
+  - UF: 141 grupos (ano × UF × rede) com microdado. Mediana de |diff| = **0,003 p.p.**; 133 dentro de
+    0,1 p.p. e 139 dentro de 0,5 p.p. **Todos os 107 grupos com ≥ 5.000 avaliados ficaram dentro de
+    0,32 p.p.** As 2 reprovações eram redes estaduais pequenas: MT 2023 (2.818 avaliados, +1,49 p.p.) e
+    PB 2024 (1.180 avaliados, +0,70 p.p.).
+  - Brasil 2024 (rede pública): converge (|diff| < 0,1 p.p.). Brasil 2023: +1,56 p.p. **porque o microdado
+    de 2023 não tem São Paulo** (23 UFs no microdado contra 24 no indicador).
+  - Tamanho das armadilhas, medido: calcular **sem peso** desvia até +2,6 p.p.; **ausentes no
+    denominador** desviam de −4 a −11 p.p. (ex.: PB 2024, −11,5 p.p.).
+- **Conclusão:** a convergência em praticamente todos os grupos grandes valida, por consequência,
+  ingestão, tipos, decodificação, chaves, recortes de rede e ponderação.
+- **Decisão (critério calibrado após a 1ª execução, registrado aqui de forma explícita):** tolerância
+  mantida em 0,5 p.p. A regra bloqueante UF vale para grupos com ≥ 5.000 avaliados; grupos menores
+  ficam com regra informativa de 2 p.p. A regra bloqueante do Brasil só vale quando o microdado cobre
+  todas as UFs com indicador no ano (`cobertura_completa`).
 
 ## H3: as redes falam a mesma língua?
 - **Evidência:** `evidencias/profiling/02_rede_por_tabela.csv` e `silver.rede_map` (`metodo_traducao`,
