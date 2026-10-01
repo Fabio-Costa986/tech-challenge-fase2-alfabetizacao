@@ -3,7 +3,7 @@
 Quantidades vêm das ferramentas da nuvem, não de premissas:
 - bytes por ingestão: dry run de cada SELECT da Bronze;
 - bytes faturados por execução: INFORMATION_SCHEMA.JOBS filtrado pelo label app=alfab;
-- armazenamento BigQuery: INFORMATION_SCHEMA.TABLE_STORAGE;
+- armazenamento BigQuery: metatabela __TABLES__ de cada dataset;
 - armazenamento GCS: soma do tamanho dos objetos do bucket;
 - computação: duração real das etapas em ops.pipeline_runs;
 - volume de streaming: bytes das mensagens efetivamente ingeridas em bronze.eventos_raw.
@@ -99,18 +99,15 @@ def measure(dias: int, execucoes_mes: int) -> list[Line]:
         f"US$ {PRICE['bq_query_tib']}/TiB (1 TiB grátis)",
         max(0.0, proj_tib - PRICE["bq_free_tib"]) * PRICE["bq_query_tib"]))
 
-    # 3. Armazenamento BigQuery
-    st = _q(f"""
-      SELECT SUM(active_logical_bytes) AS active, SUM(long_term_logical_bytes) AS lt
-      FROM `{region}`.INFORMATION_SCHEMA.TABLE_STORAGE
-      WHERE table_schema IN ({", ".join(repr(d) for d in s.datasets.values())})
-    """)[0]
-    active_gib, lt_gib = (st.active or 0) / GIB, (st.lt or 0) / GIB
+    # 3. Armazenamento BigQuery (metatabela __TABLES__ de cada dataset: não exige permissão regional)
+    union = " UNION ALL ".join(
+        f"SELECT size_bytes FROM `{s.project_id}.{d}.__TABLES__`" for d in s.datasets.values())
+    st_gib = (_q(f"SELECT SUM(size_bytes) AS b FROM ({union})")[0].b or 0) / GIB
     lines.append(Line(
-        "BigQuery: armazenamento", "GiB-mês (lógico)", active_gib + lt_gib,
-        "INFORMATION_SCHEMA.TABLE_STORAGE", f"US$ {PRICE['bq_storage_active_gib']}/GiB ativo (10 GiB grátis)",
-        max(0.0, active_gib - PRICE["bq_storage_free_gib"]) * PRICE["bq_storage_active_gib"]
-        + lt_gib * PRICE["bq_storage_lt_gib"]))
+        "BigQuery: armazenamento", "GiB-mês (lógico ativo)", st_gib,
+        "soma de size_bytes em <dataset>.__TABLES__ (bronze, silver, gold_staging, gold, ops)",
+        f"US$ {PRICE['bq_storage_active_gib']}/GiB ativo (10 GiB grátis)",
+        max(0.0, st_gib - PRICE["bq_storage_free_gib"]) * PRICE["bq_storage_active_gib"]))
 
     # 4. GCS (Bronze + snapshots ML)
     from google.cloud import storage

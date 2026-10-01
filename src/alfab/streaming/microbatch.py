@@ -56,8 +56,17 @@ VALUES
   (S.event_id, S.pubsub_message_id, S.pubsub_publish_time, S.ingested_at, S.payload,
    'municipio_inexistente: id_municipio sem correspondência no diretório', S.delivery_attempt);
 
+-- Só os eventos ainda não presentes na Silver: o lookback relê eventos já processados, e eles não
+-- podem entrar de novo nem contaminar a latência medida deste lote.
+CREATE TEMP TABLE lote_novo AS
+SELECT S.* FROM lote_valido S
+LEFT JOIN `{silver}` T
+  ON T.event_id = S.event_id
+ AND T.ingested_at >= TIMESTAMP_SUB(@lower, INTERVAL {DEDUP_HORIZON_DAYS} DAY)
+WHERE T.event_id IS NULL;
+
 MERGE `{silver}` T
-USING lote_valido S
+USING lote_novo S
 ON T.event_id = S.event_id
    AND T.ingested_at >= TIMESTAMP_SUB(@lower, INTERVAL {DEDUP_HORIZON_DAYS} DAY)
 WHEN NOT MATCHED THEN INSERT
@@ -73,10 +82,11 @@ SELECT
   (SELECT COUNT(*) FROM lote) AS unicas,
   (SELECT COUNT(*) FROM lote_valido) AS validas,
   inseridas,
+  (SELECT COUNT(*) FROM lote_novo) AS novas,
   (SELECT APPROX_QUANTILES(TIMESTAMP_DIFF(ingested_at, produced_at, MILLISECOND), 100)
-     FROM lote_valido) AS lat_ingestao_ms,
+     FROM lote_novo) AS lat_ingestao_ms,
   (SELECT APPROX_QUANTILES(TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), produced_at, MILLISECOND), 100)
-     FROM lote_valido) AS lat_ponta_a_ponta_ms;
+     FROM lote_novo) AS lat_ponta_a_ponta_ms;
 """
 
 
@@ -112,6 +122,7 @@ def run(run_id: str) -> dict:
         r = list(job.result())[0]
         stats = {
             "lidas": r.lidas, "unicas": r.unicas, "validas": r.validas, "inseridas": r.inseridas,
+            "ja_processadas_relidas": r.validas - r.novas,
             "duplicatas_descartadas": r.lidas - r.unicas,
             "quarentena_referencial": r.unicas - r.validas,
             "latencia_ingestao_p50_s": _pct(r.lat_ingestao_ms, 50),

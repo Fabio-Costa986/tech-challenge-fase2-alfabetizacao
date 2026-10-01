@@ -1,8 +1,7 @@
 # Investigação de anomalias
 
-> **Estado:** H1, H3, H7 e H8 investigadas com o profiling de 2026-10-01
-> (`python -m alfab profile`, resultados em `evidencias/profiling/`). As demais dependem da primeira
-> execução do pipeline. Cada hipótese abaixo vem com a evidência que a confirma ou descarta. Ao investigar, preencher
+> **Estado:** todas as hipóteses investigadas com dados reais em 2026-10-01: profiling
+> (`evidencias/profiling/`) e execuções do pipeline na nuvem (`ops.pipeline_runs`, `ops.dq_results`). Cada hipótese abaixo vem com a evidência que a confirma ou descarta. Ao investigar, preencher
 > **Observado**, **Causa** e **Decisão** com números e `job_id`. Não registrar conclusão sem número.
 
 ## H1: o flag `alfabetizado` corresponde a proficiência ≥ 743?
@@ -60,17 +59,35 @@
   `ops.join_match_rate` (`indicador_municipio__meta_municipio`).
 - Pergunta: é falta de adesão (esperado) ou chave que não casa (erro)? Comparar com a cobertura de
   `meta_alfabetizacao_municipio` por UF.
-- Observado: _a preencher_
+- **Observado (Gold publicada, execução `20261001T162153Z-ca83f9`):** em 2024, rede municipal, 5.448
+  municípios com resultado: 2.788 atingiram, 2.444 não atingiram e **216 não têm meta pactuada** (4,0%).
+  Os sem meta se concentram em SC (51), RS (34), MG (29), RN (27) e AC (22). A taxa de correspondência
+  `indicador_municipio → meta_municipio` é 97,98%, com as chaves casando 100% com o diretório.
+- **Causa:** falta de adesão/pactuação, não chave errada (os mesmos municípios existem no diretório e
+  têm indicador).
+- **Decisão:** estado próprio `SEM_META`. Se entrassem como "não atingiu", a proporção de municípios
+  abaixo da meta subiria de 44,9% para 48,8%.
 
 ## H5: consistência entre a tabela de meta e a tabela de indicador
 - **Evidência:** testes `assert_consistencia_meta_vs_indicador_*` em `ops.dq_results`.
-- Observado: _a preencher_
+- **Observado:** UF: 49 pares (UF, rede, ano) em comum, diferença máxima de **0,05 p.p.** (arredondamento);
+  regra bloqueante aprovada. Município: 10.584 pares, 3 fora de 0,1 p.p. (detalhe em H11).
+- **Decisão:** as duas tabelas são a mesma publicação; usar a de indicador como principal é seguro.
 
 ## H6: média simples × indicador nacional
 - **Evidência:** `gold.fct_alfabetizacao_brasil` (`taxa_oficial`, `taxa_ponderada_ufs`,
   `media_simples_ufs`).
 - Registrar a diferença em p.p. É o argumento numérico para nunca usar média simples.
-- Observado: _a preencher_
+- **Observado (rede pública):**
+
+  | Ano | Oficial | UFs ponderadas por alunos avaliados | Média simples das UFs | Erro da média simples |
+  |---|---|---|---|---|
+  | 2023 | 55,90 | 57,46 (sem SP no microdado: ver H2) | 54,25 | −1,65 p.p. |
+  | 2024 | 59,20 | **59,19** | 56,61 | **−2,59 p.p.** |
+
+- **Conclusão:** com cobertura completa (2024), a agregação ponderada reproduz o número oficial com 0,01 p.p.
+  de diferença; a média simples erra 2,6 p.p. porque dá a Roraima o mesmo peso de São Paulo. Por isso a
+  coluna se chama `media_simples_ufs` e nunca é apresentada como indicador nacional.
 
 ## H7: o ano mais recente só existe nas tabelas de meta
 - **Observado:** `municipio` e `uf` vão de 2023 a 2024. `meta_alfabetizacao_brasil` e

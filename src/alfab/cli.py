@@ -93,7 +93,7 @@ def cmd_export_ml(a) -> None:
 
 def cmd_profile(a) -> None:
     from alfab.ops import profile
-    profile.run(_run_id())
+    profile.run(_run_id(), a.sql, a.saida)
 
 
 def cmd_evidencias(a) -> None:
@@ -155,6 +155,8 @@ def parser() -> argparse.ArgumentParser:
     sp.set_defaults(fn=cmd_export_ml)
 
     sp = sub.add_parser("profile", help="profiling da fonte -> evidencias/profiling/*.csv")
+    sp.add_argument("--sql", help="arquivo .sql com blocos '-- name:' (relativo à raiz)")
+    sp.add_argument("--saida", help="pasta de saída dos CSVs (relativa à raiz)")
     sp.set_defaults(fn=cmd_profile)
 
     sp = sub.add_parser("evidencias", help="contagens e execuções -> evidencias/execucao.md")

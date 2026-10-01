@@ -1,4 +1,5 @@
-"""Executa analises/01_profiling_fonte.sql e salva cada resultado em evidencias/profiling/<nome>.csv.
+"""Executa um arquivo de consultas nomeadas (padrão: analises/01_profiling_fonte.sql) e salva cada
+resultado em CSV (padrão: evidencias/profiling/<nome>.csv).
 
 Cada query passa por dry run antes (bytes estimados no log) e respeita maximum_bytes_billed.
 """
@@ -26,13 +27,15 @@ def split_named_queries(text: str) -> list[tuple[str, str]]:
     return pairs
 
 
-def run(run_id: str) -> None:
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    for name, sql in split_named_queries(SQL_FILE.read_text(encoding="utf-8")):
+def run(run_id: str, sql_file: str | None = None, out_dir: str | None = None) -> None:
+    source = (ROOT / sql_file) if sql_file else SQL_FILE
+    target_dir = (ROOT / out_dir) if out_dir else OUT_DIR
+    target_dir.mkdir(parents=True, exist_ok=True)
+    for name, sql in split_named_queries(source.read_text(encoding="utf-8")):
         estimated = dry_run_bytes(sql, run_id, "profiling", name)
         job = run_query(sql, run_id, "profiling", name)
         rows = list(job.result())
-        target = OUT_DIR / f"{name}.csv"
+        target = target_dir / f"{name}.csv"
         with target.open("w", newline="", encoding="utf-8") as fh:
             writer = csv.writer(fh)
             if rows:

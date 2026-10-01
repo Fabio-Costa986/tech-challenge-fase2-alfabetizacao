@@ -1,0 +1,42 @@
+{
+ "agg_microdado_recorte": {
+  "modified": "2026-10-01T16:40:42.704000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "cenario_universalizacao": {
+  "modified": "2026-10-01T16:40:45.996000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "evolucao_temporal": {
+  "modified": "2026-10-01T16:40:47.912000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "fct_alfabetizacao_brasil": {
+  "modified": "2026-10-01T16:40:49.910000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "fct_alfabetizacao_municipio": {
+  "modified": "2026-10-01T16:40:51.954000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "fct_alfabetizacao_uf": {
+  "modified": "2026-10-01T16:40:53.961000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "meta_vs_resultado": {
+  "modified": "2026-10-01T16:40:57+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "ml_features_municipio": {
+  "modified": "2026-10-01T16:40:59.486000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "resultado_oficial": {
+  "modified": "2026-10-01T16:41:01.081000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ },
+ "validacao_cruzada_microdado": {
+  "modified": "2026-10-01T16:41:03.100000+00:00",
+  "published_run_id": "20261001t162153z-ca83f9"
+ }
+}
