@@ -1,7 +1,7 @@
 """Cloud Run service que recebe eventos do Pub/Sub (push subscription).
 
 Semântica de entrega:
-- Evento válido   -> bronze.eventos_raw (insertId = event_id, dedup best-effort do BigQuery) -> 204 (ACK)
+- Evento válido   -> bronze.eventos_raw (toda entrega é gravada, inclusive reentregas) -> 204 (ACK)
 - Evento inválido -> bronze.eventos_quarentena com o motivo -> 204 (ACK: reenviar não o tornaria válido)
 - Falha ao gravar -> 500 -> o Pub/Sub reenvia com backoff; após N tentativas vai para a DLQ.
 
@@ -42,7 +42,9 @@ class BigQuerySink:
         self._quarantine = s.table("bronze", "eventos_quarentena")
 
     def write_valid(self, row: dict) -> None:
-        errors = self._client.insert_rows_json(self._raw, [row], row_ids=[row["event_id"]])
+        # Sem insertId de propósito: o dedup best-effort do BigQuery esconderia as reentregas.
+        # A Bronze registra TODA entrega; a unicidade é garantida só pelo MERGE do micro-lote.
+        errors = self._client.insert_rows_json(self._raw, [row], row_ids=[None])
         if errors:
             raise RuntimeError(f"insert eventos_raw: {errors}")
 
