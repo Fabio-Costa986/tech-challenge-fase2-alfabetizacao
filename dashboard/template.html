@@ -1,0 +1,640 @@
+<meta charset="utf-8">
+<title>Painel Criança Alfabetizada</title>
+<style>
+  :root {
+    --page: #f6f6f3;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --ring: rgba(11, 11, 11, 0.10);
+    --serie: #2a78d6;
+    --serie-wash: rgba(42, 120, 214, 0.10);
+    --acima: #2a78d6;
+    --abaixo: #e34948;
+    --good: #0ca30c;
+    --good-text: #006300;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --neutral: #c3c2b7;
+    --chip: #efeee9;
+    --focus: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --ring: rgba(255, 255, 255, 0.10);
+      --serie: #3987e5;
+      --serie-wash: rgba(57, 135, 229, 0.14);
+      --acima: #3987e5;
+      --abaixo: #e66767;
+      --good-text: #0ca30c;
+      --neutral: #5c5b57;
+      --chip: #262624;
+      --focus: #3987e5;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --ring: rgba(255, 255, 255, 0.10);
+    --serie: #3987e5;
+    --serie-wash: rgba(57, 135, 229, 0.14);
+    --acima: #3987e5;
+    --abaixo: #e66767;
+    --good-text: #0ca30c;
+    --neutral: #5c5b57;
+    --chip: #262624;
+    --focus: #3987e5;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding-inline: 16px;
+    padding-block: 24px 48px;
+  }
+  .wrap { max-width: 1180px; margin-inline: auto; display: grid; gap: 20px; }
+
+  header.top { display: grid; gap: 6px; padding-block: 4px 8px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0; text-wrap: balance; font-weight: 650; }
+  .lede { color: var(--ink-2); margin: 0; max-width: 72ch; }
+  h2 { font-size: 16px; margin: 0; font-weight: 620; text-wrap: balance; }
+  .sub { color: var(--ink-2); font-size: 13px; margin: 2px 0 0; max-width: 80ch; }
+
+  .panel {
+    background: var(--surface);
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px var(--ring);
+    padding: 18px 18px 16px;
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+  .panel-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-start; justify-content: space-between; }
+
+  .kpis { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 12px; }
+  .kpi { background: var(--surface); border-radius: 10px; box-shadow: 0 0 0 1px var(--ring); padding: 16px; display: grid; gap: 4px; align-content: start; }
+  .kpi .label { color: var(--ink-2); font-size: 13px; }
+  .kpi .value { font-size: 30px; font-weight: 640; line-height: 1.1; }
+  .kpi.hero .value { font-size: 52px; letter-spacing: -0.01em; }
+  .kpi .note { color: var(--muted); font-size: 12.5px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 9px 2px 7px; border-radius: 999px; background: var(--chip); color: var(--ink); white-space: nowrap; }
+  .pill i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--neutral); }
+  .pill.good i { background: var(--good); }
+  .pill.critical i { background: var(--critical); }
+  .pill.serious i { background: var(--serious); }
+  .pill.neutral i { background: var(--neutral); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .key { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .key.line { height: 2px; width: 16px; border-radius: 1px; }
+
+  .seg { display: inline-flex; background: var(--chip); border-radius: 8px; padding: 3px; gap: 2px; }
+  .seg button {
+    font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--ink-2);
+    padding: 4px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--ring); font-weight: 600; }
+  button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  svg text { fill: var(--muted); font-size: 11.5px; font-family: inherit; }
+  svg .ink { fill: var(--ink); }
+  svg .ink2 { fill: var(--ink-2); }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .base { stroke: var(--baseline); stroke-width: 1; }
+
+  .tip {
+    position: fixed; pointer-events: none; z-index: 10; min-width: 160px; max-width: 260px;
+    background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 10px;
+    box-shadow: 0 0 0 1px var(--ring), 0 6px 18px rgba(0, 0, 0, 0.12); font-size: 12.5px;
+  }
+  .tip b { display: block; margin-bottom: 2px; }
+  .tip .row { display: flex; justify-content: space-between; gap: 12px; color: var(--ink-2); }
+  .tip .row span:last-child { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 600; color: var(--ink-2); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--baseline); white-space: nowrap; }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+  .steps { display: flex; flex-wrap: wrap; gap: 4px; }
+  .step { font-size: 11.5px; padding: 1px 7px; border-radius: 5px; background: var(--chip); color: var(--ink-2); white-space: nowrap; }
+  .step.ok { box-shadow: inset 2px 0 0 var(--good); }
+  .step.fail { box-shadow: inset 2px 0 0 var(--critical); color: var(--ink); }
+  .step.skip { box-shadow: inset 2px 0 0 var(--neutral); }
+
+  .meter { position: relative; height: 8px; background: var(--chip); border-radius: 4px; min-width: 120px; }
+  .meter > span { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--serie); }
+  .meter > span.fail { background: var(--critical); }
+  .meter > em { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); border-radius: 1px; }
+
+  details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; }
+  details[open] summary { margin-bottom: 8px; }
+
+  .callout { border-radius: 8px; background: var(--chip); padding: 10px 12px; color: var(--ink-2); font-size: 13px; }
+  .callout strong { color: var(--ink); }
+  footer { color: var(--muted); font-size: 12.5px; display: grid; gap: 4px; }
+
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .kpi.hero { grid-column: 1 / -1; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .kpis { grid-template-columns: 1fr; }
+    .kpi.hero .value { font-size: 44px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .seg button { transition: background-color 120ms ease; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Compromisso Nacional Criança Alfabetizada · rede pública · corte de 743 pontos Saeb</div>
+    <h1>Painel Criança Alfabetizada</h1>
+    <p class="lede">Resultados da camada Gold do pipeline (BigQuery). Toda comparação usa a <strong>meta pactuada</strong> publicada na fonte; a leitura de universalização (100%) aparece separada e rotulada como aspiracional.</p>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Indicadores principais"></section>
+
+  <section class="panel" aria-labelledby="t-br">
+    <div class="panel-head">
+      <div>
+        <h2 id="t-br">Brasil: resultado oficial × meta pactuada</h2>
+        <p class="sub">Percentual de estudantes avaliados da rede pública que atingiram 743 pontos. Trajetória da meta pela linha de base mais recente.</p>
+      </div>
+      <div class="legend">
+        <span><i class="key line" style="background:var(--serie)"></i>Resultado oficial</span>
+        <span><i class="key line" style="background:var(--ink-2)"></i>Meta pactuada</span>
+      </div>
+    </div>
+    <div id="chart-br"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-uf">
+    <div class="panel-head">
+      <div>
+        <h2 id="t-uf">UFs: distância até a meta pactuada</h2>
+        <p class="sub">Resultado menos meta, em pontos percentuais, rede pública. UFs sem meta pactuada no ano aparecem no fim, sem barra.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Ano" id="seg-uf"></div>
+    </div>
+    <div class="legend">
+      <span><i class="key" style="background:var(--acima)"></i>Acima da meta</span>
+      <span><i class="key" style="background:var(--abaixo)"></i>Abaixo da meta</span>
+    </div>
+    <div id="chart-uf"></div>
+    <details>
+      <summary>Ver dados em tabela</summary>
+      <div class="scroll" id="table-uf"></div>
+    </details>
+  </section>
+
+  <div class="grid-2">
+    <section class="panel" aria-labelledby="t-mun">
+      <div>
+        <h2 id="t-mun">Municípios: situação frente à meta</h2>
+        <p class="sub" id="sub-mun"></p>
+      </div>
+      <div id="chart-mun-status"></div>
+      <div class="legend" id="legend-mun"></div>
+      <div class="panel-head" style="margin-top:6px">
+        <div>
+          <h2 style="font-size:14px">Distribuição da taxa municipal</h2>
+          <p class="sub">Número de municípios por faixa de 5 p.p., rede municipal.</p>
+        </div>
+        <div class="seg" role="group" aria-label="Ano" id="seg-hist"></div>
+      </div>
+      <div id="chart-hist"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="t-val">
+      <div>
+        <h2 id="t-val">Validação cruzada: microdado × taxa publicada</h2>
+        <p class="sub">Cada ponto é um grupo ano × UF × rede. A taxa foi recalculada a partir de 3,9 milhões de registros de alunos, com peso amostral e só avaliados no denominador.</p>
+      </div>
+      <div class="legend">
+        <span><i class="key" style="background:var(--serie);border-radius:50%"></i>Dentro de 0,5 p.p.</span>
+        <span><i class="key" style="background:var(--critical);border-radius:50%"></i>Fora de 0,5 p.p.</span>
+        <span><i class="key line" style="background:var(--baseline)"></i>Igualdade</span>
+      </div>
+      <div id="chart-val"></div>
+      <div>
+        <h2 style="font-size:14px">Desvio mediano por método de cálculo (UFs)</h2>
+        <p class="sub">O mesmo microdado calculado de três formas, comparado à taxa oficial.</p>
+      </div>
+      <div id="chart-metodo"></div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="t-ops">
+    <div>
+      <h2 id="t-ops">Saúde do pipeline</h2>
+      <p class="sub">Execuções do batch na nuvem (Cloud Workflows → Cloud Run Jobs). Uma execução só publica a Gold quando todas as regras bloqueantes passam.</p>
+    </div>
+    <div class="scroll" id="table-runs"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-joins">
+    <div>
+      <h2 id="t-joins">Taxa de correspondência das junções</h2>
+      <p class="sub">Última medição. O traço marca o limiar mínimo; abaixo dele a regra reprova.</p>
+    </div>
+    <div class="scroll" id="table-joins"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const DADOS = /*__DADOS__*/null;
+
+const NS = "http://www.w3.org/2000/svg";
+const nf = (v, d = 1) => v == null ? "—" : Number(v).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const nInt = v => v == null ? "—" : Number(v).toLocaleString("pt-BR");
+const pct = (v, d = 1) => v == null ? "—" : nf(v, d) + "%";
+const pp = (v, d = 1) => v == null ? "—" : (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v), d) + " p.p.";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function text(parent, x, y, str, attrs = {}) {
+  const t = el("text", { x, y, ...attrs }, parent);
+  t.textContent = str;
+  return t;
+}
+function svgIn(id, w, h) {
+  const host = document.getElementById(id);
+  host.innerHTML = "";
+  return el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img" }, host);
+}
+const lin = (d0, d1, r0, r1) => v => r0 + (v - d0) / (d1 - d0) * (r1 - r0);
+
+const tip = document.getElementById("tip");
+function showTip(evt, title, rows) {
+  tip.innerHTML = `<b>${esc(title)}</b>` + rows.map(([k, v]) => `<div class="row"><span>${esc(k)}</span><span>${esc(v)}</span></div>`).join("");
+  tip.hidden = false;
+  const pad = 14, r = tip.getBoundingClientRect();
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  if (x + r.width > innerWidth - 8) x = evt.clientX - r.width - pad;
+  if (y + r.height > innerHeight - 8) y = evt.clientY - r.height - pad;
+  tip.style.left = Math.max(8, x) + "px";
+  tip.style.top = Math.max(8, y) + "px";
+}
+function hideTip() { tip.hidden = true; }
+
+const STATUS = {
+  ATINGIU: { label: "Atingiu a meta", cls: "good", color: "var(--good)" },
+  NAO_ATINGIU: { label: "Não atingiu", cls: "critical", color: "var(--critical)" },
+  SEM_META: { label: "Sem meta pactuada", cls: "neutral", color: "var(--neutral)" },
+  SEM_RESULTADO: { label: "Sem resultado", cls: "neutral", color: "var(--neutral)" },
+  AGUARDANDO_RESULTADO: { label: "Aguardando resultado", cls: "neutral", color: "var(--neutral)" },
+};
+const pill = s => `<span class="pill ${STATUS[s]?.cls || "neutral"}"><i></i>${esc(STATUS[s]?.label || s)}</span>`;
+
+function segmented(id, options, initial, onChange) {
+  const host = document.getElementById(id);
+  host.innerHTML = "";
+  options.forEach(o => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = o;
+    b.setAttribute("aria-pressed", String(o === initial));
+    b.addEventListener("click", () => {
+      host.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      onChange(o);
+    });
+    host.appendChild(b);
+  });
+  onChange(initial);
+}
+
+/* ---------- KPIs ---------- */
+function renderKpis() {
+  const br = DADOS.brasil.filter(r => r.taxa != null);
+  const last = br[br.length - 1];
+  const serie = DADOS.brasil_serie;
+  const prev = serie.find(r => r.ano === last.ano - 1);
+  const uni = DADOS.universalizacao[0] || {};
+  const munYear = Math.max(...DADOS.mun_status.map(r => r.ano));
+  const mun = DADOS.mun_status.filter(r => r.ano === munYear);
+  const munTot = mun.reduce((a, r) => a + r.n, 0);
+  const munOk = (mun.find(r => r.status_meta === "ATINGIU") || { n: 0 }).n;
+  const valUF = DADOS.validacao_resumo.find(r => r.nivel === "UF") || {};
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi hero">
+      <div class="label">Brasil, rede pública, ${last.ano}</div>
+      <div class="value">${pct(last.taxa)}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${pill(last.status_meta)}
+        <span class="note">meta pactuada ${pct(last.meta)} · ${pp(last.taxa - last.meta)}</span></div>
+      ${prev ? `<div class="note">${pp(last.taxa - prev.taxa)} em relação a ${prev.ano} (${pct(prev.taxa)})</div>` : ""}
+    </div>
+    <div class="kpi">
+      <div class="label">Até a meta pactuada de 2030</div>
+      <div class="value">${pp(uni.dist_meta_2030).replace("+", "")}</div>
+      <div class="note">meta ${pct(uni.meta_2030, 0)} · leitura aspiracional (100%): ${nf(uni.dist_100)} p.p.</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Municípios que atingiram a meta (${munYear})</div>
+      <div class="value">${nInt(munOk)}</div>
+      <div class="note">de ${nInt(munTot)} com resultado na rede municipal (${pct(100 * munOk / munTot, 0)})</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Validação cruzada (UFs)</div>
+      <div class="value">${nf(valUF.mediana_correta, 3)} p.p.</div>
+      <div class="note">desvio mediano em ${nInt(valUF.grupos)} grupos; ${nInt(valUF.dentro_05)} dentro de 0,5 p.p.</div>
+    </div>`;
+}
+
+/* ---------- Brasil: linha ---------- */
+function renderBrasil() {
+  const W = 760, H = 300, m = { t: 18, r: 96, b: 30, l: 40 };
+  const svg = svgIn("chart-br", W, H);
+  svg.setAttribute("aria-label", "Linha do resultado oficial do Brasil e da meta pactuada até 2030");
+  const anos = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  const x = lin(2023, 2030, m.l, W - m.r), y = lin(40, 90, H - m.b, m.t);
+  for (let v = 40; v <= 90; v += 10) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: v === 40 ? "base" : "gridline" }, svg);
+    text(svg, m.l - 8, y(v) + 4, v + "%", { "text-anchor": "end" });
+  }
+  anos.forEach(a => text(svg, x(a), H - m.b + 18, a, { "text-anchor": "middle" }));
+
+  const meta = DADOS.brasil.filter(r => r.meta != null);
+  const obs = DADOS.brasil_serie.filter(r => r.taxa != null);
+  const path = pts => pts.map((p, i) => (i ? "L" : "M") + x(p[0]).toFixed(1) + " " + y(p[1]).toFixed(1)).join(" ");
+
+  el("path", { d: path(meta.map(r => [r.ano, r.meta])), fill: "none", stroke: "var(--ink-2)", "stroke-width": 1.5, "stroke-dasharray": "5 4", "stroke-linecap": "round" }, svg);
+  meta.forEach(r => el("circle", { cx: x(r.ano), cy: y(r.meta), r: 3, fill: "var(--surface)", stroke: "var(--ink-2)", "stroke-width": 1.5 }, svg));
+
+  const obsPts = obs.map(r => [r.ano, r.taxa]);
+  el("path", { d: path(obsPts) + ` L${x(obsPts.at(-1)[0])} ${y(40)} L${x(obsPts[0][0])} ${y(40)} Z`, fill: "var(--serie-wash)", stroke: "none" }, svg);
+  el("path", { d: path(obsPts), fill: "none", stroke: "var(--serie)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+  obs.forEach(r => el("circle", { cx: x(r.ano), cy: y(r.taxa), r: 4.5, fill: "var(--serie)", stroke: "var(--surface)", "stroke-width": 2 }, svg));
+
+  const lo = obs.at(-1), lm = meta.at(-1);
+  text(svg, x(lo.ano), y(lo.taxa) - 14, `${pct(lo.taxa)} em ${lo.ano}`, { class: "ink", "font-weight": 600, "text-anchor": "middle" });
+  text(svg, x(lm.ano) + 8, y(lm.meta) + 4, `meta ${pct(lm.meta, 0)}`, { class: "ink2" });
+
+  const cross = el("line", { y1: m.t, y2: H - m.b, stroke: "var(--baseline)", "stroke-width": 1, visibility: "hidden" }, svg);
+  anos.forEach(a => {
+    const hit = el("rect", { x: x(a) - (x(2024) - x(2023)) / 2, y: m.t, width: x(2024) - x(2023), height: H - m.t - m.b, fill: "transparent" }, svg);
+    const o = obs.find(r => r.ano === a), mt = meta.find(r => r.ano === a), st = DADOS.brasil.find(r => r.ano === a);
+    hit.addEventListener("pointermove", e => {
+      cross.setAttribute("x1", x(a)); cross.setAttribute("x2", x(a)); cross.setAttribute("visibility", "visible");
+      showTip(e, `Brasil · ${a}`, [
+        ["Resultado oficial", o ? pct(o.taxa) : "ainda sem resultado"],
+        ["Meta pactuada", mt ? pct(mt.meta) : "—"],
+        ["Situação", st ? (STATUS[st.status_meta]?.label || st.status_meta) : "sem meta neste ano"],
+        ...(o ? [["Fonte", o.fonte_resultado === "tabela_meta" ? "tabela de metas" : "tabela de indicador"]] : []),
+      ]);
+    });
+    hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  });
+}
+
+/* ---------- UFs: barras divergentes ---------- */
+function renderUF(ano) {
+  const rows = DADOS.uf.filter(r => r.ano === ano);
+  const com = rows.filter(r => r.gap != null).sort((a, b) => b.gap - a.gap);
+  const sem = rows.filter(r => r.gap == null).sort((a, b) => a.uf.localeCompare(b.uf));
+  const all = [...com, ...sem];
+  const rowH = 22, W = 760, m = { t: 22, r: 70, b: 8, l: 44 };
+  const H = m.t + all.length * rowH + m.b;
+  const svg = svgIn("chart-uf", W, H);
+  svg.setAttribute("aria-label", `Distância até a meta por UF em ${ano}`);
+  const maxAbs = Math.max(5, Math.ceil(Math.max(...com.map(r => Math.abs(r.gap))) / 5) * 5);
+  const x = lin(-maxAbs, maxAbs, m.l + 40, W - m.r);
+  for (let v = -maxAbs; v <= maxAbs; v += 5) {
+    el("line", { x1: x(v), x2: x(v), y1: m.t - 4, y2: m.t + com.length * rowH, class: v === 0 ? "base" : "gridline" }, svg);
+    text(svg, x(v), m.t - 8, (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v), { "text-anchor": "middle" });
+  }
+  all.forEach((r, i) => {
+    const cy = m.t + i * rowH + rowH / 2;
+    text(svg, m.l, cy + 4, r.uf, { class: "ink", "text-anchor": "end", "font-weight": 600 });
+    if (r.gap != null) {
+      const x0 = x(0), x1 = x(r.gap), h = 12, rr = 4;
+      const left = Math.min(x0, x1), w = Math.max(1, Math.abs(x1 - x0));
+      const pos = r.gap >= 0;
+      // canto arredondado só na ponta do dado; reto na linha de base
+      const d = pos
+        ? `M${left} ${cy - h / 2} H${left + w - rr} Q${left + w} ${cy - h / 2} ${left + w} ${cy - h / 2 + rr} V${cy + h / 2 - rr} Q${left + w} ${cy + h / 2} ${left + w - rr} ${cy + h / 2} H${left} Z`
+        : `M${left + w} ${cy - h / 2} H${left + rr} Q${left} ${cy - h / 2} ${left} ${cy - h / 2 + rr} V${cy + h / 2 - rr} Q${left} ${cy + h / 2} ${left + rr} ${cy + h / 2} H${left + w} Z`;
+      el("path", { d: w < 2 * rr ? `M${left} ${cy - h / 2} h${w} v${h} h${-w} Z` : d, fill: pos ? "var(--acima)" : "var(--abaixo)" }, svg);
+      text(svg, pos ? x1 + 6 : x1 - 6, cy + 4, pp(r.gap), { class: "ink2", "text-anchor": pos ? "start" : "end" });
+    } else {
+      text(svg, x(0) + 6, cy + 4, `sem meta pactuada · resultado ${pct(r.taxa)}`, { class: "ink2" });
+    }
+    const hit = el("rect", { x: 0, y: cy - rowH / 2, width: W, height: rowH, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", e => showTip(e, `${r.uf} · ${r.ano}`, [
+      ["Resultado", pct(r.taxa)], ["Meta pactuada", r.meta == null ? "sem meta" : pct(r.meta)],
+      ["Distância", r.gap == null ? "—" : pp(r.gap)], ["Situação", STATUS[r.status_meta]?.label || r.status_meta],
+      ["Fonte do resultado", r.fonte_resultado === "tabela_meta" ? "tabela de metas" : "tabela de indicador"],
+    ]));
+    hit.addEventListener("pointerleave", hideTip);
+  });
+  document.getElementById("table-uf").innerHTML = `<table><thead><tr><th>UF</th><th class="num">Resultado</th><th class="num">Meta pactuada</th><th class="num">Distância</th><th>Situação</th></tr></thead><tbody>${
+    all.map(r => `<tr><td>${r.uf}</td><td class="num">${pct(r.taxa)}</td><td class="num">${r.meta == null ? "—" : pct(r.meta)}</td><td class="num">${r.gap == null ? "—" : pp(r.gap)}</td><td>${pill(r.status_meta)}</td></tr>`).join("")
+  }</tbody></table>`;
+}
+
+/* ---------- Municípios ---------- */
+function renderMunStatus() {
+  const ano = Math.max(...DADOS.mun_status.map(r => r.ano));
+  const order = ["ATINGIU", "NAO_ATINGIU", "SEM_META", "SEM_RESULTADO"];
+  const rows = order.map(s => DADOS.mun_status.find(r => r.ano === ano && r.status_meta === s)).filter(Boolean);
+  const tot = rows.reduce((a, r) => a + r.n, 0);
+  document.getElementById("sub-mun").textContent = `Rede municipal, ${ano}: ${nInt(tot)} municípios. "Sem meta" é um estado próprio, nunca contado como "não atingiu".`;
+  const W = 520, H = 34, gap = 2;
+  const svg = svgIn("chart-mun-status", W, H);
+  svg.setAttribute("aria-label", "Distribuição dos municípios por situação frente à meta");
+  let acc = 0;
+  rows.forEach((r, i) => {
+    const w = (W - gap * (rows.length - 1)) * r.n / tot;
+    const x0 = acc;
+    const rect = el("rect", { x: x0, y: 4, width: Math.max(0, w), height: 26, rx: (i === 0 || i === rows.length - 1) ? 4 : 0, fill: STATUS[r.status_meta].color }, svg);
+    if (w > 70) text(svg, x0 + 8, 21, pct(100 * r.n / tot, 0), { fill: r.status_meta === "SEM_META" ? "var(--ink)" : "#ffffff", "font-weight": 600, "font-size": 12 });
+    rect.addEventListener("pointermove", e => showTip(e, STATUS[r.status_meta].label, [["Municípios", nInt(r.n)], ["Participação", pct(100 * r.n / tot)], ["Ano", ano]]));
+    rect.addEventListener("pointerleave", hideTip);
+    acc += w + gap;
+  });
+  document.getElementById("legend-mun").innerHTML = rows.map(r =>
+    `<span><i class="key" style="background:${STATUS[r.status_meta].color}"></i>${STATUS[r.status_meta].label}: <strong style="color:var(--ink)">${nInt(r.n)}</strong></span>`).join("");
+}
+
+function renderHist(ano) {
+  const rows = DADOS.mun_distribuicao.filter(r => r.ano === ano);
+  const faixas = Array.from({ length: 21 }, (_, i) => i * 5);
+  const val = f => (rows.find(r => r.faixa === f) || { n: 0 }).n;
+  const W = 520, H = 220, m = { t: 14, r: 8, b: 28, l: 40 };
+  const svg = svgIn("chart-hist", W, H);
+  svg.setAttribute("aria-label", `Distribuição da taxa municipal em ${ano}`);
+  const maxN = Math.max(...faixas.map(val));
+  const top = Math.ceil(maxN / 200) * 200;
+  const y = lin(0, top, H - m.b, m.t);
+  const band = (W - m.l - m.r) / faixas.length;
+  for (let v = 0; v <= top; v += top / 4) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: v === 0 ? "base" : "gridline" }, svg);
+    text(svg, m.l - 6, y(v) + 4, nInt(v), { "text-anchor": "end" });
+  }
+  faixas.forEach((f, i) => {
+    const n = val(f), bw = Math.min(24, band - 2), x0 = m.l + i * band + (band - bw) / 2;
+    if (n > 0) {
+      const h = y(0) - y(n), rr = Math.min(4, h);
+      el("path", { d: `M${x0} ${y(0)} V${y(n) + rr} Q${x0} ${y(n)} ${x0 + rr} ${y(n)} H${x0 + bw - rr} Q${x0 + bw} ${y(n)} ${x0 + bw} ${y(n) + rr} V${y(0)} Z`, fill: "var(--serie)" }, svg);
+    }
+    if (f % 20 === 0) text(svg, m.l + i * band + band / 2, H - m.b + 16, f + "%", { "text-anchor": "middle" });
+    const hit = el("rect", { x: m.l + i * band, y: m.t, width: band, height: H - m.t - m.b, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", e => showTip(e, `Taxa entre ${f}% e ${Math.min(100, f + 5)}%`, [["Municípios", nInt(n)], ["Ano", ano]]));
+    hit.addEventListener("pointerleave", hideTip);
+  });
+}
+
+/* ---------- Validação cruzada ---------- */
+function renderValidacao() {
+  const pts = DADOS.validacao_uf;
+  const W = 520, H = 320, m = { t: 12, r: 12, b: 34, l: 44 };
+  const svg = svgIn("chart-val", W, H);
+  svg.setAttribute("aria-label", "Dispersão da taxa oficial contra a taxa recalculada do microdado");
+  const vals = pts.flatMap(p => [p.oficial, p.micro]);
+  const lo = Math.floor(Math.min(...vals) / 10) * 10, hi = Math.ceil(Math.max(...vals) / 10) * 10;
+  const x = lin(lo, hi, m.l, W - m.r), y = lin(lo, hi, H - m.b, m.t);
+  for (let v = lo; v <= hi; v += 10) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: v === lo ? "base" : "gridline" }, svg);
+    text(svg, m.l - 6, y(v) + 4, v + "%", { "text-anchor": "end" });
+    text(svg, x(v), H - m.b + 16, v + "%", { "text-anchor": "middle" });
+  }
+  text(svg, (m.l + W - m.r) / 2, H - 2, "Taxa publicada (oficial)", { "text-anchor": "middle", class: "ink2" });
+  text(svg, m.l + 4, m.t + 10, "Taxa recalculada do microdado", { class: "ink2" });
+  el("line", { x1: x(lo), y1: y(lo), x2: x(hi), y2: y(hi), stroke: "var(--baseline)", "stroke-width": 1.5 }, svg);
+  const sorted = [...pts].sort((a, b) => Math.abs(a.diff) - Math.abs(b.diff));
+  sorted.forEach(p => {
+    const fora = Math.abs(p.diff) > 0.5;
+    const c = el("circle", { cx: x(p.oficial), cy: y(p.micro), r: fora ? 5 : 4, fill: fora ? "var(--critical)" : "var(--serie)", stroke: "var(--surface)", "stroke-width": 2 }, svg);
+    const hit = el("circle", { cx: x(p.oficial), cy: y(p.micro), r: 9, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", e => showTip(e, `${p.uf} · ${p.rede} · ${p.ano}`, [
+      ["Oficial", pct(p.oficial, 2)], ["Microdado", pct(p.micro, 2)], ["Diferença", pp(p.diff, 3)],
+      ["Avaliados", nInt(p.n_avaliados)],
+    ]));
+    hit.addEventListener("pointerleave", hideTip);
+  });
+
+  const uf = DADOS.validacao_resumo.find(r => r.nivel === "UF") || {};
+  const metodos = [
+    { nome: "Ponderado, só avaliados (pipeline)", v: uf.mediana_correta, ok: true },
+    { nome: "Sem peso amostral", v: uf.med_sem_peso, ok: false },
+    { nome: "Ausentes no denominador", v: uf.med_ausentes, ok: false },
+  ];
+  const W2 = 520, rowH = 30, m2 = { l: 210, r: 70 }, H2 = metodos.length * rowH + 6;
+  const svg2 = svgIn("chart-metodo", W2, H2);
+  svg2.setAttribute("aria-label", "Desvio mediano por método de cálculo");
+  const xm = lin(0, Math.max(...metodos.map(d => d.v)) * 1.05, m2.l, W2 - m2.r);
+  el("line", { x1: m2.l, x2: m2.l, y1: 0, y2: H2, class: "base" }, svg2);
+  metodos.forEach((d, i) => {
+    const cy = i * rowH + rowH / 2 + 2, h = 14, w = Math.max(2, xm(d.v) - m2.l), rr = Math.min(4, w / 2);
+    text(svg2, m2.l - 10, cy + 4, d.nome, { class: d.ok ? "ink" : "ink2", "text-anchor": "end", "font-weight": d.ok ? 600 : 400 });
+    el("path", { d: `M${m2.l} ${cy - h / 2} H${m2.l + w - rr} Q${m2.l + w} ${cy - h / 2} ${m2.l + w} ${cy - h / 2 + rr} V${cy + h / 2 - rr} Q${m2.l + w} ${cy + h / 2} ${m2.l + w - rr} ${cy + h / 2} H${m2.l} Z`, fill: d.ok ? "var(--serie)" : "var(--abaixo)" }, svg2);
+    text(svg2, m2.l + w + 6, cy + 4, nf(d.v, 3) + " p.p.", { class: "ink" });
+  });
+}
+
+/* ---------- Pipeline ---------- */
+function estadoExecucao(r) {
+  const e = r.etapas || [];
+  const falha = e.find(s => s.status === "FAILED");
+  if (e.some(s => s.step === "publish.gold" && s.status === "SUCCEEDED")) return { label: "Gold publicada", cls: "good" };
+  if (falha && /QualityGateFailed/.test(falha.erro || "")) return { label: "Barrada pela qualidade", cls: "serious" };
+  if (falha) return { label: "Erro de execução", cls: "critical" };
+  return { label: "Incompleta", cls: "neutral" };
+}
+function etapaChip(nome, steps) {
+  if (!steps.length) return `<span class="step skip">${nome}: não executou</span>`;
+  const fail = steps.find(s => s.status === "FAILED");
+  if (fail) return `<span class="step fail" title="${esc(fail.erro)}">${nome}: falhou</span>`;
+  if (steps.every(s => s.acao === "PULADA_FONTE_INALTERADA")) return `<span class="step skip">${nome}: pulada, fonte inalterada</span>`;
+  const linhas = steps.reduce((a, s) => a + (s.rows_out || 0), 0);
+  return `<span class="step ok">${nome}: ok${linhas ? " · " + nInt(linhas) + " linhas" : ""}</span>`;
+}
+function renderRuns() {
+  const q = Object.fromEntries(DADOS.qualidade.map(r => [r.run_id, r]));
+  const fmt = iso => new Date(iso.replace(" ", "T")).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  const rows = DADOS.execucoes.map(r => {
+    const st = estadoExecucao(r), e = r.etapas || [];
+    const by = p => e.filter(s => s.step.startsWith(p));
+    const dq = q[r.run_id];
+    const dqTxt = dq ? `${nInt(dq.aprovados)} aprovadas · ${nInt(dq.bloqueantes_reprovados)} bloqueantes reprovadas · ${nInt(dq.informativos_alertados)} alertas` : "—";
+    return `<tr>
+      <td class="num">${fmt(r.inicio)}</td>
+      <td><span class="pill ${st.cls}"><i></i>${st.label}</span></td>
+      <td><div class="steps">${etapaChip("Bronze", by("bronze."))}${etapaChip("Silver", by("dbt.silver"))}${etapaChip("Gold", by("dbt.gold"))}${etapaChip("Publicação", by("publish.gold"))}</div></td>
+      <td>${dqTxt}</td>
+      <td class="num">${nf(r.duracao_s, 0)} s</td>
+      <td class="mono">${esc(r.run_id)}</td></tr>`;
+  }).join("");
+  document.getElementById("table-runs").innerHTML = `<table><thead><tr><th class="num">Início (Brasília)</th><th>Resultado</th><th>Camadas</th><th>Regras de qualidade</th><th class="num">Duração das etapas</th><th>run_id</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function renderJoins() {
+  const nome = {
+    alunos__diretorio: "Alunos → diretório de municípios", alunos__indicador_uf: "Microdado → indicador UF (validação cruzada)",
+    indicador_municipio__diretorio: "Indicador municipal → diretório", indicador_municipio__meta_municipio: "Indicador municipal → meta municipal",
+    indicador_uf__meta_uf: "Indicador UF → meta UF", indicador_uf__uf: "Indicador UF → tabela de UFs", meta_municipio__diretorio: "Meta municipal → diretório",
+  };
+  const rows = DADOS.joins.map(j => {
+    const lo = 0.5, x = v => Math.max(0, Math.min(100, (v - lo) / (1 - lo) * 100));
+    return `<tr><td>${esc(nome[j.join_name] || j.join_name)}</td><td>${j.severidade === "bloqueante" ? "Bloqueante" : "Informativa"}</td>
+      <td class="num">${nInt(j.matched)} / ${nInt(j.total)}</td><td class="num">${pct(100 * j.taxa, 1)}</td>
+      <td style="min-width:160px"><div class="meter" title="limiar ${pct(100 * j.min_rate, 0)}"><span class="${j.reprovado ? "fail" : ""}" style="width:${x(j.taxa)}%"></span><em style="left:calc(${x(j.min_rate)}% - 1px)"></em></div></td>
+      <td class="num">${pct(100 * j.min_rate, 0)}</td></tr>`;
+  }).join("");
+  document.getElementById("table-joins").innerHTML = `<table><thead><tr><th>Junção</th><th>Regra</th><th class="num">Correspondências</th><th class="num">Taxa</th><th>Escala de 50% a 100%</th><th class="num">Limiar</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function renderFoot() {
+  const quando = new Date(DADOS.gerado_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+  document.getElementById("foot").innerHTML = `
+    <div>Fonte: Base dos Dados, <code>br_inep_avaliacao_alfabetizacao</code> (Inep). Processamento: pipeline medalhão no GCP, projeto <code>${esc(DADOS.projeto)}</code>, dataset <code>${esc(DADOS.dataset_gold)}</code>.</div>
+    <div>Gerado em ${quando} (Brasília) por <code>python -m alfab dashboard</code>. Os resultados de ${Math.max(...DADOS.brasil_serie.map(r => r.ano))} vêm da tabela de metas, que é atualizada antes das tabelas de indicador.</div>`;
+}
+
+renderKpis();
+renderBrasil();
+segmented("seg-uf", [...new Set(DADOS.uf.map(r => r.ano))].sort().map(String), String(Math.max(...DADOS.uf.map(r => r.ano))), v => renderUF(Number(v)));
+renderMunStatus();
+segmented("seg-hist", [...new Set(DADOS.mun_distribuicao.map(r => r.ano))].sort().map(String), String(Math.max(...DADOS.mun_distribuicao.map(r => r.ano))), v => renderHist(Number(v)));
+renderValidacao();
+renderRuns();
+renderJoins();
+renderFoot();
+</script>

@@ -101,6 +101,11 @@ def cmd_evidencias(a) -> None:
     evidence.collect()
 
 
+def cmd_dashboard(a) -> None:
+    from alfab.ops import dashboard
+    print(dashboard.build(a.dataset))
+
+
 def cmd_serve(a) -> None:
     import uvicorn
     uvicorn.run("alfab.streaming.ingestor:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
@@ -154,6 +159,10 @@ def parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser("evidencias", help="contagens e execuções -> evidencias/execucao.md")
     sp.set_defaults(fn=cmd_evidencias)
+
+    sp = sub.add_parser("dashboard", help="dashboard de resultados -> evidencias/dashboard/index.html")
+    sp.add_argument("--dataset", help="dataset da Gold (padrão: gold publicada)")
+    sp.set_defaults(fn=cmd_dashboard)
 
     sp = sub.add_parser("serve", help="sobe o event-ingestor (Cloud Run service)")
     sp.set_defaults(fn=cmd_serve)
