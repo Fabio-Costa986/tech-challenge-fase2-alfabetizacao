@@ -71,6 +71,24 @@ flowchart LR
 
 Detalhes e justificativas: [docs/ARQUITETURA.md](docs/ARQUITETURA.md) e [docs/decisoes/](docs/decisoes/).
 
+### Diagramas detalhados (draw.io)
+
+O arquivo editável é [docs/arquitetura.drawio](docs/arquitetura.drawio) (3 páginas), gerado por
+`python scripts/gerar_drawio.py`. As imagens abaixo são a exportação de cada página. Os diagramas mostram
+somente o que está implementado e foi executado; os agendadores aparecem marcados como pausados.
+
+**1. Visão geral**
+
+![Visão geral da arquitetura](docs/img/arquitetura-1-visao-geral.png)
+
+**2. Fluxo batch: orquestração, portões de qualidade e publicação**
+
+![Fluxo batch](docs/img/arquitetura-2-batch.png)
+
+**3. Fluxo streaming: mensageria, quarentena, deduplicação e latência**
+
+![Fluxo streaming](docs/img/arquitetura-3-streaming.png)
+
 ### Camadas
 
 | Camada | Onde | O que contém |
@@ -374,6 +392,8 @@ demonstrada); builds do Cloud Build `14a4b3f7-6b19-4f4a-8b71-ed810b6bb6b9` e
 ├── analises/                  # profiling da fonte
 ├── tests/                     # pytest
 ├── docs/                      # ARQUITETURA.md, decisoes/ (ADRs), qualidade_regras.md, investigacao_anomalias.md
+│                              # arquitetura.drawio + img/ (diagramas exportados)
+├── scripts/gerar_drawio.py    # gera o diagrama draw.io a partir de código
 ├── evidencias/                # resultados de execução na nuvem
 ├── dashboard/template.html    # template do painel (dados embutidos por python -m alfab dashboard)
 ├── config/settings.yaml       # o que ingerir (colunas explícitas por entidade)
