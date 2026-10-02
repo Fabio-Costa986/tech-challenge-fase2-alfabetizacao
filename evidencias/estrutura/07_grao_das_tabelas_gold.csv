@@ -1,0 +1,7 @@
+tabela,grao,linhas,chaves_distintas
+fct_alfabetizacao_brasil,"ano, rede_canonica",8,8
+fct_alfabetizacao_municipio,"ano, id_municipio, rede_codigo",23995,23995
+fct_alfabetizacao_uf,"ano, sigla_uf, rede_codigo",145,145
+meta_vs_resultado,"nivel, id_local, rede_canonica, ano",37755,37755
+ml_features_municipio,"id_municipio, rede_canonica, ano_referencia",23995,23995
+resultado_oficial,"nivel, id_local, rede_canonica, ano",24171,24171

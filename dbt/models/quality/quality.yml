@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: join_match_rate
+    description: >
+      Histórico (append) da taxa de correspondência de cada junção, por execução.
+      Limiares e justificativas em seeds/join_thresholds.csv.
+    columns:
+      - name: join_name
+        tests: [not_null]

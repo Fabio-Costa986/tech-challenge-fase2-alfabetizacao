@@ -1,0 +1,98 @@
+# terraform state list (2026-10-01T12:45Z)
+data.google_project.this
+google_artifact_registry_repository.repo
+google_bigquery_dataset.ds["bronze"]
+google_bigquery_dataset.ds["gold"]
+google_bigquery_dataset.ds["gold_staging"]
+google_bigquery_dataset.ds["ops"]
+google_bigquery_dataset.ds["silver"]
+google_bigquery_table.dq_results
+google_bigquery_table.eventos_quarentena
+google_bigquery_table.eventos_raw
+google_bigquery_table.pipeline_runs
+google_bigquery_table.silver_eventos
+google_bigquery_table.source_watermarks
+google_bigquery_table.stream_watermark
+google_bigquery_table.vw_custo_por_execucao
+google_bigquery_table.vw_latencia_streaming
+google_bigquery_table.vw_resumo_qualidade
+google_bigquery_table.vw_saude_pipeline
+google_bigquery_table_iam_member.ingestor_raw["quarentena"]
+google_bigquery_table_iam_member.ingestor_raw["raw"]
+google_cloud_run_v2_job.job["dbt-gold"]
+google_cloud_run_v2_job.job["dbt-silver"]
+google_cloud_run_v2_job.job["export-ml"]
+google_cloud_run_v2_job.job["ingest-bronze"]
+google_cloud_run_v2_job.job["microbatch"]
+google_cloud_run_v2_job.job["publish-gold"]
+google_cloud_run_v2_job.job["simulator"]
+google_cloud_run_v2_service.ingestor
+google_cloud_run_v2_service_iam_member.push_invoker
+google_cloud_scheduler_job.batch
+google_cloud_scheduler_job.microbatch
+google_logging_metric.batch_succeeded
+google_logging_metric.quarantine_rate
+google_logging_metric.rows_processed
+google_logging_metric.step_failed
+google_logging_metric.stream_latency_p95
+google_monitoring_alert_policy.batch_absent
+google_monitoring_alert_policy.dlq_not_empty
+google_monitoring_alert_policy.job_execution_failed
+google_monitoring_alert_policy.quarantine_rate
+google_monitoring_alert_policy.step_failed
+google_monitoring_alert_policy.stream_backlog
+google_monitoring_alert_policy.stream_latency
+google_monitoring_notification_channel.email
+google_project_iam_member.ingestor_log
+google_project_iam_member.orchestrator_roles["roles/logging.logWriter"]
+google_project_iam_member.orchestrator_roles["roles/run.developer"]
+google_project_iam_member.orchestrator_roles["roles/workflows.invoker"]
+google_project_iam_member.pipeline_roles["roles/bigquery.dataEditor"]
+google_project_iam_member.pipeline_roles["roles/bigquery.jobUser"]
+google_project_iam_member.pipeline_roles["roles/logging.logWriter"]
+google_project_service.apis["artifactregistry.googleapis.com"]
+google_project_service.apis["bigquery.googleapis.com"]
+google_project_service.apis["bigquerystorage.googleapis.com"]
+google_project_service.apis["billingbudgets.googleapis.com"]
+google_project_service.apis["cloudbuild.googleapis.com"]
+google_project_service.apis["cloudresourcemanager.googleapis.com"]
+google_project_service.apis["cloudscheduler.googleapis.com"]
+google_project_service.apis["iam.googleapis.com"]
+google_project_service.apis["logging.googleapis.com"]
+google_project_service.apis["monitoring.googleapis.com"]
+google_project_service.apis["pubsub.googleapis.com"]
+google_project_service.apis["run.googleapis.com"]
+google_project_service.apis["serviceusage.googleapis.com"]
+google_project_service.apis["storage.googleapis.com"]
+google_project_service.apis["workflows.googleapis.com"]
+google_pubsub_subscription.dlq_inspect
+google_pubsub_subscription.push
+google_pubsub_subscription_iam_member.dlq_subscriber
+google_pubsub_topic.dlq
+google_pubsub_topic.eventos
+google_pubsub_topic_iam_member.dlq_publisher
+google_pubsub_topic_iam_member.pipeline_publish
+google_service_account.ingestor
+google_service_account.orchestrator
+google_service_account.pipeline
+google_service_account.pubsub_push
+google_service_account_iam_member.orchestrator_act_as_pipeline
+google_service_account_iam_member.pubsub_token_creator
+google_storage_bucket.lake
+google_storage_bucket_iam_member.pipeline_lake
+google_workflows_workflow.batch
+
+# terraform output
+artifact_registry_repo = "us-central1-docker.pkg.dev/midyear-cursor-510311-v9/alfab"
+ingestor_url = "https://alfab-event-ingestor-37bdtnlugq-uc.a.run.app"
+jobs = [
+  "alfab-dbt-gold",
+  "alfab-dbt-silver",
+  "alfab-export-ml",
+  "alfab-ingest-bronze",
+  "alfab-microbatch",
+  "alfab-publish-gold",
+  "alfab-simulator",
+]
+lake_bucket = "gs://midyear-cursor-510311-v9-alfab-lake"
+workflow = "alfab-pipeline-batch"

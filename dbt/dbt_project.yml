@@ -1,0 +1,57 @@
+name: alfab
+version: "0.1.0"
+config-version: 2
+profile: alfab
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+target-path: target
+clean-targets: ["target", "logs"]
+
+# Labels em todo job do BigQuery -> custo atribuível por run_id em INFORMATION_SCHEMA.JOBS
+query-comment:
+  comment: "{{ alfab_job_labels() }}"
+  job-label: true
+
+vars:
+  run_id: local
+  fault_injection: none          # none | duplicate_keys | unmapped_rede (demonstração de falha)
+  bronze_dataset: bronze
+  ops_dataset: ops
+  # Códigos do microdado de alunos. CONFIRMADOS pelo teste assert_codigos_alunos_no_dicionario,
+  # que reprova se a descrição no dicionário não corresponder ao significado assumido.
+  codigo_presente: "1"
+  codigo_caderno_preenchido: "1"
+  codigo_alfabetizado: "1"
+  # Tolerâncias (justificativas em docs/qualidade_regras.md)
+  tolerancia_validacao_cruzada_pp: 0.5
+  tolerancia_consistencia_tabelas_pp: 0.1
+  anos_meta: [2024, 2025, 2026, 2027, 2028, 2029, 2030]
+
+on-run-end:
+  - "{{ log_dq_results(results) }}"
+
+seeds:
+  alfab:
+    +schema: silver
+    +tags: ["seeds"]
+
+models:
+  alfab:
+    silver:
+      +schema: silver
+      +materialized: table
+      +tags: ["silver"]
+    quality:
+      +schema: ops
+      +tags: ["quality"]
+    gold:
+      +schema: gold_staging
+      +materialized: table
+      +tags: ["gold"]
+
+tests:
+  alfab:
+    +severity: error   # padrão = bloqueante; informativas declaram severity: warn explicitamente

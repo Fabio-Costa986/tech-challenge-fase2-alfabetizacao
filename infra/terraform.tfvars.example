@@ -1,0 +1,12 @@
+# Copie para terraform.tfvars (não versionado) e preencha com os MESMOS valores do .env
+project_id    = "seu-projeto-gcp"
+region        = "us-central1"
+bq_location   = "US"
+bronze_bucket = "seu-projeto-gcp-alfab-lake"
+alert_email   = "grupo@exemplo.com"
+
+# opcionais
+# alert_webhook_url = "https://chat.googleapis.com/v1/spaces/..."
+# billing_account   = "000000-000000-000000"
+# budget_amount_usd = 20
+# image             = "us-central1-docker.pkg.dev/seu-projeto-gcp/alfab/pipeline:<tag>"

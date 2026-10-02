@@ -1,0 +1,640 @@
+<meta charset="utf-8">
+<title>Painel Criança Alfabetizada</title>
+<style>
+  :root {
+    --page: #f6f6f3;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --ring: rgba(11, 11, 11, 0.10);
+    --serie: #2a78d6;
+    --serie-wash: rgba(42, 120, 214, 0.10);
+    --acima: #2a78d6;
+    --abaixo: #e34948;
+    --good: #0ca30c;
+    --good-text: #006300;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --neutral: #c3c2b7;
+    --chip: #efeee9;
+    --focus: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --ring: rgba(255, 255, 255, 0.10);
+      --serie: #3987e5;
+      --serie-wash: rgba(57, 135, 229, 0.14);
+      --acima: #3987e5;
+      --abaixo: #e66767;
+      --good-text: #0ca30c;
+      --neutral: #5c5b57;
+      --chip: #262624;
+      --focus: #3987e5;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --ring: rgba(255, 255, 255, 0.10);
+    --serie: #3987e5;
+    --serie-wash: rgba(57, 135, 229, 0.14);
+    --acima: #3987e5;
+    --abaixo: #e66767;
+    --good-text: #0ca30c;
+    --neutral: #5c5b57;
+    --chip: #262624;
+    --focus: #3987e5;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding-inline: 16px;
+    padding-block: 24px 48px;
+  }
+  .wrap { max-width: 1180px; margin-inline: auto; display: grid; gap: 20px; }
+
+  header.top { display: grid; gap: 6px; padding-block: 4px 8px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0; text-wrap: balance; font-weight: 650; }
+  .lede { color: var(--ink-2); margin: 0; max-width: 72ch; }
+  h2 { font-size: 16px; margin: 0; font-weight: 620; text-wrap: balance; }
+  .sub { color: var(--ink-2); font-size: 13px; margin: 2px 0 0; max-width: 80ch; }
+
+  .panel {
+    background: var(--surface);
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px var(--ring);
+    padding: 18px 18px 16px;
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+  .panel-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-start; justify-content: space-between; }
+
+  .kpis { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 12px; }
+  .kpi { background: var(--surface); border-radius: 10px; box-shadow: 0 0 0 1px var(--ring); padding: 16px; display: grid; gap: 4px; align-content: start; }
+  .kpi .label { color: var(--ink-2); font-size: 13px; }
+  .kpi .value { font-size: 30px; font-weight: 640; line-height: 1.1; }
+  .kpi.hero .value { font-size: 52px; letter-spacing: -0.01em; }
+  .kpi .note { color: var(--muted); font-size: 12.5px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 9px 2px 7px; border-radius: 999px; background: var(--chip); color: var(--ink); white-space: nowrap; }
+  .pill i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--neutral); }
+  .pill.good i { background: var(--good); }
+  .pill.critical i { background: var(--critical); }
+  .pill.serious i { background: var(--serious); }
+  .pill.neutral i { background: var(--neutral); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .key { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .key.line { height: 2px; width: 16px; border-radius: 1px; }
+
+  .seg { display: inline-flex; background: var(--chip); border-radius: 8px; padding: 3px; gap: 2px; }
+  .seg button {
+    font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--ink-2);
+    padding: 4px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--ring); font-weight: 600; }
+  button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  svg text { fill: var(--muted); font-size: 11.5px; font-family: inherit; }
+  svg .ink { fill: var(--ink); }
+  svg .ink2 { fill: var(--ink-2); }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .base { stroke: var(--baseline); stroke-width: 1; }
+
+  .tip {
+    position: fixed; pointer-events: none; z-index: 10; min-width: 160px; max-width: 260px;
+    background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 10px;
+    box-shadow: 0 0 0 1px var(--ring), 0 6px 18px rgba(0, 0, 0, 0.12); font-size: 12.5px;
+  }
+  .tip b { display: block; margin-bottom: 2px; }
+  .tip .row { display: flex; justify-content: space-between; gap: 12px; color: var(--ink-2); }
+  .tip .row span:last-child { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 600; color: var(--ink-2); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--baseline); white-space: nowrap; }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+  .steps { display: flex; flex-wrap: wrap; gap: 4px; }
+  .step { font-size: 11.5px; padding: 1px 7px; border-radius: 5px; background: var(--chip); color: var(--ink-2); white-space: nowrap; }
+  .step.ok { box-shadow: inset 2px 0 0 var(--good); }
+  .step.fail { box-shadow: inset 2px 0 0 var(--critical); color: var(--ink); }
+  .step.skip { box-shadow: inset 2px 0 0 var(--neutral); }
+
+  .meter { position: relative; height: 8px; background: var(--chip); border-radius: 4px; min-width: 120px; }
+  .meter > span { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--serie); }
+  .meter > span.fail { background: var(--critical); }
+  .meter > em { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); border-radius: 1px; }
+
+  details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; }
+  details[open] summary { margin-bottom: 8px; }
+
+  .callout { border-radius: 8px; background: var(--chip); padding: 10px 12px; color: var(--ink-2); font-size: 13px; }
+  .callout strong { color: var(--ink); }
+  footer { color: var(--muted); font-size: 12.5px; display: grid; gap: 4px; }
+
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .kpi.hero { grid-column: 1 / -1; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .kpis { grid-template-columns: 1fr; }
+    .kpi.hero .value { font-size: 44px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .seg button { transition: background-color 120ms ease; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Compromisso Nacional Criança Alfabetizada · rede pública · corte de 743 pontos Saeb</div>
+    <h1>Painel Criança Alfabetizada</h1>
+    <p class="lede">Resultados da camada Gold do pipeline (BigQuery). Toda comparação usa a <strong>meta pactuada</strong> publicada na fonte; a leitura de universalização (100%) aparece separada e rotulada como aspiracional.</p>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Indicadores principais"></section>
+
+  <section class="panel" aria-labelledby="t-br">
+    <div class="panel-head">
+      <div>
+        <h2 id="t-br">Brasil: resultado oficial × meta pactuada</h2>
+        <p class="sub">Percentual de estudantes avaliados da rede pública que atingiram 743 pontos. Trajetória da meta pela linha de base mais recente.</p>
+      </div>
+      <div class="legend">
+        <span><i class="key line" style="background:var(--serie)"></i>Resultado oficial</span>
+        <span><i class="key line" style="background:var(--ink-2)"></i>Meta pactuada</span>
+      </div>
+    </div>
+    <div id="chart-br"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-uf">
+    <div class="panel-head">
+      <div>
+        <h2 id="t-uf">UFs: distância até a meta pactuada</h2>
+        <p class="sub">Resultado menos meta, em pontos percentuais, rede pública. UFs sem meta pactuada no ano aparecem no fim, sem barra.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Ano" id="seg-uf"></div>
+    </div>
+    <div class="legend">
+      <span><i class="key" style="background:var(--acima)"></i>Acima da meta</span>
+      <span><i class="key" style="background:var(--abaixo)"></i>Abaixo da meta</span>
+    </div>
+    <div id="chart-uf"></div>
+    <details>
+      <summary>Ver dados em tabela</summary>
+      <div class="scroll" id="table-uf"></div>
+    </details>
+  </section>
+
+  <div class="grid-2">
+    <section class="panel" aria-labelledby="t-mun">
+      <div>
+        <h2 id="t-mun">Municípios: situação frente à meta</h2>
+        <p class="sub" id="sub-mun"></p>
+      </div>
+      <div id="chart-mun-status"></div>
+      <div class="legend" id="legend-mun"></div>
+      <div class="panel-head" style="margin-top:6px">
+        <div>
+          <h2 style="font-size:14px">Distribuição da taxa municipal</h2>
+          <p class="sub">Número de municípios por faixa de 5 p.p., rede municipal.</p>
+        </div>
+        <div class="seg" role="group" aria-label="Ano" id="seg-hist"></div>
+      </div>
+      <div id="chart-hist"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="t-val">
+      <div>
+        <h2 id="t-val">Validação cruzada: microdado × taxa publicada</h2>
+        <p class="sub">Cada ponto é um grupo ano × UF × rede. A taxa foi recalculada a partir de 3,9 milhões de registros de alunos, com peso amostral e só avaliados no denominador.</p>
+      </div>
+      <div class="legend">
+        <span><i class="key" style="background:var(--serie);border-radius:50%"></i>Dentro de 0,5 p.p.</span>
+        <span><i class="key" style="background:var(--critical);border-radius:50%"></i>Fora de 0,5 p.p.</span>
+        <span><i class="key line" style="background:var(--baseline)"></i>Igualdade</span>
+      </div>
+      <div id="chart-val"></div>
+      <div>
+        <h2 style="font-size:14px">Desvio mediano por método de cálculo (UFs)</h2>
+        <p class="sub">O mesmo microdado calculado de três formas, comparado à taxa oficial.</p>
+      </div>
+      <div id="chart-metodo"></div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="t-ops">
+    <div>
+      <h2 id="t-ops">Saúde do pipeline</h2>
+      <p class="sub">Execuções do batch na nuvem (Cloud Workflows → Cloud Run Jobs). Uma execução só publica a Gold quando todas as regras bloqueantes passam.</p>
+    </div>
+    <div class="scroll" id="table-runs"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-joins">
+    <div>
+      <h2 id="t-joins">Taxa de correspondência das junções</h2>
+      <p class="sub">Última medição. O traço marca o limiar mínimo; abaixo dele a regra reprova.</p>
+    </div>
+    <div class="scroll" id="table-joins"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const DADOS = {"gerado_em": "2026-10-01T20:49:27+00:00", "projeto": "midyear-cursor-510311-v9", "dataset_gold": "gold", "brasil": [{"ano": 2024, "taxa": 59.2, "meta": 60.0, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "taxa": 66.0, "meta": 64.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2026, "taxa": null, "meta": 67.0, "status_meta": "AGUARDANDO_RESULTADO", "fonte_resultado": null}, {"ano": 2027, "taxa": null, "meta": 71.0, "status_meta": "AGUARDANDO_RESULTADO", "fonte_resultado": null}, {"ano": 2028, "taxa": null, "meta": 74.0, "status_meta": "AGUARDANDO_RESULTADO", "fonte_resultado": null}, {"ano": 2029, "taxa": null, "meta": 77.0, "status_meta": "AGUARDANDO_RESULTADO", "fonte_resultado": null}, {"ano": 2030, "taxa": null, "meta": 80.0, "status_meta": "AGUARDANDO_RESULTADO", "fonte_resultado": null}], "brasil_serie": [{"ano": 2023, "taxa": 55.9, "fonte_resultado": "tabela_meta"}, {"ano": 2024, "taxa": 59.2, "fonte_resultado": "tabela_meta"}, {"ano": 2025, "taxa": 66.0, "fonte_resultado": "tabela_meta"}], "uf": [{"ano": 2024, "uf": "AC", "taxa": 51.38, "meta": null, "gap": null, "status_meta": "SEM_META", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "AL", "taxa": 48.63, "meta": 50.0, "gap": -1.37, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "AM", "taxa": 49.17, "meta": 57.0, "gap": -7.83, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "AP", "taxa": 46.62, "meta": 48.0, "gap": -1.38, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "BA", "taxa": 35.96, "meta": 43.0, "gap": -7.04, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "CE", "taxa": 85.31, "meta": 80.0, "gap": 5.31, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "DF", "taxa": 59.13, "meta": null, "gap": null, "status_meta": "SEM_META", "fonte_resultado": "tabela_meta"}, {"ano": 2024, "uf": "ES", "taxa": 71.69, "meta": 70.0, "gap": 1.69, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "GO", "taxa": 72.74, "meta": 69.0, "gap": 3.74, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "MA", "taxa": 59.64, "meta": 60.0, "gap": -0.36, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "MG", "taxa": 72.07, "meta": 63.0, "gap": 9.07, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "MS", "taxa": 55.87, "meta": 53.0, "gap": 2.87, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "MT", "taxa": 60.59, "meta": 59.0, "gap": 1.59, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "PA", "taxa": 48.2, "meta": 54.0, "gap": -5.8, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "PB", "taxa": 55.96, "meta": 56.0, "gap": -0.04, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "PE", "taxa": 60.79, "meta": 62.0, "gap": -1.21, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "PI", "taxa": 59.82, "meta": 57.0, "gap": 2.82, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "PR", "taxa": 70.42, "meta": 74.0, "gap": -3.58, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "RJ", "taxa": 55.25, "meta": 57.0, "gap": -1.75, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "RN", "taxa": 39.29, "meta": 44.0, "gap": -4.71, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "RO", "taxa": 62.62, "meta": 67.0, "gap": -4.38, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "RS", "taxa": 44.67, "meta": 66.0, "gap": -21.33, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "SC", "taxa": 62.02, "meta": 65.0, "gap": -2.98, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "SE", "taxa": 38.39, "meta": 38.0, "gap": 0.39, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "SP", "taxa": 58.13, "meta": 57.0, "gap": 1.13, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2024, "uf": "TO", "taxa": 50.07, "meta": 50.0, "gap": 0.07, "status_meta": "ATINGIU", "fonte_resultado": "tabela_indicador"}, {"ano": 2025, "uf": "AC", "taxa": 68.0, "meta": 57.0, "gap": 11.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "AL", "taxa": 64.0, "meta": 56.0, "gap": 8.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "AM", "taxa": 57.0, "meta": 61.0, "gap": -4.0, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "AP", "taxa": 60.0, "meta": 54.0, "gap": 6.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "BA", "taxa": 55.0, "meta": 50.0, "gap": 5.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "CE", "taxa": 84.0, "meta": 80.0, "gap": 4.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "DF", "taxa": 65.0, "meta": 63.0, "gap": 2.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "ES", "taxa": 77.0, "meta": 72.0, "gap": 5.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "GO", "taxa": 80.0, "meta": 71.0, "gap": 9.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "MA", "taxa": 69.0, "meta": 64.0, "gap": 5.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "MG", "taxa": 74.0, "meta": 66.0, "gap": 8.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "MS", "taxa": 66.0, "meta": 58.0, "gap": 8.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "MT", "taxa": 75.0, "meta": 63.0, "gap": 12.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "PA", "taxa": 58.0, "meta": 59.0, "gap": -1.0, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "PB", "taxa": 71.0, "meta": 61.0, "gap": 10.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "PE", "taxa": 66.0, "meta": 66.0, "gap": 0.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "PI", "taxa": 77.0, "meta": 62.0, "gap": 15.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "PR", "taxa": 80.0, "meta": 75.0, "gap": 5.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "RJ", "taxa": 60.0, "meta": 61.0, "gap": -1.0, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "RN", "taxa": 48.0, "meta": 51.0, "gap": -3.0, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "RO", "taxa": 75.0, "meta": 70.0, "gap": 5.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "RR", "taxa": 57.0, "meta": null, "gap": null, "status_meta": "SEM_META", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "RS", "taxa": 52.0, "meta": 69.0, "gap": -17.0, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "SC", "taxa": 59.0, "meta": 67.0, "gap": -8.0, "status_meta": "NAO_ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "SE", "taxa": 50.0, "meta": 46.0, "gap": 4.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "SP", "taxa": 61.0, "meta": 61.0, "gap": 0.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}, {"ano": 2025, "uf": "TO", "taxa": 61.0, "meta": 55.0, "gap": 6.0, "status_meta": "ATINGIU", "fonte_resultado": "tabela_meta"}], "mun_status": [{"ano": 2024, "status_meta": "ATINGIU", "n": 2788}, {"ano": 2024, "status_meta": "NAO_ATINGIU", "n": 2444}, {"ano": 2024, "status_meta": "SEM_META", "n": 216}], "mun_distribuicao": [{"ano": 2023, "faixa": 0, "n": 3}, {"ano": 2023, "faixa": 5, "n": 7}, {"ano": 2023, "faixa": 10, "n": 33}, {"ano": 2023, "faixa": 15, "n": 60}, {"ano": 2023, "faixa": 20, "n": 117}, {"ano": 2023, "faixa": 25, "n": 180}, {"ano": 2023, "faixa": 30, "n": 236}, {"ano": 2023, "faixa": 35, "n": 276}, {"ano": 2023, "faixa": 40, "n": 348}, {"ano": 2023, "faixa": 45, "n": 416}, {"ano": 2023, "faixa": 50, "n": 486}, {"ano": 2023, "faixa": 55, "n": 490}, {"ano": 2023, "faixa": 60, "n": 498}, {"ano": 2023, "faixa": 65, "n": 484}, {"ano": 2023, "faixa": 70, "n": 444}, {"ano": 2023, "faixa": 75, "n": 411}, {"ano": 2023, "faixa": 80, "n": 332}, {"ano": 2023, "faixa": 85, "n": 255}, {"ano": 2023, "faixa": 90, "n": 169}, {"ano": 2023, "faixa": 95, "n": 140}, {"ano": 2023, "faixa": 100, "n": 63}, {"ano": 2024, "faixa": 0, "n": 1}, {"ano": 2024, "faixa": 5, "n": 3}, {"ano": 2024, "faixa": 10, "n": 13}, {"ano": 2024, "faixa": 15, "n": 34}, {"ano": 2024, "faixa": 20, "n": 78}, {"ano": 2024, "faixa": 25, "n": 144}, {"ano": 2024, "faixa": 30, "n": 198}, {"ano": 2024, "faixa": 35, "n": 304}, {"ano": 2024, "faixa": 40, "n": 330}, {"ano": 2024, "faixa": 45, "n": 381}, {"ano": 2024, "faixa": 50, "n": 417}, {"ano": 2024, "faixa": 55, "n": 451}, {"ano": 2024, "faixa": 60, "n": 480}, {"ano": 2024, "faixa": 65, "n": 484}, {"ano": 2024, "faixa": 70, "n": 474}, {"ano": 2024, "faixa": 75, "n": 509}, {"ano": 2024, "faixa": 80, "n": 422}, {"ano": 2024, "faixa": 85, "n": 287}, {"ano": 2024, "faixa": 90, "n": 218}, {"ano": 2024, "faixa": 95, "n": 162}, {"ano": 2024, "faixa": 100, "n": 58}], "validacao_uf": [{"ano": 2023, "uf": "AL", "rede": "estadual", "oficial": 38.65, "micro": 38.65, "diff": 0.0, "diff_sem_peso": -1.412, "diff_ausentes": -5.687, "n_avaliados": 1434}, {"ano": 2023, "uf": "AL", "rede": "municipal", "oficial": 44.13, "micro": 44.13, "diff": 0.004, "diff_sem_peso": 0.679, "diff_ausentes": -2.664, "n_avaliados": 31355}, {"ano": 2023, "uf": "AL", "rede": "publica", "oficial": 43.88, "micro": 43.88, "diff": 0.004, "diff_sem_peso": 0.598, "diff_ausentes": -2.802, "n_avaliados": 32789}, {"ano": 2023, "uf": "AM", "rede": "estadual", "oficial": 62.63, "micro": 62.63, "diff": -0.0, "diff_sem_peso": 0.617, "diff_ausentes": -9.425, "n_avaliados": 11863}, {"ano": 2023, "uf": "AM", "rede": "municipal", "oficial": 49.2, "micro": 49.2, "diff": -0.0, "diff_sem_peso": 0.815, "diff_ausentes": -12.269, "n_avaliados": 36147}, {"ano": 2023, "uf": "AM", "rede": "publica", "oficial": 52.2, "micro": 52.2, "diff": 0.003, "diff_sem_peso": 1.085, "diff_ausentes": -11.629, "n_avaliados": 48010}, {"ano": 2023, "uf": "AP", "rede": "estadual", "oficial": 40.7, "micro": 40.7, "diff": -0.001, "diff_sem_peso": -0.021, "diff_ausentes": -5.178, "n_avaliados": 2859}, {"ano": 2023, "uf": "AP", "rede": "municipal", "oficial": 41.87, "micro": 41.87, "diff": 0.003, "diff_sem_peso": 0.073, "diff_ausentes": -3.898, "n_avaliados": 8216}, {"ano": 2023, "uf": "AP", "rede": "publica", "oficial": 41.56, "micro": 41.56, "diff": 0.002, "diff_sem_peso": 0.056, "diff_ausentes": -4.237, "n_avaliados": 11075}, {"ano": 2023, "uf": "BA", "rede": "estadual", "oficial": 42.83, "micro": 42.83, "diff": 0.004, "diff_sem_peso": 4.814, "diff_ausentes": -6.284, "n_avaliados": 191}, {"ano": 2023, "uf": "BA", "rede": "municipal", "oficial": 36.77, "micro": 36.77, "diff": -0.004, "diff_sem_peso": 0.568, "diff_ausentes": -5.204, "n_avaliados": 116221}, {"ano": 2023, "uf": "BA", "rede": "publica", "oficial": 36.78, "micro": 36.78, "diff": -0.003, "diff_sem_peso": 0.575, "diff_ausentes": -5.205, "n_avaliados": 116412}, {"ano": 2023, "uf": "CE", "rede": "estadual", "oficial": 78.75, "micro": 78.75, "diff": -0.001, "diff_sem_peso": -0.431, "diff_ausentes": -10.145, "n_avaliados": 452}, {"ano": 2023, "uf": "CE", "rede": "municipal", "oficial": 84.49, "micro": 84.49, "diff": 0.003, "diff_sem_peso": 0.253, "diff_ausentes": -3.767, "n_avaliados": 95097}, {"ano": 2023, "uf": "CE", "rede": "publica", "oficial": 84.46, "micro": 84.46, "diff": 0.003, "diff_sem_peso": 0.253, "diff_ausentes": -3.8, "n_avaliados": 95549}, {"ano": 2023, "uf": "ES", "rede": "estadual", "oficial": 74.58, "micro": 74.58, "diff": 0.004, "diff_sem_peso": 0.929, "diff_ausentes": -6.542, "n_avaliados": 2650}, {"ano": 2023, "uf": "ES", "rede": "municipal", "oficial": 67.52, "micro": 67.52, "diff": 0.002, "diff_sem_peso": 0.397, "diff_ausentes": -7.551, "n_avaliados": 41978}, {"ano": 2023, "uf": "ES", "rede": "publica", "oficial": 67.93, "micro": 67.93, "diff": 0.003, "diff_sem_peso": 0.437, "diff_ausentes": -7.491, "n_avaliados": 44628}, {"ano": 2023, "uf": "GO", "rede": "estadual", "oficial": 76.59, "micro": 76.59, "diff": 0.003, "diff_sem_peso": 1.279, "diff_ausentes": -7.749, "n_avaliados": 122}, {"ano": 2023, "uf": "GO", "rede": "municipal", "oficial": 66.72, "micro": 66.71, "diff": -0.014, "diff_sem_peso": 0.261, "diff_ausentes": -8.437, "n_avaliados": 72746}, {"ano": 2023, "uf": "GO", "rede": "publica", "oficial": 66.74, "micro": 66.72, "diff": -0.018, "diff_sem_peso": 0.259, "diff_ausentes": -8.44, "n_avaliados": 72868}, {"ano": 2023, "uf": "MA", "rede": "estadual", "oficial": 72.38, "micro": 72.38, "diff": 0.002, "diff_sem_peso": -0.122, "diff_ausentes": -8.38, "n_avaliados": 155}, {"ano": 2023, "uf": "MA", "rede": "municipal", "oficial": 56.39, "micro": 56.39, "diff": 0.002, "diff_sem_peso": 0.525, "diff_ausentes": -5.674, "n_avaliados": 66638}, {"ano": 2023, "uf": "MA", "rede": "publica", "oficial": 56.43, "micro": 56.43, "diff": -0.001, "diff_sem_peso": 0.521, "diff_ausentes": -5.683, "n_avaliados": 66793}, {"ano": 2023, "uf": "MG", "rede": "estadual", "oficial": 63.65, "micro": 63.65, "diff": 0.002, "diff_sem_peso": 1.572, "diff_ausentes": -4.342, "n_avaliados": 41495}, {"ano": 2023, "uf": "MG", "rede": "municipal", "oficial": 58.74, "micro": 58.74, "diff": 0.003, "diff_sem_peso": 0.918, "diff_ausentes": -5.514, "n_avaliados": 146741}, {"ano": 2023, "uf": "MG", "rede": "publica", "oficial": 59.81, "micro": 59.81, "diff": -0.001, "diff_sem_peso": 1.075, "diff_ausentes": -5.263, "n_avaliados": 188236}, {"ano": 2023, "uf": "MS", "rede": "estadual", "oficial": 42.9, "micro": 43.07, "diff": 0.17, "diff_sem_peso": 0.17, "diff_ausentes": -5.27, "n_avaliados": 671}, {"ano": 2023, "uf": "MS", "rede": "municipal", "oficial": 47.53, "micro": 47.85, "diff": 0.321, "diff_sem_peso": 0.321, "diff_ausentes": -5.441, "n_avaliados": 36442}, {"ano": 2023, "uf": "MS", "rede": "publica", "oficial": 47.45, "micro": 47.76, "diff": 0.315, "diff_sem_peso": 0.315, "diff_ausentes": -5.442, "n_avaliados": 37113}, {"ano": 2023, "uf": "MT", "rede": "estadual", "oficial": 48.02, "micro": 49.51, "diff": 1.493, "diff_sem_peso": 2.583, "diff_ausentes": -4.425, "n_avaliados": 2818}, {"ano": 2023, "uf": "MT", "rede": "municipal", "oficial": 55.43, "micro": 55.42, "diff": -0.008, "diff_sem_peso": 0.439, "diff_ausentes": -6.512, "n_avaliados": 44878}, {"ano": 2023, "uf": "MT", "rede": "publica", "oficial": 55.03, "micro": 55.07, "diff": 0.038, "diff_sem_peso": 0.528, "diff_ausentes": -6.431, "n_avaliados": 47696}, {"ano": 2023, "uf": "PA", "rede": "estadual", "oficial": 57.07, "micro": 57.07, "diff": -0.0, "diff_sem_peso": 0.799, "diff_ausentes": -6.026, "n_avaliados": 6589}, {"ano": 2023, "uf": "PA", "rede": "municipal", "oficial": 47.71, "micro": 47.71, "diff": 0.005, "diff_sem_peso": 0.782, "diff_ausentes": -8.933, "n_avaliados": 77968}, {"ano": 2023, "uf": "PA", "rede": "publica", "oficial": 48.38, "micro": 48.38, "diff": 0.001, "diff_sem_peso": 0.842, "diff_ausentes": -8.73, "n_avaliados": 84557}, {"ano": 2023, "uf": "PB", "rede": "estadual", "oficial": 55.23, "micro": 55.23, "diff": -0.0, "diff_sem_peso": -0.338, "diff_ausentes": -8.863, "n_avaliados": 1523}, {"ano": 2023, "uf": "PB", "rede": "municipal", "oficial": 50.92, "micro": 50.92, "diff": -0.001, "diff_sem_peso": 0.43, "diff_ausentes": -5.523, "n_avaliados": 32191}, {"ano": 2023, "uf": "PB", "rede": "publica", "oficial": 51.12, "micro": 51.12, "diff": 0.002, "diff_sem_peso": 0.39, "diff_ausentes": -5.677, "n_avaliados": 33714}, {"ano": 2023, "uf": "PE", "rede": "estadual", "oficial": 79.25, "micro": 79.25, "diff": 0.002, "diff_sem_peso": 0.355, "diff_ausentes": -9.308, "n_avaliados": 152}, {"ano": 2023, "uf": "PE", "rede": "municipal", "oficial": 58.91, "micro": 58.91, "diff": 0.004, "diff_sem_peso": 0.218, "diff_ausentes": -4.549, "n_avaliados": 80996}, {"ano": 2023, "uf": "PE", "rede": "publica", "oficial": 58.95, "micro": 58.95, "diff": 0.004, "diff_sem_peso": 0.216, "diff_ausentes": -4.558, "n_avaliados": 81148}, {"ano": 2023, "uf": "PI", "rede": "estadual", "oficial": 48.27, "micro": 48.27, "diff": -0.001, "diff_sem_peso": 1.342, "diff_ausentes": -5.886, "n_avaliados": 129}, {"ano": 2023, "uf": "PI", "rede": "municipal", "oficial": 52.5, "micro": 52.5, "diff": 0.001, "diff_sem_peso": 0.688, "diff_ausentes": -2.82, "n_avaliados": 32938}, {"ano": 2023, "uf": "PI", "rede": "publica", "oficial": 52.48, "micro": 52.48, "diff": 0.003, "diff_sem_peso": 0.694, "diff_ausentes": -2.832, "n_avaliados": 33067}, {"ano": 2023, "uf": "PR", "rede": "estadual", "oficial": 80.29, "micro": 80.29, "diff": 0.001, "diff_sem_peso": 1.289, "diff_ausentes": -17.346, "n_avaliados": 152}, {"ano": 2023, "uf": "PR", "rede": "municipal", "oficial": 73.11, "micro": 73.11, "diff": 0.0, "diff_sem_peso": 0.525, "diff_ausentes": -9.643, "n_avaliados": 119233}, {"ano": 2023, "uf": "PR", "rede": "publica", "oficial": 73.12, "micro": 73.12, "diff": 0.0, "diff_sem_peso": 0.525, "diff_ausentes": -9.654, "n_avaliados": 119385}, {"ano": 2023, "uf": "RJ", "rede": "municipal", "oficial": 52.13, "micro": 52.13, "diff": -0.003, "diff_sem_peso": 1.244, "diff_ausentes": -8.785, "n_avaliados": 129935}, {"ano": 2023, "uf": "RJ", "rede": "publica", "oficial": 52.13, "micro": 52.13, "diff": -0.003, "diff_sem_peso": 1.244, "diff_ausentes": -8.785, "n_avaliados": 129935}, {"ano": 2023, "uf": "RN", "rede": "estadual", "oficial": 41.49, "micro": 41.49, "diff": 0.005, "diff_sem_peso": 0.534, "diff_ausentes": -7.754, "n_avaliados": 4250}, {"ano": 2023, "uf": "RN", "rede": "municipal", "oficial": 36.39, "micro": 36.39, "diff": -0.003, "diff_sem_peso": 0.764, "diff_ausentes": -7.336, "n_avaliados": 20687}, {"ano": 2023, "uf": "RN", "rede": "publica", "oficial": 37.24, "micro": 37.24, "diff": -0.002, "diff_sem_peso": 0.744, "diff_ausentes": -7.405, "n_avaliados": 24937}, {"ano": 2023, "uf": "RO", "rede": "estadual", "oficial": 58.65, "micro": 58.65, "diff": -0.003, "diff_sem_peso": 0.305, "diff_ausentes": -7.12, "n_avaliados": 1742}, {"ano": 2023, "uf": "RO", "rede": "municipal", "oficial": 65.17, "micro": 65.17, "diff": 0.004, "diff_sem_peso": 0.678, "diff_ausentes": -7.116, "n_avaliados": 18374}, {"ano": 2023, "uf": "RO", "rede": "publica", "oficial": 64.6, "micro": 64.6, "diff": 0.004, "diff_sem_peso": 0.652, "diff_ausentes": -7.116, "n_avaliados": 20116}, {"ano": 2023, "uf": "RS", "rede": "estadual", "oficial": 63.18, "micro": 63.18, "diff": -0.004, "diff_sem_peso": 1.407, "diff_ausentes": -10.578, "n_avaliados": 30876}, {"ano": 2023, "uf": "RS", "rede": "municipal", "oficial": 63.55, "micro": 63.55, "diff": -0.004, "diff_sem_peso": 1.197, "diff_ausentes": -10.823, "n_avaliados": 67784}, {"ano": 2023, "uf": "RS", "rede": "publica", "oficial": 63.43, "micro": 63.43, "diff": 0.0, "diff_sem_peso": 1.267, "diff_ausentes": -10.742, "n_avaliados": 98660}, {"ano": 2023, "uf": "SC", "rede": "estadual", "oficial": 59.29, "micro": 59.29, "diff": 0.004, "diff_sem_peso": 1.709, "diff_ausentes": -13.325, "n_avaliados": 18533}, {"ano": 2023, "uf": "SC", "rede": "municipal", "oficial": 62.04, "micro": 62.04, "diff": 0.002, "diff_sem_peso": 1.131, "diff_ausentes": -11.744, "n_avaliados": 62123}, {"ano": 2023, "uf": "SC", "rede": "publica", "oficial": 61.38, "micro": 61.38, "diff": 0.003, "diff_sem_peso": 1.292, "diff_ausentes": -12.122, "n_avaliados": 80656}, {"ano": 2023, "uf": "SE", "rede": "estadual", "oficial": 35.31, "micro": 35.06, "diff": -0.251, "diff_sem_peso": 0.001, "diff_ausentes": 0.001, "n_avaliados": 2866}, {"ano": 2023, "uf": "SE", "rede": "municipal", "oficial": 30.57, "micro": 30.31, "diff": -0.259, "diff_sem_peso": -0.002, "diff_ausentes": -0.002, "n_avaliados": 15768}, {"ano": 2023, "uf": "SE", "rede": "publica", "oficial": 31.3, "micro": 31.04, "diff": -0.262, "diff_sem_peso": -0.002, "diff_ausentes": -0.002, "n_avaliados": 18634}, {"ano": 2023, "uf": "TO", "rede": "municipal", "oficial": 43.72, "micro": 43.72, "diff": -0.005, "diff_sem_peso": -0.009, "diff_ausentes": -7.043, "n_avaliados": 16831}, {"ano": 2023, "uf": "TO", "rede": "publica", "oficial": 43.72, "micro": 43.72, "diff": -0.005, "diff_sem_peso": -0.009, "diff_ausentes": -7.043, "n_avaliados": 16831}, {"ano": 2024, "uf": "AC", "rede": "estadual", "oficial": 55.5, "micro": 55.5, "diff": 0.002, "diff_sem_peso": 0.34, "diff_ausentes": -10.422, "n_avaliados": 4486}, {"ano": 2024, "uf": "AC", "rede": "municipal", "oficial": 48.16, "micro": 48.16, "diff": -0.001, "diff_sem_peso": 0.657, "diff_ausentes": -8.628, "n_avaliados": 5748}, {"ano": 2024, "uf": "AC", "rede": "publica", "oficial": 51.38, "micro": 51.38, "diff": 0.004, "diff_sem_peso": 0.516, "diff_ausentes": -9.412, "n_avaliados": 10234}, {"ano": 2024, "uf": "AL", "rede": "estadual", "oficial": 39.92, "micro": 39.92, "diff": -0.005, "diff_sem_peso": 0.33, "diff_ausentes": -3.933, "n_avaliados": 1359}, {"ano": 2024, "uf": "AL", "rede": "municipal", "oficial": 49.05, "micro": 49.05, "diff": -0.002, "diff_sem_peso": 0.285, "diff_ausentes": -2.68, "n_avaliados": 30216}, {"ano": 2024, "uf": "AL", "rede": "publica", "oficial": 48.63, "micro": 48.64, "diff": 0.005, "diff_sem_peso": 0.314, "diff_ausentes": -2.729, "n_avaliados": 31575}, {"ano": 2024, "uf": "AM", "rede": "estadual", "oficial": 58.18, "micro": 58.18, "diff": 0.0, "diff_sem_peso": 0.535, "diff_ausentes": -10.002, "n_avaliados": 11101}, {"ano": 2024, "uf": "AM", "rede": "municipal", "oficial": 46.47, "micro": 46.47, "diff": 0.003, "diff_sem_peso": 0.593, "diff_ausentes": -9.38, "n_avaliados": 35527}, {"ano": 2024, "uf": "AM", "rede": "publica", "oficial": 49.17, "micro": 49.17, "diff": 0.004, "diff_sem_peso": 0.667, "diff_ausentes": -9.52, "n_avaliados": 46628}, {"ano": 2024, "uf": "AP", "rede": "estadual", "oficial": 39.56, "micro": 39.55, "diff": -0.006, "diff_sem_peso": 0.549, "diff_ausentes": -5.442, "n_avaliados": 2927}, {"ano": 2024, "uf": "AP", "rede": "municipal", "oficial": 49.28, "micro": 49.28, "diff": -0.003, "diff_sem_peso": 0.533, "diff_ausentes": -4.111, "n_avaliados": 8287}, {"ano": 2024, "uf": "AP", "rede": "publica", "oficial": 46.62, "micro": 46.62, "diff": -0.002, "diff_sem_peso": 0.66, "diff_ausentes": -4.474, "n_avaliados": 11214}, {"ano": 2024, "uf": "BA", "rede": "estadual", "oficial": 34.46, "micro": 34.46, "diff": -0.003, "diff_sem_peso": -0.003, "diff_ausentes": -4.097, "n_avaliados": 267}, {"ano": 2024, "uf": "BA", "rede": "municipal", "oficial": 35.96, "micro": 35.96, "diff": 0.005, "diff_sem_peso": 0.005, "diff_ausentes": -3.574, "n_avaliados": 103802}, {"ano": 2024, "uf": "BA", "rede": "publica", "oficial": 35.96, "micro": 35.96, "diff": 0.001, "diff_sem_peso": 0.001, "diff_ausentes": -3.58, "n_avaliados": 104069}, {"ano": 2024, "uf": "CE", "rede": "estadual", "oficial": 78.36, "micro": 78.36, "diff": -0.005, "diff_sem_peso": 0.105, "diff_ausentes": -5.053, "n_avaliados": 469}, {"ano": 2024, "uf": "CE", "rede": "municipal", "oficial": 85.35, "micro": 85.35, "diff": -0.001, "diff_sem_peso": 0.014, "diff_ausentes": -1.562, "n_avaliados": 87689}, {"ano": 2024, "uf": "CE", "rede": "publica", "oficial": 85.31, "micro": 85.31, "diff": 0.002, "diff_sem_peso": 0.017, "diff_ausentes": -1.581, "n_avaliados": 88158}, {"ano": 2024, "uf": "ES", "rede": "estadual", "oficial": 86.21, "micro": 86.21, "diff": -0.004, "diff_sem_peso": 0.358, "diff_ausentes": -7.525, "n_avaliados": 2226}, {"ano": 2024, "uf": "ES", "rede": "municipal", "oficial": 70.9, "micro": 70.92, "diff": 0.016, "diff_sem_peso": 0.392, "diff_ausentes": -6.825, "n_avaliados": 40525}, {"ano": 2024, "uf": "ES", "rede": "publica", "oficial": 71.69, "micro": 71.7, "diff": 0.014, "diff_sem_peso": 0.397, "diff_ausentes": -6.862, "n_avaliados": 42751}, {"ano": 2024, "uf": "GO", "rede": "estadual", "oficial": 83.66, "micro": 83.67, "diff": 0.013, "diff_sem_peso": 0.34, "diff_ausentes": -1.307, "n_avaliados": 50}, {"ano": 2024, "uf": "GO", "rede": "municipal", "oficial": 72.73, "micro": 72.74, "diff": 0.008, "diff_sem_peso": 0.283, "diff_ausentes": -5.744, "n_avaliados": 70749}, {"ano": 2024, "uf": "GO", "rede": "publica", "oficial": 72.74, "micro": 72.74, "diff": 0.005, "diff_sem_peso": 0.281, "diff_ausentes": -5.744, "n_avaliados": 70799}, {"ano": 2024, "uf": "MA", "rede": "estadual", "oficial": 77.57, "micro": 77.55, "diff": -0.017, "diff_sem_peso": 0.383, "diff_ausentes": -2.57, "n_avaliados": 127}, {"ano": 2024, "uf": "MA", "rede": "municipal", "oficial": 59.61, "micro": 59.61, "diff": 0.002, "diff_sem_peso": 0.52, "diff_ausentes": -4.962, "n_avaliados": 62847}, {"ano": 2024, "uf": "MA", "rede": "publica", "oficial": 59.64, "micro": 59.65, "diff": 0.006, "diff_sem_peso": 0.526, "diff_ausentes": -4.953, "n_avaliados": 62974}, {"ano": 2024, "uf": "MG", "rede": "estadual", "oficial": 74.47, "micro": 74.47, "diff": 0.001, "diff_sem_peso": 0.458, "diff_ausentes": -6.396, "n_avaliados": 38341}, {"ano": 2024, "uf": "MG", "rede": "municipal", "oficial": 71.45, "micro": 71.45, "diff": 0.003, "diff_sem_peso": 0.514, "diff_ausentes": -7.885, "n_avaliados": 142430}, {"ano": 2024, "uf": "MG", "rede": "publica", "oficial": 72.07, "micro": 72.08, "diff": 0.005, "diff_sem_peso": 0.522, "diff_ausentes": -7.57, "n_avaliados": 180771}, {"ano": 2024, "uf": "MS", "rede": "estadual", "oficial": 48.33, "micro": 48.33, "diff": 0.003, "diff_sem_peso": 0.237, "diff_ausentes": -7.731, "n_avaliados": 698}, {"ano": 2024, "uf": "MS", "rede": "municipal", "oficial": 56.02, "micro": 56.03, "diff": 0.007, "diff_sem_peso": 0.638, "diff_ausentes": -4.928, "n_avaliados": 36514}, {"ano": 2024, "uf": "MS", "rede": "publica", "oficial": 55.87, "micro": 55.87, "diff": 0.001, "diff_sem_peso": 0.636, "diff_ausentes": -4.99, "n_avaliados": 37212}, {"ano": 2024, "uf": "MT", "rede": "estadual", "oficial": 46.75, "micro": 46.75, "diff": -0.001, "diff_sem_peso": 0.935, "diff_ausentes": -5.407, "n_avaliados": 1382}, {"ano": 2024, "uf": "MT", "rede": "municipal", "oficial": 61.03, "micro": 61.03, "diff": 0.003, "diff_sem_peso": 0.362, "diff_ausentes": -6.688, "n_avaliados": 43701}, {"ano": 2024, "uf": "MT", "rede": "publica", "oficial": 60.59, "micro": 60.59, "diff": -0.004, "diff_sem_peso": 0.382, "diff_ausentes": -6.655, "n_avaliados": 45083}, {"ano": 2024, "uf": "PA", "rede": "estadual", "oficial": 56.96, "micro": 56.95, "diff": -0.006, "diff_sem_peso": 0.217, "diff_ausentes": -6.279, "n_avaliados": 5859}, {"ano": 2024, "uf": "PA", "rede": "municipal", "oficial": 47.58, "micro": 47.58, "diff": 0.003, "diff_sem_peso": 0.555, "diff_ausentes": -7.71, "n_avaliados": 77334}, {"ano": 2024, "uf": "PA", "rede": "publica", "oficial": 48.2, "micro": 48.2, "diff": 0.003, "diff_sem_peso": 0.572, "diff_ausentes": -7.616, "n_avaliados": 83193}, {"ano": 2024, "uf": "PB", "rede": "estadual", "oficial": 54.97, "micro": 55.67, "diff": 0.696, "diff_sem_peso": 0.199, "diff_ausentes": -11.512, "n_avaliados": 1180}, {"ano": 2024, "uf": "PB", "rede": "municipal", "oficial": 56.01, "micro": 55.98, "diff": -0.034, "diff_sem_peso": 0.656, "diff_ausentes": -5.742, "n_avaliados": 29824}, {"ano": 2024, "uf": "PB", "rede": "publica", "oficial": 55.96, "micro": 55.96, "diff": 0.003, "diff_sem_peso": 0.649, "diff_ausentes": -5.983, "n_avaliados": 31004}, {"ano": 2024, "uf": "PE", "rede": "estadual", "oficial": 71.77, "micro": 71.78, "diff": 0.005, "diff_sem_peso": 0.23, "diff_ausentes": -2.98, "n_avaliados": 150}, {"ano": 2024, "uf": "PE", "rede": "municipal", "oficial": 60.76, "micro": 60.77, "diff": 0.005, "diff_sem_peso": 0.289, "diff_ausentes": -3.059, "n_avaliados": 75803}, {"ano": 2024, "uf": "PE", "rede": "publica", "oficial": 60.79, "micro": 60.79, "diff": -0.003, "diff_sem_peso": 0.281, "diff_ausentes": -3.068, "n_avaliados": 75953}, {"ano": 2024, "uf": "PI", "rede": "estadual", "oficial": 73.95, "micro": 73.95, "diff": -0.003, "diff_sem_peso": 1.05, "diff_ausentes": -2.211, "n_avaliados": 132}, {"ano": 2024, "uf": "PI", "rede": "municipal", "oficial": 59.76, "micro": 59.77, "diff": 0.007, "diff_sem_peso": 0.447, "diff_ausentes": -2.652, "n_avaliados": 30973}, {"ano": 2024, "uf": "PI", "rede": "publica", "oficial": 59.82, "micro": 59.83, "diff": 0.006, "diff_sem_peso": 0.45, "diff_ausentes": -2.651, "n_avaliados": 31105}, {"ano": 2024, "uf": "PR", "rede": "estadual", "oficial": 62.01, "micro": 62.02, "diff": 0.014, "diff_sem_peso": 0.49, "diff_ausentes": -9.125, "n_avaliados": 176}, {"ano": 2024, "uf": "PR", "rede": "municipal", "oficial": 70.43, "micro": 70.43, "diff": 0.004, "diff_sem_peso": 0.379, "diff_ausentes": -9.359, "n_avaliados": 119630}, {"ano": 2024, "uf": "PR", "rede": "publica", "oficial": 70.42, "micro": 70.42, "diff": 0.002, "diff_sem_peso": 0.377, "diff_ausentes": -9.361, "n_avaliados": 119806}, {"ano": 2024, "uf": "RJ", "rede": "estadual", "oficial": 80.09, "micro": 80.09, "diff": -0.001, "diff_sem_peso": -2.312, "diff_ausentes": -32.363, "n_avaliados": 135}, {"ano": 2024, "uf": "RJ", "rede": "municipal", "oficial": 55.22, "micro": 55.22, "diff": 0.002, "diff_sem_peso": 0.645, "diff_ausentes": -8.77, "n_avaliados": 125536}, {"ano": 2024, "uf": "RJ", "rede": "publica", "oficial": 55.25, "micro": 55.26, "diff": 0.008, "diff_sem_peso": 0.639, "diff_ausentes": -8.798, "n_avaliados": 125671}, {"ano": 2024, "uf": "RN", "rede": "estadual", "oficial": 45.33, "micro": 45.33, "diff": 0.001, "diff_sem_peso": 0.711, "diff_ausentes": -10.214, "n_avaliados": 3536}, {"ano": 2024, "uf": "RN", "rede": "municipal", "oficial": 38.16, "micro": 38.16, "diff": 0.0, "diff_sem_peso": 0.686, "diff_ausentes": -7.865, "n_avaliados": 19312}, {"ano": 2024, "uf": "RN", "rede": "publica", "oficial": 39.29, "micro": 39.29, "diff": 0.001, "diff_sem_peso": 0.67, "diff_ausentes": -8.235, "n_avaliados": 22848}, {"ano": 2024, "uf": "RO", "rede": "estadual", "oficial": 63.47, "micro": 63.47, "diff": -0.004, "diff_sem_peso": 0.192, "diff_ausentes": -6.59, "n_avaliados": 1409}, {"ano": 2024, "uf": "RO", "rede": "municipal", "oficial": 62.56, "micro": 62.57, "diff": 0.009, "diff_sem_peso": 0.411, "diff_ausentes": -6.985, "n_avaliados": 18618}, {"ano": 2024, "uf": "RO", "rede": "publica", "oficial": 62.62, "micro": 62.63, "diff": 0.012, "diff_sem_peso": 0.4, "diff_ausentes": -6.955, "n_avaliados": 20027}, {"ano": 2024, "uf": "RS", "rede": "estadual", "oficial": 45.63, "micro": 45.72, "diff": 0.093, "diff_sem_peso": 1.194, "diff_ausentes": -6.554, "n_avaliados": 28509}, {"ano": 2024, "uf": "RS", "rede": "municipal", "oficial": 44.23, "micro": 44.31, "diff": 0.081, "diff_sem_peso": 1.049, "diff_ausentes": -6.924, "n_avaliados": 61053}, {"ano": 2024, "uf": "RS", "rede": "publica", "oficial": 44.67, "micro": 44.76, "diff": 0.086, "diff_sem_peso": 1.101, "diff_ausentes": -6.805, "n_avaliados": 89562}, {"ano": 2024, "uf": "SC", "rede": "estadual", "oficial": 59.29, "micro": 59.29, "diff": 0.001, "diff_sem_peso": 1.18, "diff_ausentes": -17.721, "n_avaliados": 15773}, {"ano": 2024, "uf": "SC", "rede": "municipal", "oficial": 62.87, "micro": 62.87, "diff": 0.004, "diff_sem_peso": 1.722, "diff_ausentes": -17.366, "n_avaliados": 53262}, {"ano": 2024, "uf": "SC", "rede": "publica", "oficial": 62.02, "micro": 62.02, "diff": -0.0, "diff_sem_peso": 1.63, "diff_ausentes": -17.432, "n_avaliados": 69035}, {"ano": 2024, "uf": "SE", "rede": "estadual", "oficial": 40.94, "micro": 40.93, "diff": -0.005, "diff_sem_peso": 0.167, "diff_ausentes": -3.214, "n_avaliados": 2131}, {"ano": 2024, "uf": "SE", "rede": "municipal", "oficial": 38.05, "micro": 38.05, "diff": -0.003, "diff_sem_peso": 0.167, "diff_ausentes": -3.031, "n_avaliados": 15671}, {"ano": 2024, "uf": "SE", "rede": "publica", "oficial": 38.39, "micro": 38.39, "diff": 0.002, "diff_sem_peso": 0.173, "diff_ausentes": -3.047, "n_avaliados": 17802}, {"ano": 2024, "uf": "SP", "rede": "estadual", "oficial": 65.84, "micro": 65.84, "diff": 0.004, "diff_sem_peso": 0.362, "diff_ausentes": -5.531, "n_avaliados": 96540}, {"ano": 2024, "uf": "SP", "rede": "municipal", "oficial": 55.71, "micro": 55.72, "diff": 0.007, "diff_sem_peso": 0.385, "diff_ausentes": -6.074, "n_avaliados": 298904}, {"ano": 2024, "uf": "SP", "rede": "publica", "oficial": 58.13, "micro": 58.14, "diff": 0.005, "diff_sem_peso": 0.433, "diff_ausentes": -5.946, "n_avaliados": 395444}, {"ano": 2024, "uf": "TO", "rede": "municipal", "oficial": 50.07, "micro": 50.05, "diff": -0.016, "diff_sem_peso": 0.052, "diff_ausentes": -7.4, "n_avaliados": 16799}, {"ano": 2024, "uf": "TO", "rede": "publica", "oficial": 50.07, "micro": 50.05, "diff": -0.016, "diff_sem_peso": 0.052, "diff_ausentes": -7.4, "n_avaliados": 16799}], "validacao_resumo": [{"nivel": "MUN", "grupos": 22795, "mediana_correta": 0.004, "med_sem_peso": 0.268, "med_ausentes": 4.994, "dentro_05": 22572}, {"nivel": "UF", "grupos": 141, "mediana_correta": 0.003, "med_sem_peso": 0.516, "med_ausentes": 6.542, "dentro_05": 139}], "universalizacao": [{"ano": 2025, "taxa": 66.0, "dist_100": 34.0, "meta_2030": 80.0, "dist_meta_2030": 14.0}], "execucoes": [{"run_id": "20261001T193739Z-f0dbac", "inicio": "2026-10-01T19:40:06.025724+00:00", "sucesso": true, "duracao_s": 140.0, "bytes_faturados": null, "etapas": [{"step": "bronze.alunos", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_brasil", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.dicionario", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.diretorio_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "dbt.silver", "status": "SUCCEEDED", "duracao_s": 63.1, "rows_out": null, "acao": null, "erro": null}, {"step": "dbt.gold", "status": "SUCCEEDED", "duracao_s": 48.7, "rows_out": null, "acao": null, "erro": null}, {"step": "publish.gold", "status": "SUCCEEDED", "duracao_s": 26.5, "rows_out": 204528, "acao": null, "erro": null}]}, {"run_id": "20261001T172800Z-b20784", "inicio": "2026-10-01T17:32:08.197246+00:00", "sucesso": false, "duracao_s": 59.6, "bytes_faturados": null, "etapas": [{"step": "bronze.alunos", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.municipio", "status": "SUCCEEDED", "duracao_s": 0.3, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_brasil", "status": "SUCCEEDED", "duracao_s": 0.1, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.dicionario", "status": "SUCCEEDED", "duracao_s": 0.3, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.diretorio_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "dbt.silver", "status": "FAILED", "duracao_s": 57.8, "rows_out": null, "acao": null, "erro": "QualityGateFailed: 1 regra(s) bloqueante(s) reprovada(s) em silver: ['unique_combination_indicador_municipio_ano__id_municipio__rede_codigo']"}]}, {"run_id": "20261001T162153Z-ca83f9", "inicio": "2026-10-01T16:26:11.455918+00:00", "sucesso": true, "duracao_s": 156.2, "bytes_faturados": null, "etapas": [{"step": "bronze.alunos", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_brasil", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.dicionario", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.diretorio_municipio", "status": "SUCCEEDED", "duracao_s": 0.3, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "dbt.silver", "status": "SUCCEEDED", "duracao_s": 75.9, "rows_out": null, "acao": null, "erro": null}, {"step": "dbt.gold", "status": "SUCCEEDED", "duracao_s": 53.7, "rows_out": null, "acao": null, "erro": null}, {"step": "publish.gold", "status": "SUCCEEDED", "duracao_s": 24.9, "rows_out": 204528, "acao": null, "erro": null}]}, {"run_id": "20261001T161436Z-9e8b7f", "inicio": "2026-10-01T16:17:38.196127+00:00", "sucesso": true, "duracao_s": 94.3, "bytes_faturados": null, "etapas": [{"step": "bronze.alunos", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_brasil", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.dicionario", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.diretorio_municipio", "status": "SUCCEEDED", "duracao_s": 0.4, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "dbt.silver", "status": "SUCCEEDED", "duracao_s": 92.6, "rows_out": null, "acao": null, "erro": null}]}, {"run_id": "20261001T140713Z-bb3655", "inicio": "2026-10-01T14:11:01.067460+00:00", "sucesso": false, "duracao_s": 131.0, "bytes_faturados": null, "etapas": [{"step": "bronze.alunos", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_brasil", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.dicionario", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.diretorio_municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "dbt.silver", "status": "SUCCEEDED", "duracao_s": 71.2, "rows_out": null, "acao": null, "erro": null}, {"step": "dbt.gold", "status": "FAILED", "duracao_s": 58.1, "rows_out": null, "acao": null, "erro": "DbtExecutionError: erros de execução: ['status_meta_distingue_sem_meta_de_nao_atingiu']"}]}, {"run_id": "20261001T133227Z-c655ab", "inicio": "2026-10-01T13:37:56.034161+00:00", "sucesso": false, "duracao_s": 125.3, "bytes_faturados": null, "etapas": [{"step": "bronze.alunos", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.municipio", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_brasil", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_uf", "status": "SUCCEEDED", "duracao_s": 0.2, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_municipio", "status": "SUCCEEDED", "duracao_s": 0.1, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.dicionario", "status": "SUCCEEDED", "duracao_s": 0.1, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "bronze.diretorio_municipio", "status": "SUCCEEDED", "duracao_s": 0.1, "rows_out": 0, "acao": "PULADA_FONTE_INALTERADA", "erro": null}, {"step": "dbt.silver", "status": "SUCCEEDED", "duracao_s": 72.6, "rows_out": null, "acao": null, "erro": null}, {"step": "dbt.gold", "status": "FAILED", "duracao_s": 51.3, "rows_out": null, "acao": null, "erro": "DbtExecutionError: erros de execução: ['resultado_oficial']"}]}, {"run_id": "20261001T131455Z-325f14", "inicio": "2026-10-01T13:19:26.867120+00:00", "sucesso": false, "duracao_s": 89.4, "bytes_faturados": 342884352, "etapas": [{"step": "bronze.alunos", "status": "SUCCEEDED", "duracao_s": 4.6, "rows_out": 3867999, "acao": "EXPORTADA", "erro": null}, {"step": "bronze.municipio", "status": "SUCCEEDED", "duracao_s": 3.7, "rows_out": 23995, "acao": "EXPORTADA", "erro": null}, {"step": "bronze.uf", "status": "SUCCEEDED", "duracao_s": 2.7, "rows_out": 145, "acao": "EXPORTADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_brasil", "status": "SUCCEEDED", "duracao_s": 2.9, "rows_out": 3, "acao": "EXPORTADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_uf", "status": "SUCCEEDED", "duracao_s": 3.3, "rows_out": 81, "acao": "EXPORTADA", "erro": null}, {"step": "bronze.meta_alfabetizacao_municipio", "status": "SUCCEEDED", "duracao_s": 2.9, "rows_out": 10704, "acao": "EXPORTADA", "erro": null}, {"step": "bronze.dicionario", "status": "SUCCEEDED", "duracao_s": 2.9, "rows_out": 27, "acao": "EXPORTADA", "erro": null}, {"step": "bronze.diretorio_municipio", "status": "SUCCEEDED", "duracao_s": 3.3, "rows_out": 5571, "acao": "EXPORTADA", "erro": null}, {"step": "dbt.silver", "status": "FAILED", "duracao_s": 63.0, "rows_out": null, "acao": null, "erro": "QualityGateFailed: 1 regra(s) bloqueante(s) reprovada(s) em silver: ['assert_join_match_bloqueante']"}]}], "qualidade": [{"run_id": "20261001T193739Z-f0dbac", "executado_em": "2026-10-01T19:43:36.440512+00:00", "aprovados": 92, "bloqueantes_reprovados": 0, "informativos_alertados": 4, "erros": 0}, {"run_id": "20261001T172800Z-b20784", "executado_em": "2026-10-01T17:37:10.304743+00:00", "aprovados": 59, "bloqueantes_reprovados": 1, "informativos_alertados": 1, "erros": 0}, {"run_id": "20261001T162153Z-ca83f9", "executado_em": "2026-10-01T16:30:44.108597+00:00", "aprovados": 92, "bloqueantes_reprovados": 0, "informativos_alertados": 4, "erros": 0}, {"run_id": "20261001T161436Z-9e8b7f", "executado_em": "2026-10-01T16:23:06.877535+00:00", "aprovados": 63, "bloqueantes_reprovados": 0, "informativos_alertados": 1, "erros": 0}, {"run_id": "20261001T140713Z-bb3655", "executado_em": "2026-10-01T14:18:02.094442+00:00", "aprovados": 87, "bloqueantes_reprovados": 0, "informativos_alertados": 4, "erros": 0}, {"run_id": "20261001T133227Z-c655ab", "executado_em": "2026-10-01T13:41:33.155511+00:00", "aprovados": 77, "bloqueantes_reprovados": 2, "informativos_alertados": 4, "erros": 0}, {"run_id": "20261001T131455Z-325f14", "executado_em": "2026-10-01T13:26:13.976120+00:00", "aprovados": 62, "bloqueantes_reprovados": 1, "informativos_alertados": 1, "erros": 0}], "joins": [{"join_name": "alunos__diretorio", "severidade": "bloqueante", "total": 10392, "matched": 10392, "taxa": 1.0, "min_rate": 0.99, "reprovado": false}, {"join_name": "alunos__indicador_uf", "severidade": "bloqueante", "total": 143, "matched": 141, "taxa": 0.986, "min_rate": 0.95, "reprovado": false}, {"join_name": "indicador_municipio__diretorio", "severidade": "bloqueante", "total": 23995, "matched": 23995, "taxa": 1.0, "min_rate": 0.99, "reprovado": false}, {"join_name": "indicador_municipio__meta_municipio", "severidade": "bloqueante", "total": 10680, "matched": 10464, "taxa": 0.9798, "min_rate": 0.5, "reprovado": false}, {"join_name": "indicador_municipio__meta_municipio", "severidade": "informativa", "total": 10680, "matched": 10464, "taxa": 0.9798, "min_rate": 0.9, "reprovado": false}, {"join_name": "indicador_uf__meta_uf", "severidade": "bloqueante", "total": 73, "matched": 72, "taxa": 0.9863, "min_rate": 0.95, "reprovado": false}, {"join_name": "indicador_uf__uf", "severidade": "bloqueante", "total": 145, "matched": 145, "taxa": 1.0, "min_rate": 1.0, "reprovado": false}, {"join_name": "meta_municipio__diretorio", "severidade": "bloqueante", "total": 10704, "matched": 10704, "taxa": 1.0, "min_rate": 0.99, "reprovado": false}]};
+
+const NS = "http://www.w3.org/2000/svg";
+const nf = (v, d = 1) => v == null ? "—" : Number(v).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const nInt = v => v == null ? "—" : Number(v).toLocaleString("pt-BR");
+const pct = (v, d = 1) => v == null ? "—" : nf(v, d) + "%";
+const pp = (v, d = 1) => v == null ? "—" : (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v), d) + " p.p.";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function text(parent, x, y, str, attrs = {}) {
+  const t = el("text", { x, y, ...attrs }, parent);
+  t.textContent = str;
+  return t;
+}
+function svgIn(id, w, h) {
+  const host = document.getElementById(id);
+  host.innerHTML = "";
+  return el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img" }, host);
+}
+const lin = (d0, d1, r0, r1) => v => r0 + (v - d0) / (d1 - d0) * (r1 - r0);
+
+const tip = document.getElementById("tip");
+function showTip(evt, title, rows) {
+  tip.innerHTML = `<b>${esc(title)}</b>` + rows.map(([k, v]) => `<div class="row"><span>${esc(k)}</span><span>${esc(v)}</span></div>`).join("");
+  tip.hidden = false;
+  const pad = 14, r = tip.getBoundingClientRect();
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  if (x + r.width > innerWidth - 8) x = evt.clientX - r.width - pad;
+  if (y + r.height > innerHeight - 8) y = evt.clientY - r.height - pad;
+  tip.style.left = Math.max(8, x) + "px";
+  tip.style.top = Math.max(8, y) + "px";
+}
+function hideTip() { tip.hidden = true; }
+
+const STATUS = {
+  ATINGIU: { label: "Atingiu a meta", cls: "good", color: "var(--good)" },
+  NAO_ATINGIU: { label: "Não atingiu", cls: "critical", color: "var(--critical)" },
+  SEM_META: { label: "Sem meta pactuada", cls: "neutral", color: "var(--neutral)" },
+  SEM_RESULTADO: { label: "Sem resultado", cls: "neutral", color: "var(--neutral)" },
+  AGUARDANDO_RESULTADO: { label: "Aguardando resultado", cls: "neutral", color: "var(--neutral)" },
+};
+const pill = s => `<span class="pill ${STATUS[s]?.cls || "neutral"}"><i></i>${esc(STATUS[s]?.label || s)}</span>`;
+
+function segmented(id, options, initial, onChange) {
+  const host = document.getElementById(id);
+  host.innerHTML = "";
+  options.forEach(o => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = o;
+    b.setAttribute("aria-pressed", String(o === initial));
+    b.addEventListener("click", () => {
+      host.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      onChange(o);
+    });
+    host.appendChild(b);
+  });
+  onChange(initial);
+}
+
+/* ---------- KPIs ---------- */
+function renderKpis() {
+  const br = DADOS.brasil.filter(r => r.taxa != null);
+  const last = br[br.length - 1];
+  const serie = DADOS.brasil_serie;
+  const prev = serie.find(r => r.ano === last.ano - 1);
+  const uni = DADOS.universalizacao[0] || {};
+  const munYear = Math.max(...DADOS.mun_status.map(r => r.ano));
+  const mun = DADOS.mun_status.filter(r => r.ano === munYear);
+  const munTot = mun.reduce((a, r) => a + r.n, 0);
+  const munOk = (mun.find(r => r.status_meta === "ATINGIU") || { n: 0 }).n;
+  const valUF = DADOS.validacao_resumo.find(r => r.nivel === "UF") || {};
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi hero">
+      <div class="label">Brasil, rede pública, ${last.ano}</div>
+      <div class="value">${pct(last.taxa)}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${pill(last.status_meta)}
+        <span class="note">meta pactuada ${pct(last.meta)} · ${pp(last.taxa - last.meta)}</span></div>
+      ${prev ? `<div class="note">${pp(last.taxa - prev.taxa)} em relação a ${prev.ano} (${pct(prev.taxa)})</div>` : ""}
+    </div>
+    <div class="kpi">
+      <div class="label">Até a meta pactuada de 2030</div>
+      <div class="value">${pp(uni.dist_meta_2030).replace("+", "")}</div>
+      <div class="note">meta ${pct(uni.meta_2030, 0)} · leitura aspiracional (100%): ${nf(uni.dist_100)} p.p.</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Municípios que atingiram a meta (${munYear})</div>
+      <div class="value">${nInt(munOk)}</div>
+      <div class="note">de ${nInt(munTot)} com resultado na rede municipal (${pct(100 * munOk / munTot, 0)})</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Validação cruzada (UFs)</div>
+      <div class="value">${nf(valUF.mediana_correta, 3)} p.p.</div>
+      <div class="note">desvio mediano em ${nInt(valUF.grupos)} grupos; ${nInt(valUF.dentro_05)} dentro de 0,5 p.p.</div>
+    </div>`;
+}
+
+/* ---------- Brasil: linha ---------- */
+function renderBrasil() {
+  const W = 760, H = 300, m = { t: 18, r: 96, b: 30, l: 40 };
+  const svg = svgIn("chart-br", W, H);
+  svg.setAttribute("aria-label", "Linha do resultado oficial do Brasil e da meta pactuada até 2030");
+  const anos = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  const x = lin(2023, 2030, m.l, W - m.r), y = lin(40, 90, H - m.b, m.t);
+  for (let v = 40; v <= 90; v += 10) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: v === 40 ? "base" : "gridline" }, svg);
+    text(svg, m.l - 8, y(v) + 4, v + "%", { "text-anchor": "end" });
+  }
+  anos.forEach(a => text(svg, x(a), H - m.b + 18, a, { "text-anchor": "middle" }));
+
+  const meta = DADOS.brasil.filter(r => r.meta != null);
+  const obs = DADOS.brasil_serie.filter(r => r.taxa != null);
+  const path = pts => pts.map((p, i) => (i ? "L" : "M") + x(p[0]).toFixed(1) + " " + y(p[1]).toFixed(1)).join(" ");
+
+  el("path", { d: path(meta.map(r => [r.ano, r.meta])), fill: "none", stroke: "var(--ink-2)", "stroke-width": 1.5, "stroke-dasharray": "5 4", "stroke-linecap": "round" }, svg);
+  meta.forEach(r => el("circle", { cx: x(r.ano), cy: y(r.meta), r: 3, fill: "var(--surface)", stroke: "var(--ink-2)", "stroke-width": 1.5 }, svg));
+
+  const obsPts = obs.map(r => [r.ano, r.taxa]);
+  el("path", { d: path(obsPts) + ` L${x(obsPts.at(-1)[0])} ${y(40)} L${x(obsPts[0][0])} ${y(40)} Z`, fill: "var(--serie-wash)", stroke: "none" }, svg);
+  el("path", { d: path(obsPts), fill: "none", stroke: "var(--serie)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+  obs.forEach(r => el("circle", { cx: x(r.ano), cy: y(r.taxa), r: 4.5, fill: "var(--serie)", stroke: "var(--surface)", "stroke-width": 2 }, svg));
+
+  const lo = obs.at(-1), lm = meta.at(-1);
+  text(svg, x(lo.ano), y(lo.taxa) - 14, `${pct(lo.taxa)} em ${lo.ano}`, { class: "ink", "font-weight": 600, "text-anchor": "middle" });
+  text(svg, x(lm.ano) + 8, y(lm.meta) + 4, `meta ${pct(lm.meta, 0)}`, { class: "ink2" });
+
+  const cross = el("line", { y1: m.t, y2: H - m.b, stroke: "var(--baseline)", "stroke-width": 1, visibility: "hidden" }, svg);
+  anos.forEach(a => {
+    const hit = el("rect", { x: x(a) - (x(2024) - x(2023)) / 2, y: m.t, width: x(2024) - x(2023), height: H - m.t - m.b, fill: "transparent" }, svg);
+    const o = obs.find(r => r.ano === a), mt = meta.find(r => r.ano === a), st = DADOS.brasil.find(r => r.ano === a);
+    hit.addEventListener("pointermove", e => {
+      cross.setAttribute("x1", x(a)); cross.setAttribute("x2", x(a)); cross.setAttribute("visibility", "visible");
+      showTip(e, `Brasil · ${a}`, [
+        ["Resultado oficial", o ? pct(o.taxa) : "ainda sem resultado"],
+        ["Meta pactuada", mt ? pct(mt.meta) : "—"],
+        ["Situação", st ? (STATUS[st.status_meta]?.label || st.status_meta) : "sem meta neste ano"],
+        ...(o ? [["Fonte", o.fonte_resultado === "tabela_meta" ? "tabela de metas" : "tabela de indicador"]] : []),
+      ]);
+    });
+    hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  });
+}
+
+/* ---------- UFs: barras divergentes ---------- */
+function renderUF(ano) {
+  const rows = DADOS.uf.filter(r => r.ano === ano);
+  const com = rows.filter(r => r.gap != null).sort((a, b) => b.gap - a.gap);
+  const sem = rows.filter(r => r.gap == null).sort((a, b) => a.uf.localeCompare(b.uf));
+  const all = [...com, ...sem];
+  const rowH = 22, W = 760, m = { t: 22, r: 70, b: 8, l: 44 };
+  const H = m.t + all.length * rowH + m.b;
+  const svg = svgIn("chart-uf", W, H);
+  svg.setAttribute("aria-label", `Distância até a meta por UF em ${ano}`);
+  const maxAbs = Math.max(5, Math.ceil(Math.max(...com.map(r => Math.abs(r.gap))) / 5) * 5);
+  const x = lin(-maxAbs, maxAbs, m.l + 40, W - m.r);
+  for (let v = -maxAbs; v <= maxAbs; v += 5) {
+    el("line", { x1: x(v), x2: x(v), y1: m.t - 4, y2: m.t + com.length * rowH, class: v === 0 ? "base" : "gridline" }, svg);
+    text(svg, x(v), m.t - 8, (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v), { "text-anchor": "middle" });
+  }
+  all.forEach((r, i) => {
+    const cy = m.t + i * rowH + rowH / 2;
+    text(svg, m.l, cy + 4, r.uf, { class: "ink", "text-anchor": "end", "font-weight": 600 });
+    if (r.gap != null) {
+      const x0 = x(0), x1 = x(r.gap), h = 12, rr = 4;
+      const left = Math.min(x0, x1), w = Math.max(1, Math.abs(x1 - x0));
+      const pos = r.gap >= 0;
+      // canto arredondado só na ponta do dado; reto na linha de base
+      const d = pos
+        ? `M${left} ${cy - h / 2} H${left + w - rr} Q${left + w} ${cy - h / 2} ${left + w} ${cy - h / 2 + rr} V${cy + h / 2 - rr} Q${left + w} ${cy + h / 2} ${left + w - rr} ${cy + h / 2} H${left} Z`
+        : `M${left + w} ${cy - h / 2} H${left + rr} Q${left} ${cy - h / 2} ${left} ${cy - h / 2 + rr} V${cy + h / 2 - rr} Q${left} ${cy + h / 2} ${left + rr} ${cy + h / 2} H${left + w} Z`;
+      el("path", { d: w < 2 * rr ? `M${left} ${cy - h / 2} h${w} v${h} h${-w} Z` : d, fill: pos ? "var(--acima)" : "var(--abaixo)" }, svg);
+      text(svg, pos ? x1 + 6 : x1 - 6, cy + 4, pp(r.gap), { class: "ink2", "text-anchor": pos ? "start" : "end" });
+    } else {
+      text(svg, x(0) + 6, cy + 4, `sem meta pactuada · resultado ${pct(r.taxa)}`, { class: "ink2" });
+    }
+    const hit = el("rect", { x: 0, y: cy - rowH / 2, width: W, height: rowH, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", e => showTip(e, `${r.uf} · ${r.ano}`, [
+      ["Resultado", pct(r.taxa)], ["Meta pactuada", r.meta == null ? "sem meta" : pct(r.meta)],
+      ["Distância", r.gap == null ? "—" : pp(r.gap)], ["Situação", STATUS[r.status_meta]?.label || r.status_meta],
+      ["Fonte do resultado", r.fonte_resultado === "tabela_meta" ? "tabela de metas" : "tabela de indicador"],
+    ]));
+    hit.addEventListener("pointerleave", hideTip);
+  });
+  document.getElementById("table-uf").innerHTML = `<table><thead><tr><th>UF</th><th class="num">Resultado</th><th class="num">Meta pactuada</th><th class="num">Distância</th><th>Situação</th></tr></thead><tbody>${
+    all.map(r => `<tr><td>${r.uf}</td><td class="num">${pct(r.taxa)}</td><td class="num">${r.meta == null ? "—" : pct(r.meta)}</td><td class="num">${r.gap == null ? "—" : pp(r.gap)}</td><td>${pill(r.status_meta)}</td></tr>`).join("")
+  }</tbody></table>`;
+}
+
+/* ---------- Municípios ---------- */
+function renderMunStatus() {
+  const ano = Math.max(...DADOS.mun_status.map(r => r.ano));
+  const order = ["ATINGIU", "NAO_ATINGIU", "SEM_META", "SEM_RESULTADO"];
+  const rows = order.map(s => DADOS.mun_status.find(r => r.ano === ano && r.status_meta === s)).filter(Boolean);
+  const tot = rows.reduce((a, r) => a + r.n, 0);
+  document.getElementById("sub-mun").textContent = `Rede municipal, ${ano}: ${nInt(tot)} municípios. "Sem meta" é um estado próprio, nunca contado como "não atingiu".`;
+  const W = 520, H = 34, gap = 2;
+  const svg = svgIn("chart-mun-status", W, H);
+  svg.setAttribute("aria-label", "Distribuição dos municípios por situação frente à meta");
+  let acc = 0;
+  rows.forEach((r, i) => {
+    const w = (W - gap * (rows.length - 1)) * r.n / tot;
+    const x0 = acc;
+    const rect = el("rect", { x: x0, y: 4, width: Math.max(0, w), height: 26, rx: (i === 0 || i === rows.length - 1) ? 4 : 0, fill: STATUS[r.status_meta].color }, svg);
+    if (w > 70) text(svg, x0 + 8, 21, pct(100 * r.n / tot, 0), { fill: r.status_meta === "SEM_META" ? "var(--ink)" : "#ffffff", "font-weight": 600, "font-size": 12 });
+    rect.addEventListener("pointermove", e => showTip(e, STATUS[r.status_meta].label, [["Municípios", nInt(r.n)], ["Participação", pct(100 * r.n / tot)], ["Ano", ano]]));
+    rect.addEventListener("pointerleave", hideTip);
+    acc += w + gap;
+  });
+  document.getElementById("legend-mun").innerHTML = rows.map(r =>
+    `<span><i class="key" style="background:${STATUS[r.status_meta].color}"></i>${STATUS[r.status_meta].label}: <strong style="color:var(--ink)">${nInt(r.n)}</strong></span>`).join("");
+}
+
+function renderHist(ano) {
+  const rows = DADOS.mun_distribuicao.filter(r => r.ano === ano);
+  const faixas = Array.from({ length: 21 }, (_, i) => i * 5);
+  const val = f => (rows.find(r => r.faixa === f) || { n: 0 }).n;
+  const W = 520, H = 220, m = { t: 14, r: 8, b: 28, l: 40 };
+  const svg = svgIn("chart-hist", W, H);
+  svg.setAttribute("aria-label", `Distribuição da taxa municipal em ${ano}`);
+  const maxN = Math.max(...faixas.map(val));
+  const top = Math.ceil(maxN / 200) * 200;
+  const y = lin(0, top, H - m.b, m.t);
+  const band = (W - m.l - m.r) / faixas.length;
+  for (let v = 0; v <= top; v += top / 4) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: v === 0 ? "base" : "gridline" }, svg);
+    text(svg, m.l - 6, y(v) + 4, nInt(v), { "text-anchor": "end" });
+  }
+  faixas.forEach((f, i) => {
+    const n = val(f), bw = Math.min(24, band - 2), x0 = m.l + i * band + (band - bw) / 2;
+    if (n > 0) {
+      const h = y(0) - y(n), rr = Math.min(4, h);
+      el("path", { d: `M${x0} ${y(0)} V${y(n) + rr} Q${x0} ${y(n)} ${x0 + rr} ${y(n)} H${x0 + bw - rr} Q${x0 + bw} ${y(n)} ${x0 + bw} ${y(n) + rr} V${y(0)} Z`, fill: "var(--serie)" }, svg);
+    }
+    if (f % 20 === 0) text(svg, m.l + i * band + band / 2, H - m.b + 16, f + "%", { "text-anchor": "middle" });
+    const hit = el("rect", { x: m.l + i * band, y: m.t, width: band, height: H - m.t - m.b, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", e => showTip(e, `Taxa entre ${f}% e ${Math.min(100, f + 5)}%`, [["Municípios", nInt(n)], ["Ano", ano]]));
+    hit.addEventListener("pointerleave", hideTip);
+  });
+}
+
+/* ---------- Validação cruzada ---------- */
+function renderValidacao() {
+  const pts = DADOS.validacao_uf;
+  const W = 520, H = 320, m = { t: 12, r: 12, b: 34, l: 44 };
+  const svg = svgIn("chart-val", W, H);
+  svg.setAttribute("aria-label", "Dispersão da taxa oficial contra a taxa recalculada do microdado");
+  const vals = pts.flatMap(p => [p.oficial, p.micro]);
+  const lo = Math.floor(Math.min(...vals) / 10) * 10, hi = Math.ceil(Math.max(...vals) / 10) * 10;
+  const x = lin(lo, hi, m.l, W - m.r), y = lin(lo, hi, H - m.b, m.t);
+  for (let v = lo; v <= hi; v += 10) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: v === lo ? "base" : "gridline" }, svg);
+    text(svg, m.l - 6, y(v) + 4, v + "%", { "text-anchor": "end" });
+    text(svg, x(v), H - m.b + 16, v + "%", { "text-anchor": "middle" });
+  }
+  text(svg, (m.l + W - m.r) / 2, H - 2, "Taxa publicada (oficial)", { "text-anchor": "middle", class: "ink2" });
+  text(svg, m.l + 4, m.t + 10, "Taxa recalculada do microdado", { class: "ink2" });
+  el("line", { x1: x(lo), y1: y(lo), x2: x(hi), y2: y(hi), stroke: "var(--baseline)", "stroke-width": 1.5 }, svg);
+  const sorted = [...pts].sort((a, b) => Math.abs(a.diff) - Math.abs(b.diff));
+  sorted.forEach(p => {
+    const fora = Math.abs(p.diff) > 0.5;
+    const c = el("circle", { cx: x(p.oficial), cy: y(p.micro), r: fora ? 5 : 4, fill: fora ? "var(--critical)" : "var(--serie)", stroke: "var(--surface)", "stroke-width": 2 }, svg);
+    const hit = el("circle", { cx: x(p.oficial), cy: y(p.micro), r: 9, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", e => showTip(e, `${p.uf} · ${p.rede} · ${p.ano}`, [
+      ["Oficial", pct(p.oficial, 2)], ["Microdado", pct(p.micro, 2)], ["Diferença", pp(p.diff, 3)],
+      ["Avaliados", nInt(p.n_avaliados)],
+    ]));
+    hit.addEventListener("pointerleave", hideTip);
+  });
+
+  const uf = DADOS.validacao_resumo.find(r => r.nivel === "UF") || {};
+  const metodos = [
+    { nome: "Ponderado, só avaliados (pipeline)", v: uf.mediana_correta, ok: true },
+    { nome: "Sem peso amostral", v: uf.med_sem_peso, ok: false },
+    { nome: "Ausentes no denominador", v: uf.med_ausentes, ok: false },
+  ];
+  const W2 = 520, rowH = 30, m2 = { l: 210, r: 70 }, H2 = metodos.length * rowH + 6;
+  const svg2 = svgIn("chart-metodo", W2, H2);
+  svg2.setAttribute("aria-label", "Desvio mediano por método de cálculo");
+  const xm = lin(0, Math.max(...metodos.map(d => d.v)) * 1.05, m2.l, W2 - m2.r);
+  el("line", { x1: m2.l, x2: m2.l, y1: 0, y2: H2, class: "base" }, svg2);
+  metodos.forEach((d, i) => {
+    const cy = i * rowH + rowH / 2 + 2, h = 14, w = Math.max(2, xm(d.v) - m2.l), rr = Math.min(4, w / 2);
+    text(svg2, m2.l - 10, cy + 4, d.nome, { class: d.ok ? "ink" : "ink2", "text-anchor": "end", "font-weight": d.ok ? 600 : 400 });
+    el("path", { d: `M${m2.l} ${cy - h / 2} H${m2.l + w - rr} Q${m2.l + w} ${cy - h / 2} ${m2.l + w} ${cy - h / 2 + rr} V${cy + h / 2 - rr} Q${m2.l + w} ${cy + h / 2} ${m2.l + w - rr} ${cy + h / 2} H${m2.l} Z`, fill: d.ok ? "var(--serie)" : "var(--abaixo)" }, svg2);
+    text(svg2, m2.l + w + 6, cy + 4, nf(d.v, 3) + " p.p.", { class: "ink" });
+  });
+}
+
+/* ---------- Pipeline ---------- */
+function estadoExecucao(r) {
+  const e = r.etapas || [];
+  const falha = e.find(s => s.status === "FAILED");
+  if (e.some(s => s.step === "publish.gold" && s.status === "SUCCEEDED")) return { label: "Gold publicada", cls: "good" };
+  if (falha && /QualityGateFailed/.test(falha.erro || "")) return { label: "Barrada pela qualidade", cls: "serious" };
+  if (falha) return { label: "Erro de execução", cls: "critical" };
+  return { label: "Incompleta", cls: "neutral" };
+}
+function etapaChip(nome, steps) {
+  if (!steps.length) return `<span class="step skip">${nome}: não executou</span>`;
+  const fail = steps.find(s => s.status === "FAILED");
+  if (fail) return `<span class="step fail" title="${esc(fail.erro)}">${nome}: falhou</span>`;
+  if (steps.every(s => s.acao === "PULADA_FONTE_INALTERADA")) return `<span class="step skip">${nome}: pulada, fonte inalterada</span>`;
+  const linhas = steps.reduce((a, s) => a + (s.rows_out || 0), 0);
+  return `<span class="step ok">${nome}: ok${linhas ? " · " + nInt(linhas) + " linhas" : ""}</span>`;
+}
+function renderRuns() {
+  const q = Object.fromEntries(DADOS.qualidade.map(r => [r.run_id, r]));
+  const fmt = iso => new Date(iso.replace(" ", "T")).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  const rows = DADOS.execucoes.map(r => {
+    const st = estadoExecucao(r), e = r.etapas || [];
+    const by = p => e.filter(s => s.step.startsWith(p));
+    const dq = q[r.run_id];
+    const dqTxt = dq ? `${nInt(dq.aprovados)} aprovadas · ${nInt(dq.bloqueantes_reprovados)} bloqueantes reprovadas · ${nInt(dq.informativos_alertados)} alertas` : "—";
+    return `<tr>
+      <td class="num">${fmt(r.inicio)}</td>
+      <td><span class="pill ${st.cls}"><i></i>${st.label}</span></td>
+      <td><div class="steps">${etapaChip("Bronze", by("bronze."))}${etapaChip("Silver", by("dbt.silver"))}${etapaChip("Gold", by("dbt.gold"))}${etapaChip("Publicação", by("publish.gold"))}</div></td>
+      <td>${dqTxt}</td>
+      <td class="num">${nf(r.duracao_s, 0)} s</td>
+      <td class="mono">${esc(r.run_id)}</td></tr>`;
+  }).join("");
+  document.getElementById("table-runs").innerHTML = `<table><thead><tr><th class="num">Início (Brasília)</th><th>Resultado</th><th>Camadas</th><th>Regras de qualidade</th><th class="num">Duração das etapas</th><th>run_id</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function renderJoins() {
+  const nome = {
+    alunos__diretorio: "Alunos → diretório de municípios", alunos__indicador_uf: "Microdado → indicador UF (validação cruzada)",
+    indicador_municipio__diretorio: "Indicador municipal → diretório", indicador_municipio__meta_municipio: "Indicador municipal → meta municipal",
+    indicador_uf__meta_uf: "Indicador UF → meta UF", indicador_uf__uf: "Indicador UF → tabela de UFs", meta_municipio__diretorio: "Meta municipal → diretório",
+  };
+  const rows = DADOS.joins.map(j => {
+    const lo = 0.5, x = v => Math.max(0, Math.min(100, (v - lo) / (1 - lo) * 100));
+    return `<tr><td>${esc(nome[j.join_name] || j.join_name)}</td><td>${j.severidade === "bloqueante" ? "Bloqueante" : "Informativa"}</td>
+      <td class="num">${nInt(j.matched)} / ${nInt(j.total)}</td><td class="num">${pct(100 * j.taxa, 1)}</td>
+      <td style="min-width:160px"><div class="meter" title="limiar ${pct(100 * j.min_rate, 0)}"><span class="${j.reprovado ? "fail" : ""}" style="width:${x(j.taxa)}%"></span><em style="left:calc(${x(j.min_rate)}% - 1px)"></em></div></td>
+      <td class="num">${pct(100 * j.min_rate, 0)}</td></tr>`;
+  }).join("");
+  document.getElementById("table-joins").innerHTML = `<table><thead><tr><th>Junção</th><th>Regra</th><th class="num">Correspondências</th><th class="num">Taxa</th><th>Escala de 50% a 100%</th><th class="num">Limiar</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function renderFoot() {
+  const quando = new Date(DADOS.gerado_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+  document.getElementById("foot").innerHTML = `
+    <div>Fonte: Base dos Dados, <code>br_inep_avaliacao_alfabetizacao</code> (Inep). Processamento: pipeline medalhão no GCP, projeto <code>${esc(DADOS.projeto)}</code>, dataset <code>${esc(DADOS.dataset_gold)}</code>.</div>
+    <div>Gerado em ${quando} (Brasília) por <code>python -m alfab dashboard</code>. Os resultados de ${Math.max(...DADOS.brasil_serie.map(r => r.ano))} vêm da tabela de metas, que é atualizada antes das tabelas de indicador.</div>`;
+}
+
+renderKpis();
+renderBrasil();
+segmented("seg-uf", [...new Set(DADOS.uf.map(r => r.ano))].sort().map(String), String(Math.max(...DADOS.uf.map(r => r.ano))), v => renderUF(Number(v)));
+renderMunStatus();
+segmented("seg-hist", [...new Set(DADOS.mun_distribuicao.map(r => r.ano))].sort().map(String), String(Math.max(...DADOS.mun_distribuicao.map(r => r.ano))), v => renderHist(Number(v)));
+renderValidacao();
+renderRuns();
+renderJoins();
+renderFoot();
+</script>

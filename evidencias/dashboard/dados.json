@@ -1,0 +1,3110 @@
+{
+ "gerado_em": "2026-10-01T20:49:27+00:00",
+ "projeto": "midyear-cursor-510311-v9",
+ "dataset_gold": "gold",
+ "brasil": [
+  {
+   "ano": 2024,
+   "taxa": 59.2,
+   "meta": 60.0,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "taxa": 66.0,
+   "meta": 64.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2026,
+   "taxa": null,
+   "meta": 67.0,
+   "status_meta": "AGUARDANDO_RESULTADO",
+   "fonte_resultado": null
+  },
+  {
+   "ano": 2027,
+   "taxa": null,
+   "meta": 71.0,
+   "status_meta": "AGUARDANDO_RESULTADO",
+   "fonte_resultado": null
+  },
+  {
+   "ano": 2028,
+   "taxa": null,
+   "meta": 74.0,
+   "status_meta": "AGUARDANDO_RESULTADO",
+   "fonte_resultado": null
+  },
+  {
+   "ano": 2029,
+   "taxa": null,
+   "meta": 77.0,
+   "status_meta": "AGUARDANDO_RESULTADO",
+   "fonte_resultado": null
+  },
+  {
+   "ano": 2030,
+   "taxa": null,
+   "meta": 80.0,
+   "status_meta": "AGUARDANDO_RESULTADO",
+   "fonte_resultado": null
+  }
+ ],
+ "brasil_serie": [
+  {
+   "ano": 2023,
+   "taxa": 55.9,
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2024,
+   "taxa": 59.2,
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "taxa": 66.0,
+   "fonte_resultado": "tabela_meta"
+  }
+ ],
+ "uf": [
+  {
+   "ano": 2024,
+   "uf": "AC",
+   "taxa": 51.38,
+   "meta": null,
+   "gap": null,
+   "status_meta": "SEM_META",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "AL",
+   "taxa": 48.63,
+   "meta": 50.0,
+   "gap": -1.37,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "AM",
+   "taxa": 49.17,
+   "meta": 57.0,
+   "gap": -7.83,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "AP",
+   "taxa": 46.62,
+   "meta": 48.0,
+   "gap": -1.38,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "BA",
+   "taxa": 35.96,
+   "meta": 43.0,
+   "gap": -7.04,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "CE",
+   "taxa": 85.31,
+   "meta": 80.0,
+   "gap": 5.31,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "DF",
+   "taxa": 59.13,
+   "meta": null,
+   "gap": null,
+   "status_meta": "SEM_META",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2024,
+   "uf": "ES",
+   "taxa": 71.69,
+   "meta": 70.0,
+   "gap": 1.69,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "GO",
+   "taxa": 72.74,
+   "meta": 69.0,
+   "gap": 3.74,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "MA",
+   "taxa": 59.64,
+   "meta": 60.0,
+   "gap": -0.36,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "MG",
+   "taxa": 72.07,
+   "meta": 63.0,
+   "gap": 9.07,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "MS",
+   "taxa": 55.87,
+   "meta": 53.0,
+   "gap": 2.87,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "MT",
+   "taxa": 60.59,
+   "meta": 59.0,
+   "gap": 1.59,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "PA",
+   "taxa": 48.2,
+   "meta": 54.0,
+   "gap": -5.8,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "PB",
+   "taxa": 55.96,
+   "meta": 56.0,
+   "gap": -0.04,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "PE",
+   "taxa": 60.79,
+   "meta": 62.0,
+   "gap": -1.21,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "PI",
+   "taxa": 59.82,
+   "meta": 57.0,
+   "gap": 2.82,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "PR",
+   "taxa": 70.42,
+   "meta": 74.0,
+   "gap": -3.58,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "RJ",
+   "taxa": 55.25,
+   "meta": 57.0,
+   "gap": -1.75,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "RN",
+   "taxa": 39.29,
+   "meta": 44.0,
+   "gap": -4.71,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "RO",
+   "taxa": 62.62,
+   "meta": 67.0,
+   "gap": -4.38,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "RS",
+   "taxa": 44.67,
+   "meta": 66.0,
+   "gap": -21.33,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "SC",
+   "taxa": 62.02,
+   "meta": 65.0,
+   "gap": -2.98,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "SE",
+   "taxa": 38.39,
+   "meta": 38.0,
+   "gap": 0.39,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "SP",
+   "taxa": 58.13,
+   "meta": 57.0,
+   "gap": 1.13,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2024,
+   "uf": "TO",
+   "taxa": 50.07,
+   "meta": 50.0,
+   "gap": 0.07,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_indicador"
+  },
+  {
+   "ano": 2025,
+   "uf": "AC",
+   "taxa": 68.0,
+   "meta": 57.0,
+   "gap": 11.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "AL",
+   "taxa": 64.0,
+   "meta": 56.0,
+   "gap": 8.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "AM",
+   "taxa": 57.0,
+   "meta": 61.0,
+   "gap": -4.0,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "AP",
+   "taxa": 60.0,
+   "meta": 54.0,
+   "gap": 6.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "BA",
+   "taxa": 55.0,
+   "meta": 50.0,
+   "gap": 5.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "CE",
+   "taxa": 84.0,
+   "meta": 80.0,
+   "gap": 4.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "DF",
+   "taxa": 65.0,
+   "meta": 63.0,
+   "gap": 2.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "ES",
+   "taxa": 77.0,
+   "meta": 72.0,
+   "gap": 5.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "GO",
+   "taxa": 80.0,
+   "meta": 71.0,
+   "gap": 9.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "MA",
+   "taxa": 69.0,
+   "meta": 64.0,
+   "gap": 5.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "MG",
+   "taxa": 74.0,
+   "meta": 66.0,
+   "gap": 8.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "MS",
+   "taxa": 66.0,
+   "meta": 58.0,
+   "gap": 8.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "MT",
+   "taxa": 75.0,
+   "meta": 63.0,
+   "gap": 12.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "PA",
+   "taxa": 58.0,
+   "meta": 59.0,
+   "gap": -1.0,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "PB",
+   "taxa": 71.0,
+   "meta": 61.0,
+   "gap": 10.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "PE",
+   "taxa": 66.0,
+   "meta": 66.0,
+   "gap": 0.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "PI",
+   "taxa": 77.0,
+   "meta": 62.0,
+   "gap": 15.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "PR",
+   "taxa": 80.0,
+   "meta": 75.0,
+   "gap": 5.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "RJ",
+   "taxa": 60.0,
+   "meta": 61.0,
+   "gap": -1.0,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "RN",
+   "taxa": 48.0,
+   "meta": 51.0,
+   "gap": -3.0,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "RO",
+   "taxa": 75.0,
+   "meta": 70.0,
+   "gap": 5.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "RR",
+   "taxa": 57.0,
+   "meta": null,
+   "gap": null,
+   "status_meta": "SEM_META",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "RS",
+   "taxa": 52.0,
+   "meta": 69.0,
+   "gap": -17.0,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "SC",
+   "taxa": 59.0,
+   "meta": 67.0,
+   "gap": -8.0,
+   "status_meta": "NAO_ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "SE",
+   "taxa": 50.0,
+   "meta": 46.0,
+   "gap": 4.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "SP",
+   "taxa": 61.0,
+   "meta": 61.0,
+   "gap": 0.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  },
+  {
+   "ano": 2025,
+   "uf": "TO",
+   "taxa": 61.0,
+   "meta": 55.0,
+   "gap": 6.0,
+   "status_meta": "ATINGIU",
+   "fonte_resultado": "tabela_meta"
+  }
+ ],
+ "mun_status": [
+  {
+   "ano": 2024,
+   "status_meta": "ATINGIU",
+   "n": 2788
+  },
+  {
+   "ano": 2024,
+   "status_meta": "NAO_ATINGIU",
+   "n": 2444
+  },
+  {
+   "ano": 2024,
+   "status_meta": "SEM_META",
+   "n": 216
+  }
+ ],
+ "mun_distribuicao": [
+  {
+   "ano": 2023,
+   "faixa": 0,
+   "n": 3
+  },
+  {
+   "ano": 2023,
+   "faixa": 5,
+   "n": 7
+  },
+  {
+   "ano": 2023,
+   "faixa": 10,
+   "n": 33
+  },
+  {
+   "ano": 2023,
+   "faixa": 15,
+   "n": 60
+  },
+  {
+   "ano": 2023,
+   "faixa": 20,
+   "n": 117
+  },
+  {
+   "ano": 2023,
+   "faixa": 25,
+   "n": 180
+  },
+  {
+   "ano": 2023,
+   "faixa": 30,
+   "n": 236
+  },
+  {
+   "ano": 2023,
+   "faixa": 35,
+   "n": 276
+  },
+  {
+   "ano": 2023,
+   "faixa": 40,
+   "n": 348
+  },
+  {
+   "ano": 2023,
+   "faixa": 45,
+   "n": 416
+  },
+  {
+   "ano": 2023,
+   "faixa": 50,
+   "n": 486
+  },
+  {
+   "ano": 2023,
+   "faixa": 55,
+   "n": 490
+  },
+  {
+   "ano": 2023,
+   "faixa": 60,
+   "n": 498
+  },
+  {
+   "ano": 2023,
+   "faixa": 65,
+   "n": 484
+  },
+  {
+   "ano": 2023,
+   "faixa": 70,
+   "n": 444
+  },
+  {
+   "ano": 2023,
+   "faixa": 75,
+   "n": 411
+  },
+  {
+   "ano": 2023,
+   "faixa": 80,
+   "n": 332
+  },
+  {
+   "ano": 2023,
+   "faixa": 85,
+   "n": 255
+  },
+  {
+   "ano": 2023,
+   "faixa": 90,
+   "n": 169
+  },
+  {
+   "ano": 2023,
+   "faixa": 95,
+   "n": 140
+  },
+  {
+   "ano": 2023,
+   "faixa": 100,
+   "n": 63
+  },
+  {
+   "ano": 2024,
+   "faixa": 0,
+   "n": 1
+  },
+  {
+   "ano": 2024,
+   "faixa": 5,
+   "n": 3
+  },
+  {
+   "ano": 2024,
+   "faixa": 10,
+   "n": 13
+  },
+  {
+   "ano": 2024,
+   "faixa": 15,
+   "n": 34
+  },
+  {
+   "ano": 2024,
+   "faixa": 20,
+   "n": 78
+  },
+  {
+   "ano": 2024,
+   "faixa": 25,
+   "n": 144
+  },
+  {
+   "ano": 2024,
+   "faixa": 30,
+   "n": 198
+  },
+  {
+   "ano": 2024,
+   "faixa": 35,
+   "n": 304
+  },
+  {
+   "ano": 2024,
+   "faixa": 40,
+   "n": 330
+  },
+  {
+   "ano": 2024,
+   "faixa": 45,
+   "n": 381
+  },
+  {
+   "ano": 2024,
+   "faixa": 50,
+   "n": 417
+  },
+  {
+   "ano": 2024,
+   "faixa": 55,
+   "n": 451
+  },
+  {
+   "ano": 2024,
+   "faixa": 60,
+   "n": 480
+  },
+  {
+   "ano": 2024,
+   "faixa": 65,
+   "n": 484
+  },
+  {
+   "ano": 2024,
+   "faixa": 70,
+   "n": 474
+  },
+  {
+   "ano": 2024,
+   "faixa": 75,
+   "n": 509
+  },
+  {
+   "ano": 2024,
+   "faixa": 80,
+   "n": 422
+  },
+  {
+   "ano": 2024,
+   "faixa": 85,
+   "n": 287
+  },
+  {
+   "ano": 2024,
+   "faixa": 90,
+   "n": 218
+  },
+  {
+   "ano": 2024,
+   "faixa": 95,
+   "n": 162
+  },
+  {
+   "ano": 2024,
+   "faixa": 100,
+   "n": 58
+  }
+ ],
+ "validacao_uf": [
+  {
+   "ano": 2023,
+   "uf": "AL",
+   "rede": "estadual",
+   "oficial": 38.65,
+   "micro": 38.65,
+   "diff": 0.0,
+   "diff_sem_peso": -1.412,
+   "diff_ausentes": -5.687,
+   "n_avaliados": 1434
+  },
+  {
+   "ano": 2023,
+   "uf": "AL",
+   "rede": "municipal",
+   "oficial": 44.13,
+   "micro": 44.13,
+   "diff": 0.004,
+   "diff_sem_peso": 0.679,
+   "diff_ausentes": -2.664,
+   "n_avaliados": 31355
+  },
+  {
+   "ano": 2023,
+   "uf": "AL",
+   "rede": "publica",
+   "oficial": 43.88,
+   "micro": 43.88,
+   "diff": 0.004,
+   "diff_sem_peso": 0.598,
+   "diff_ausentes": -2.802,
+   "n_avaliados": 32789
+  },
+  {
+   "ano": 2023,
+   "uf": "AM",
+   "rede": "estadual",
+   "oficial": 62.63,
+   "micro": 62.63,
+   "diff": -0.0,
+   "diff_sem_peso": 0.617,
+   "diff_ausentes": -9.425,
+   "n_avaliados": 11863
+  },
+  {
+   "ano": 2023,
+   "uf": "AM",
+   "rede": "municipal",
+   "oficial": 49.2,
+   "micro": 49.2,
+   "diff": -0.0,
+   "diff_sem_peso": 0.815,
+   "diff_ausentes": -12.269,
+   "n_avaliados": 36147
+  },
+  {
+   "ano": 2023,
+   "uf": "AM",
+   "rede": "publica",
+   "oficial": 52.2,
+   "micro": 52.2,
+   "diff": 0.003,
+   "diff_sem_peso": 1.085,
+   "diff_ausentes": -11.629,
+   "n_avaliados": 48010
+  },
+  {
+   "ano": 2023,
+   "uf": "AP",
+   "rede": "estadual",
+   "oficial": 40.7,
+   "micro": 40.7,
+   "diff": -0.001,
+   "diff_sem_peso": -0.021,
+   "diff_ausentes": -5.178,
+   "n_avaliados": 2859
+  },
+  {
+   "ano": 2023,
+   "uf": "AP",
+   "rede": "municipal",
+   "oficial": 41.87,
+   "micro": 41.87,
+   "diff": 0.003,
+   "diff_sem_peso": 0.073,
+   "diff_ausentes": -3.898,
+   "n_avaliados": 8216
+  },
+  {
+   "ano": 2023,
+   "uf": "AP",
+   "rede": "publica",
+   "oficial": 41.56,
+   "micro": 41.56,
+   "diff": 0.002,
+   "diff_sem_peso": 0.056,
+   "diff_ausentes": -4.237,
+   "n_avaliados": 11075
+  },
+  {
+   "ano": 2023,
+   "uf": "BA",
+   "rede": "estadual",
+   "oficial": 42.83,
+   "micro": 42.83,
+   "diff": 0.004,
+   "diff_sem_peso": 4.814,
+   "diff_ausentes": -6.284,
+   "n_avaliados": 191
+  },
+  {
+   "ano": 2023,
+   "uf": "BA",
+   "rede": "municipal",
+   "oficial": 36.77,
+   "micro": 36.77,
+   "diff": -0.004,
+   "diff_sem_peso": 0.568,
+   "diff_ausentes": -5.204,
+   "n_avaliados": 116221
+  },
+  {
+   "ano": 2023,
+   "uf": "BA",
+   "rede": "publica",
+   "oficial": 36.78,
+   "micro": 36.78,
+   "diff": -0.003,
+   "diff_sem_peso": 0.575,
+   "diff_ausentes": -5.205,
+   "n_avaliados": 116412
+  },
+  {
+   "ano": 2023,
+   "uf": "CE",
+   "rede": "estadual",
+   "oficial": 78.75,
+   "micro": 78.75,
+   "diff": -0.001,
+   "diff_sem_peso": -0.431,
+   "diff_ausentes": -10.145,
+   "n_avaliados": 452
+  },
+  {
+   "ano": 2023,
+   "uf": "CE",
+   "rede": "municipal",
+   "oficial": 84.49,
+   "micro": 84.49,
+   "diff": 0.003,
+   "diff_sem_peso": 0.253,
+   "diff_ausentes": -3.767,
+   "n_avaliados": 95097
+  },
+  {
+   "ano": 2023,
+   "uf": "CE",
+   "rede": "publica",
+   "oficial": 84.46,
+   "micro": 84.46,
+   "diff": 0.003,
+   "diff_sem_peso": 0.253,
+   "diff_ausentes": -3.8,
+   "n_avaliados": 95549
+  },
+  {
+   "ano": 2023,
+   "uf": "ES",
+   "rede": "estadual",
+   "oficial": 74.58,
+   "micro": 74.58,
+   "diff": 0.004,
+   "diff_sem_peso": 0.929,
+   "diff_ausentes": -6.542,
+   "n_avaliados": 2650
+  },
+  {
+   "ano": 2023,
+   "uf": "ES",
+   "rede": "municipal",
+   "oficial": 67.52,
+   "micro": 67.52,
+   "diff": 0.002,
+   "diff_sem_peso": 0.397,
+   "diff_ausentes": -7.551,
+   "n_avaliados": 41978
+  },
+  {
+   "ano": 2023,
+   "uf": "ES",
+   "rede": "publica",
+   "oficial": 67.93,
+   "micro": 67.93,
+   "diff": 0.003,
+   "diff_sem_peso": 0.437,
+   "diff_ausentes": -7.491,
+   "n_avaliados": 44628
+  },
+  {
+   "ano": 2023,
+   "uf": "GO",
+   "rede": "estadual",
+   "oficial": 76.59,
+   "micro": 76.59,
+   "diff": 0.003,
+   "diff_sem_peso": 1.279,
+   "diff_ausentes": -7.749,
+   "n_avaliados": 122
+  },
+  {
+   "ano": 2023,
+   "uf": "GO",
+   "rede": "municipal",
+   "oficial": 66.72,
+   "micro": 66.71,
+   "diff": -0.014,
+   "diff_sem_peso": 0.261,
+   "diff_ausentes": -8.437,
+   "n_avaliados": 72746
+  },
+  {
+   "ano": 2023,
+   "uf": "GO",
+   "rede": "publica",
+   "oficial": 66.74,
+   "micro": 66.72,
+   "diff": -0.018,
+   "diff_sem_peso": 0.259,
+   "diff_ausentes": -8.44,
+   "n_avaliados": 72868
+  },
+  {
+   "ano": 2023,
+   "uf": "MA",
+   "rede": "estadual",
+   "oficial": 72.38,
+   "micro": 72.38,
+   "diff": 0.002,
+   "diff_sem_peso": -0.122,
+   "diff_ausentes": -8.38,
+   "n_avaliados": 155
+  },
+  {
+   "ano": 2023,
+   "uf": "MA",
+   "rede": "municipal",
+   "oficial": 56.39,
+   "micro": 56.39,
+   "diff": 0.002,
+   "diff_sem_peso": 0.525,
+   "diff_ausentes": -5.674,
+   "n_avaliados": 66638
+  },
+  {
+   "ano": 2023,
+   "uf": "MA",
+   "rede": "publica",
+   "oficial": 56.43,
+   "micro": 56.43,
+   "diff": -0.001,
+   "diff_sem_peso": 0.521,
+   "diff_ausentes": -5.683,
+   "n_avaliados": 66793
+  },
+  {
+   "ano": 2023,
+   "uf": "MG",
+   "rede": "estadual",
+   "oficial": 63.65,
+   "micro": 63.65,
+   "diff": 0.002,
+   "diff_sem_peso": 1.572,
+   "diff_ausentes": -4.342,
+   "n_avaliados": 41495
+  },
+  {
+   "ano": 2023,
+   "uf": "MG",
+   "rede": "municipal",
+   "oficial": 58.74,
+   "micro": 58.74,
+   "diff": 0.003,
+   "diff_sem_peso": 0.918,
+   "diff_ausentes": -5.514,
+   "n_avaliados": 146741
+  },
+  {
+   "ano": 2023,
+   "uf": "MG",
+   "rede": "publica",
+   "oficial": 59.81,
+   "micro": 59.81,
+   "diff": -0.001,
+   "diff_sem_peso": 1.075,
+   "diff_ausentes": -5.263,
+   "n_avaliados": 188236
+  },
+  {
+   "ano": 2023,
+   "uf": "MS",
+   "rede": "estadual",
+   "oficial": 42.9,
+   "micro": 43.07,
+   "diff": 0.17,
+   "diff_sem_peso": 0.17,
+   "diff_ausentes": -5.27,
+   "n_avaliados": 671
+  },
+  {
+   "ano": 2023,
+   "uf": "MS",
+   "rede": "municipal",
+   "oficial": 47.53,
+   "micro": 47.85,
+   "diff": 0.321,
+   "diff_sem_peso": 0.321,
+   "diff_ausentes": -5.441,
+   "n_avaliados": 36442
+  },
+  {
+   "ano": 2023,
+   "uf": "MS",
+   "rede": "publica",
+   "oficial": 47.45,
+   "micro": 47.76,
+   "diff": 0.315,
+   "diff_sem_peso": 0.315,
+   "diff_ausentes": -5.442,
+   "n_avaliados": 37113
+  },
+  {
+   "ano": 2023,
+   "uf": "MT",
+   "rede": "estadual",
+   "oficial": 48.02,
+   "micro": 49.51,
+   "diff": 1.493,
+   "diff_sem_peso": 2.583,
+   "diff_ausentes": -4.425,
+   "n_avaliados": 2818
+  },
+  {
+   "ano": 2023,
+   "uf": "MT",
+   "rede": "municipal",
+   "oficial": 55.43,
+   "micro": 55.42,
+   "diff": -0.008,
+   "diff_sem_peso": 0.439,
+   "diff_ausentes": -6.512,
+   "n_avaliados": 44878
+  },
+  {
+   "ano": 2023,
+   "uf": "MT",
+   "rede": "publica",
+   "oficial": 55.03,
+   "micro": 55.07,
+   "diff": 0.038,
+   "diff_sem_peso": 0.528,
+   "diff_ausentes": -6.431,
+   "n_avaliados": 47696
+  },
+  {
+   "ano": 2023,
+   "uf": "PA",
+   "rede": "estadual",
+   "oficial": 57.07,
+   "micro": 57.07,
+   "diff": -0.0,
+   "diff_sem_peso": 0.799,
+   "diff_ausentes": -6.026,
+   "n_avaliados": 6589
+  },
+  {
+   "ano": 2023,
+   "uf": "PA",
+   "rede": "municipal",
+   "oficial": 47.71,
+   "micro": 47.71,
+   "diff": 0.005,
+   "diff_sem_peso": 0.782,
+   "diff_ausentes": -8.933,
+   "n_avaliados": 77968
+  },
+  {
+   "ano": 2023,
+   "uf": "PA",
+   "rede": "publica",
+   "oficial": 48.38,
+   "micro": 48.38,
+   "diff": 0.001,
+   "diff_sem_peso": 0.842,
+   "diff_ausentes": -8.73,
+   "n_avaliados": 84557
+  },
+  {
+   "ano": 2023,
+   "uf": "PB",
+   "rede": "estadual",
+   "oficial": 55.23,
+   "micro": 55.23,
+   "diff": -0.0,
+   "diff_sem_peso": -0.338,
+   "diff_ausentes": -8.863,
+   "n_avaliados": 1523
+  },
+  {
+   "ano": 2023,
+   "uf": "PB",
+   "rede": "municipal",
+   "oficial": 50.92,
+   "micro": 50.92,
+   "diff": -0.001,
+   "diff_sem_peso": 0.43,
+   "diff_ausentes": -5.523,
+   "n_avaliados": 32191
+  },
+  {
+   "ano": 2023,
+   "uf": "PB",
+   "rede": "publica",
+   "oficial": 51.12,
+   "micro": 51.12,
+   "diff": 0.002,
+   "diff_sem_peso": 0.39,
+   "diff_ausentes": -5.677,
+   "n_avaliados": 33714
+  },
+  {
+   "ano": 2023,
+   "uf": "PE",
+   "rede": "estadual",
+   "oficial": 79.25,
+   "micro": 79.25,
+   "diff": 0.002,
+   "diff_sem_peso": 0.355,
+   "diff_ausentes": -9.308,
+   "n_avaliados": 152
+  },
+  {
+   "ano": 2023,
+   "uf": "PE",
+   "rede": "municipal",
+   "oficial": 58.91,
+   "micro": 58.91,
+   "diff": 0.004,
+   "diff_sem_peso": 0.218,
+   "diff_ausentes": -4.549,
+   "n_avaliados": 80996
+  },
+  {
+   "ano": 2023,
+   "uf": "PE",
+   "rede": "publica",
+   "oficial": 58.95,
+   "micro": 58.95,
+   "diff": 0.004,
+   "diff_sem_peso": 0.216,
+   "diff_ausentes": -4.558,
+   "n_avaliados": 81148
+  },
+  {
+   "ano": 2023,
+   "uf": "PI",
+   "rede": "estadual",
+   "oficial": 48.27,
+   "micro": 48.27,
+   "diff": -0.001,
+   "diff_sem_peso": 1.342,
+   "diff_ausentes": -5.886,
+   "n_avaliados": 129
+  },
+  {
+   "ano": 2023,
+   "uf": "PI",
+   "rede": "municipal",
+   "oficial": 52.5,
+   "micro": 52.5,
+   "diff": 0.001,
+   "diff_sem_peso": 0.688,
+   "diff_ausentes": -2.82,
+   "n_avaliados": 32938
+  },
+  {
+   "ano": 2023,
+   "uf": "PI",
+   "rede": "publica",
+   "oficial": 52.48,
+   "micro": 52.48,
+   "diff": 0.003,
+   "diff_sem_peso": 0.694,
+   "diff_ausentes": -2.832,
+   "n_avaliados": 33067
+  },
+  {
+   "ano": 2023,
+   "uf": "PR",
+   "rede": "estadual",
+   "oficial": 80.29,
+   "micro": 80.29,
+   "diff": 0.001,
+   "diff_sem_peso": 1.289,
+   "diff_ausentes": -17.346,
+   "n_avaliados": 152
+  },
+  {
+   "ano": 2023,
+   "uf": "PR",
+   "rede": "municipal",
+   "oficial": 73.11,
+   "micro": 73.11,
+   "diff": 0.0,
+   "diff_sem_peso": 0.525,
+   "diff_ausentes": -9.643,
+   "n_avaliados": 119233
+  },
+  {
+   "ano": 2023,
+   "uf": "PR",
+   "rede": "publica",
+   "oficial": 73.12,
+   "micro": 73.12,
+   "diff": 0.0,
+   "diff_sem_peso": 0.525,
+   "diff_ausentes": -9.654,
+   "n_avaliados": 119385
+  },
+  {
+   "ano": 2023,
+   "uf": "RJ",
+   "rede": "municipal",
+   "oficial": 52.13,
+   "micro": 52.13,
+   "diff": -0.003,
+   "diff_sem_peso": 1.244,
+   "diff_ausentes": -8.785,
+   "n_avaliados": 129935
+  },
+  {
+   "ano": 2023,
+   "uf": "RJ",
+   "rede": "publica",
+   "oficial": 52.13,
+   "micro": 52.13,
+   "diff": -0.003,
+   "diff_sem_peso": 1.244,
+   "diff_ausentes": -8.785,
+   "n_avaliados": 129935
+  },
+  {
+   "ano": 2023,
+   "uf": "RN",
+   "rede": "estadual",
+   "oficial": 41.49,
+   "micro": 41.49,
+   "diff": 0.005,
+   "diff_sem_peso": 0.534,
+   "diff_ausentes": -7.754,
+   "n_avaliados": 4250
+  },
+  {
+   "ano": 2023,
+   "uf": "RN",
+   "rede": "municipal",
+   "oficial": 36.39,
+   "micro": 36.39,
+   "diff": -0.003,
+   "diff_sem_peso": 0.764,
+   "diff_ausentes": -7.336,
+   "n_avaliados": 20687
+  },
+  {
+   "ano": 2023,
+   "uf": "RN",
+   "rede": "publica",
+   "oficial": 37.24,
+   "micro": 37.24,
+   "diff": -0.002,
+   "diff_sem_peso": 0.744,
+   "diff_ausentes": -7.405,
+   "n_avaliados": 24937
+  },
+  {
+   "ano": 2023,
+   "uf": "RO",
+   "rede": "estadual",
+   "oficial": 58.65,
+   "micro": 58.65,
+   "diff": -0.003,
+   "diff_sem_peso": 0.305,
+   "diff_ausentes": -7.12,
+   "n_avaliados": 1742
+  },
+  {
+   "ano": 2023,
+   "uf": "RO",
+   "rede": "municipal",
+   "oficial": 65.17,
+   "micro": 65.17,
+   "diff": 0.004,
+   "diff_sem_peso": 0.678,
+   "diff_ausentes": -7.116,
+   "n_avaliados": 18374
+  },
+  {
+   "ano": 2023,
+   "uf": "RO",
+   "rede": "publica",
+   "oficial": 64.6,
+   "micro": 64.6,
+   "diff": 0.004,
+   "diff_sem_peso": 0.652,
+   "diff_ausentes": -7.116,
+   "n_avaliados": 20116
+  },
+  {
+   "ano": 2023,
+   "uf": "RS",
+   "rede": "estadual",
+   "oficial": 63.18,
+   "micro": 63.18,
+   "diff": -0.004,
+   "diff_sem_peso": 1.407,
+   "diff_ausentes": -10.578,
+   "n_avaliados": 30876
+  },
+  {
+   "ano": 2023,
+   "uf": "RS",
+   "rede": "municipal",
+   "oficial": 63.55,
+   "micro": 63.55,
+   "diff": -0.004,
+   "diff_sem_peso": 1.197,
+   "diff_ausentes": -10.823,
+   "n_avaliados": 67784
+  },
+  {
+   "ano": 2023,
+   "uf": "RS",
+   "rede": "publica",
+   "oficial": 63.43,
+   "micro": 63.43,
+   "diff": 0.0,
+   "diff_sem_peso": 1.267,
+   "diff_ausentes": -10.742,
+   "n_avaliados": 98660
+  },
+  {
+   "ano": 2023,
+   "uf": "SC",
+   "rede": "estadual",
+   "oficial": 59.29,
+   "micro": 59.29,
+   "diff": 0.004,
+   "diff_sem_peso": 1.709,
+   "diff_ausentes": -13.325,
+   "n_avaliados": 18533
+  },
+  {
+   "ano": 2023,
+   "uf": "SC",
+   "rede": "municipal",
+   "oficial": 62.04,
+   "micro": 62.04,
+   "diff": 0.002,
+   "diff_sem_peso": 1.131,
+   "diff_ausentes": -11.744,
+   "n_avaliados": 62123
+  },
+  {
+   "ano": 2023,
+   "uf": "SC",
+   "rede": "publica",
+   "oficial": 61.38,
+   "micro": 61.38,
+   "diff": 0.003,
+   "diff_sem_peso": 1.292,
+   "diff_ausentes": -12.122,
+   "n_avaliados": 80656
+  },
+  {
+   "ano": 2023,
+   "uf": "SE",
+   "rede": "estadual",
+   "oficial": 35.31,
+   "micro": 35.06,
+   "diff": -0.251,
+   "diff_sem_peso": 0.001,
+   "diff_ausentes": 0.001,
+   "n_avaliados": 2866
+  },
+  {
+   "ano": 2023,
+   "uf": "SE",
+   "rede": "municipal",
+   "oficial": 30.57,
+   "micro": 30.31,
+   "diff": -0.259,
+   "diff_sem_peso": -0.002,
+   "diff_ausentes": -0.002,
+   "n_avaliados": 15768
+  },
+  {
+   "ano": 2023,
+   "uf": "SE",
+   "rede": "publica",
+   "oficial": 31.3,
+   "micro": 31.04,
+   "diff": -0.262,
+   "diff_sem_peso": -0.002,
+   "diff_ausentes": -0.002,
+   "n_avaliados": 18634
+  },
+  {
+   "ano": 2023,
+   "uf": "TO",
+   "rede": "municipal",
+   "oficial": 43.72,
+   "micro": 43.72,
+   "diff": -0.005,
+   "diff_sem_peso": -0.009,
+   "diff_ausentes": -7.043,
+   "n_avaliados": 16831
+  },
+  {
+   "ano": 2023,
+   "uf": "TO",
+   "rede": "publica",
+   "oficial": 43.72,
+   "micro": 43.72,
+   "diff": -0.005,
+   "diff_sem_peso": -0.009,
+   "diff_ausentes": -7.043,
+   "n_avaliados": 16831
+  },
+  {
+   "ano": 2024,
+   "uf": "AC",
+   "rede": "estadual",
+   "oficial": 55.5,
+   "micro": 55.5,
+   "diff": 0.002,
+   "diff_sem_peso": 0.34,
+   "diff_ausentes": -10.422,
+   "n_avaliados": 4486
+  },
+  {
+   "ano": 2024,
+   "uf": "AC",
+   "rede": "municipal",
+   "oficial": 48.16,
+   "micro": 48.16,
+   "diff": -0.001,
+   "diff_sem_peso": 0.657,
+   "diff_ausentes": -8.628,
+   "n_avaliados": 5748
+  },
+  {
+   "ano": 2024,
+   "uf": "AC",
+   "rede": "publica",
+   "oficial": 51.38,
+   "micro": 51.38,
+   "diff": 0.004,
+   "diff_sem_peso": 0.516,
+   "diff_ausentes": -9.412,
+   "n_avaliados": 10234
+  },
+  {
+   "ano": 2024,
+   "uf": "AL",
+   "rede": "estadual",
+   "oficial": 39.92,
+   "micro": 39.92,
+   "diff": -0.005,
+   "diff_sem_peso": 0.33,
+   "diff_ausentes": -3.933,
+   "n_avaliados": 1359
+  },
+  {
+   "ano": 2024,
+   "uf": "AL",
+   "rede": "municipal",
+   "oficial": 49.05,
+   "micro": 49.05,
+   "diff": -0.002,
+   "diff_sem_peso": 0.285,
+   "diff_ausentes": -2.68,
+   "n_avaliados": 30216
+  },
+  {
+   "ano": 2024,
+   "uf": "AL",
+   "rede": "publica",
+   "oficial": 48.63,
+   "micro": 48.64,
+   "diff": 0.005,
+   "diff_sem_peso": 0.314,
+   "diff_ausentes": -2.729,
+   "n_avaliados": 31575
+  },
+  {
+   "ano": 2024,
+   "uf": "AM",
+   "rede": "estadual",
+   "oficial": 58.18,
+   "micro": 58.18,
+   "diff": 0.0,
+   "diff_sem_peso": 0.535,
+   "diff_ausentes": -10.002,
+   "n_avaliados": 11101
+  },
+  {
+   "ano": 2024,
+   "uf": "AM",
+   "rede": "municipal",
+   "oficial": 46.47,
+   "micro": 46.47,
+   "diff": 0.003,
+   "diff_sem_peso": 0.593,
+   "diff_ausentes": -9.38,
+   "n_avaliados": 35527
+  },
+  {
+   "ano": 2024,
+   "uf": "AM",
+   "rede": "publica",
+   "oficial": 49.17,
+   "micro": 49.17,
+   "diff": 0.004,
+   "diff_sem_peso": 0.667,
+   "diff_ausentes": -9.52,
+   "n_avaliados": 46628
+  },
+  {
+   "ano": 2024,
+   "uf": "AP",
+   "rede": "estadual",
+   "oficial": 39.56,
+   "micro": 39.55,
+   "diff": -0.006,
+   "diff_sem_peso": 0.549,
+   "diff_ausentes": -5.442,
+   "n_avaliados": 2927
+  },
+  {
+   "ano": 2024,
+   "uf": "AP",
+   "rede": "municipal",
+   "oficial": 49.28,
+   "micro": 49.28,
+   "diff": -0.003,
+   "diff_sem_peso": 0.533,
+   "diff_ausentes": -4.111,
+   "n_avaliados": 8287
+  },
+  {
+   "ano": 2024,
+   "uf": "AP",
+   "rede": "publica",
+   "oficial": 46.62,
+   "micro": 46.62,
+   "diff": -0.002,
+   "diff_sem_peso": 0.66,
+   "diff_ausentes": -4.474,
+   "n_avaliados": 11214
+  },
+  {
+   "ano": 2024,
+   "uf": "BA",
+   "rede": "estadual",
+   "oficial": 34.46,
+   "micro": 34.46,
+   "diff": -0.003,
+   "diff_sem_peso": -0.003,
+   "diff_ausentes": -4.097,
+   "n_avaliados": 267
+  },
+  {
+   "ano": 2024,
+   "uf": "BA",
+   "rede": "municipal",
+   "oficial": 35.96,
+   "micro": 35.96,
+   "diff": 0.005,
+   "diff_sem_peso": 0.005,
+   "diff_ausentes": -3.574,
+   "n_avaliados": 103802
+  },
+  {
+   "ano": 2024,
+   "uf": "BA",
+   "rede": "publica",
+   "oficial": 35.96,
+   "micro": 35.96,
+   "diff": 0.001,
+   "diff_sem_peso": 0.001,
+   "diff_ausentes": -3.58,
+   "n_avaliados": 104069
+  },
+  {
+   "ano": 2024,
+   "uf": "CE",
+   "rede": "estadual",
+   "oficial": 78.36,
+   "micro": 78.36,
+   "diff": -0.005,
+   "diff_sem_peso": 0.105,
+   "diff_ausentes": -5.053,
+   "n_avaliados": 469
+  },
+  {
+   "ano": 2024,
+   "uf": "CE",
+   "rede": "municipal",
+   "oficial": 85.35,
+   "micro": 85.35,
+   "diff": -0.001,
+   "diff_sem_peso": 0.014,
+   "diff_ausentes": -1.562,
+   "n_avaliados": 87689
+  },
+  {
+   "ano": 2024,
+   "uf": "CE",
+   "rede": "publica",
+   "oficial": 85.31,
+   "micro": 85.31,
+   "diff": 0.002,
+   "diff_sem_peso": 0.017,
+   "diff_ausentes": -1.581,
+   "n_avaliados": 88158
+  },
+  {
+   "ano": 2024,
+   "uf": "ES",
+   "rede": "estadual",
+   "oficial": 86.21,
+   "micro": 86.21,
+   "diff": -0.004,
+   "diff_sem_peso": 0.358,
+   "diff_ausentes": -7.525,
+   "n_avaliados": 2226
+  },
+  {
+   "ano": 2024,
+   "uf": "ES",
+   "rede": "municipal",
+   "oficial": 70.9,
+   "micro": 70.92,
+   "diff": 0.016,
+   "diff_sem_peso": 0.392,
+   "diff_ausentes": -6.825,
+   "n_avaliados": 40525
+  },
+  {
+   "ano": 2024,
+   "uf": "ES",
+   "rede": "publica",
+   "oficial": 71.69,
+   "micro": 71.7,
+   "diff": 0.014,
+   "diff_sem_peso": 0.397,
+   "diff_ausentes": -6.862,
+   "n_avaliados": 42751
+  },
+  {
+   "ano": 2024,
+   "uf": "GO",
+   "rede": "estadual",
+   "oficial": 83.66,
+   "micro": 83.67,
+   "diff": 0.013,
+   "diff_sem_peso": 0.34,
+   "diff_ausentes": -1.307,
+   "n_avaliados": 50
+  },
+  {
+   "ano": 2024,
+   "uf": "GO",
+   "rede": "municipal",
+   "oficial": 72.73,
+   "micro": 72.74,
+   "diff": 0.008,
+   "diff_sem_peso": 0.283,
+   "diff_ausentes": -5.744,
+   "n_avaliados": 70749
+  },
+  {
+   "ano": 2024,
+   "uf": "GO",
+   "rede": "publica",
+   "oficial": 72.74,
+   "micro": 72.74,
+   "diff": 0.005,
+   "diff_sem_peso": 0.281,
+   "diff_ausentes": -5.744,
+   "n_avaliados": 70799
+  },
+  {
+   "ano": 2024,
+   "uf": "MA",
+   "rede": "estadual",
+   "oficial": 77.57,
+   "micro": 77.55,
+   "diff": -0.017,
+   "diff_sem_peso": 0.383,
+   "diff_ausentes": -2.57,
+   "n_avaliados": 127
+  },
+  {
+   "ano": 2024,
+   "uf": "MA",
+   "rede": "municipal",
+   "oficial": 59.61,
+   "micro": 59.61,
+   "diff": 0.002,
+   "diff_sem_peso": 0.52,
+   "diff_ausentes": -4.962,
+   "n_avaliados": 62847
+  },
+  {
+   "ano": 2024,
+   "uf": "MA",
+   "rede": "publica",
+   "oficial": 59.64,
+   "micro": 59.65,
+   "diff": 0.006,
+   "diff_sem_peso": 0.526,
+   "diff_ausentes": -4.953,
+   "n_avaliados": 62974
+  },
+  {
+   "ano": 2024,
+   "uf": "MG",
+   "rede": "estadual",
+   "oficial": 74.47,
+   "micro": 74.47,
+   "diff": 0.001,
+   "diff_sem_peso": 0.458,
+   "diff_ausentes": -6.396,
+   "n_avaliados": 38341
+  },
+  {
+   "ano": 2024,
+   "uf": "MG",
+   "rede": "municipal",
+   "oficial": 71.45,
+   "micro": 71.45,
+   "diff": 0.003,
+   "diff_sem_peso": 0.514,
+   "diff_ausentes": -7.885,
+   "n_avaliados": 142430
+  },
+  {
+   "ano": 2024,
+   "uf": "MG",
+   "rede": "publica",
+   "oficial": 72.07,
+   "micro": 72.08,
+   "diff": 0.005,
+   "diff_sem_peso": 0.522,
+   "diff_ausentes": -7.57,
+   "n_avaliados": 180771
+  },
+  {
+   "ano": 2024,
+   "uf": "MS",
+   "rede": "estadual",
+   "oficial": 48.33,
+   "micro": 48.33,
+   "diff": 0.003,
+   "diff_sem_peso": 0.237,
+   "diff_ausentes": -7.731,
+   "n_avaliados": 698
+  },
+  {
+   "ano": 2024,
+   "uf": "MS",
+   "rede": "municipal",
+   "oficial": 56.02,
+   "micro": 56.03,
+   "diff": 0.007,
+   "diff_sem_peso": 0.638,
+   "diff_ausentes": -4.928,
+   "n_avaliados": 36514
+  },
+  {
+   "ano": 2024,
+   "uf": "MS",
+   "rede": "publica",
+   "oficial": 55.87,
+   "micro": 55.87,
+   "diff": 0.001,
+   "diff_sem_peso": 0.636,
+   "diff_ausentes": -4.99,
+   "n_avaliados": 37212
+  },
+  {
+   "ano": 2024,
+   "uf": "MT",
+   "rede": "estadual",
+   "oficial": 46.75,
+   "micro": 46.75,
+   "diff": -0.001,
+   "diff_sem_peso": 0.935,
+   "diff_ausentes": -5.407,
+   "n_avaliados": 1382
+  },
+  {
+   "ano": 2024,
+   "uf": "MT",
+   "rede": "municipal",
+   "oficial": 61.03,
+   "micro": 61.03,
+   "diff": 0.003,
+   "diff_sem_peso": 0.362,
+   "diff_ausentes": -6.688,
+   "n_avaliados": 43701
+  },
+  {
+   "ano": 2024,
+   "uf": "MT",
+   "rede": "publica",
+   "oficial": 60.59,
+   "micro": 60.59,
+   "diff": -0.004,
+   "diff_sem_peso": 0.382,
+   "diff_ausentes": -6.655,
+   "n_avaliados": 45083
+  },
+  {
+   "ano": 2024,
+   "uf": "PA",
+   "rede": "estadual",
+   "oficial": 56.96,
+   "micro": 56.95,
+   "diff": -0.006,
+   "diff_sem_peso": 0.217,
+   "diff_ausentes": -6.279,
+   "n_avaliados": 5859
+  },
+  {
+   "ano": 2024,
+   "uf": "PA",
+   "rede": "municipal",
+   "oficial": 47.58,
+   "micro": 47.58,
+   "diff": 0.003,
+   "diff_sem_peso": 0.555,
+   "diff_ausentes": -7.71,
+   "n_avaliados": 77334
+  },
+  {
+   "ano": 2024,
+   "uf": "PA",
+   "rede": "publica",
+   "oficial": 48.2,
+   "micro": 48.2,
+   "diff": 0.003,
+   "diff_sem_peso": 0.572,
+   "diff_ausentes": -7.616,
+   "n_avaliados": 83193
+  },
+  {
+   "ano": 2024,
+   "uf": "PB",
+   "rede": "estadual",
+   "oficial": 54.97,
+   "micro": 55.67,
+   "diff": 0.696,
+   "diff_sem_peso": 0.199,
+   "diff_ausentes": -11.512,
+   "n_avaliados": 1180
+  },
+  {
+   "ano": 2024,
+   "uf": "PB",
+   "rede": "municipal",
+   "oficial": 56.01,
+   "micro": 55.98,
+   "diff": -0.034,
+   "diff_sem_peso": 0.656,
+   "diff_ausentes": -5.742,
+   "n_avaliados": 29824
+  },
+  {
+   "ano": 2024,
+   "uf": "PB",
+   "rede": "publica",
+   "oficial": 55.96,
+   "micro": 55.96,
+   "diff": 0.003,
+   "diff_sem_peso": 0.649,
+   "diff_ausentes": -5.983,
+   "n_avaliados": 31004
+  },
+  {
+   "ano": 2024,
+   "uf": "PE",
+   "rede": "estadual",
+   "oficial": 71.77,
+   "micro": 71.78,
+   "diff": 0.005,
+   "diff_sem_peso": 0.23,
+   "diff_ausentes": -2.98,
+   "n_avaliados": 150
+  },
+  {
+   "ano": 2024,
+   "uf": "PE",
+   "rede": "municipal",
+   "oficial": 60.76,
+   "micro": 60.77,
+   "diff": 0.005,
+   "diff_sem_peso": 0.289,
+   "diff_ausentes": -3.059,
+   "n_avaliados": 75803
+  },
+  {
+   "ano": 2024,
+   "uf": "PE",
+   "rede": "publica",
+   "oficial": 60.79,
+   "micro": 60.79,
+   "diff": -0.003,
+   "diff_sem_peso": 0.281,
+   "diff_ausentes": -3.068,
+   "n_avaliados": 75953
+  },
+  {
+   "ano": 2024,
+   "uf": "PI",
+   "rede": "estadual",
+   "oficial": 73.95,
+   "micro": 73.95,
+   "diff": -0.003,
+   "diff_sem_peso": 1.05,
+   "diff_ausentes": -2.211,
+   "n_avaliados": 132
+  },
+  {
+   "ano": 2024,
+   "uf": "PI",
+   "rede": "municipal",
+   "oficial": 59.76,
+   "micro": 59.77,
+   "diff": 0.007,
+   "diff_sem_peso": 0.447,
+   "diff_ausentes": -2.652,
+   "n_avaliados": 30973
+  },
+  {
+   "ano": 2024,
+   "uf": "PI",
+   "rede": "publica",
+   "oficial": 59.82,
+   "micro": 59.83,
+   "diff": 0.006,
+   "diff_sem_peso": 0.45,
+   "diff_ausentes": -2.651,
+   "n_avaliados": 31105
+  },
+  {
+   "ano": 2024,
+   "uf": "PR",
+   "rede": "estadual",
+   "oficial": 62.01,
+   "micro": 62.02,
+   "diff": 0.014,
+   "diff_sem_peso": 0.49,
+   "diff_ausentes": -9.125,
+   "n_avaliados": 176
+  },
+  {
+   "ano": 2024,
+   "uf": "PR",
+   "rede": "municipal",
+   "oficial": 70.43,
+   "micro": 70.43,
+   "diff": 0.004,
+   "diff_sem_peso": 0.379,
+   "diff_ausentes": -9.359,
+   "n_avaliados": 119630
+  },
+  {
+   "ano": 2024,
+   "uf": "PR",
+   "rede": "publica",
+   "oficial": 70.42,
+   "micro": 70.42,
+   "diff": 0.002,
+   "diff_sem_peso": 0.377,
+   "diff_ausentes": -9.361,
+   "n_avaliados": 119806
+  },
+  {
+   "ano": 2024,
+   "uf": "RJ",
+   "rede": "estadual",
+   "oficial": 80.09,
+   "micro": 80.09,
+   "diff": -0.001,
+   "diff_sem_peso": -2.312,
+   "diff_ausentes": -32.363,
+   "n_avaliados": 135
+  },
+  {
+   "ano": 2024,
+   "uf": "RJ",
+   "rede": "municipal",
+   "oficial": 55.22,
+   "micro": 55.22,
+   "diff": 0.002,
+   "diff_sem_peso": 0.645,
+   "diff_ausentes": -8.77,
+   "n_avaliados": 125536
+  },
+  {
+   "ano": 2024,
+   "uf": "RJ",
+   "rede": "publica",
+   "oficial": 55.25,
+   "micro": 55.26,
+   "diff": 0.008,
+   "diff_sem_peso": 0.639,
+   "diff_ausentes": -8.798,
+   "n_avaliados": 125671
+  },
+  {
+   "ano": 2024,
+   "uf": "RN",
+   "rede": "estadual",
+   "oficial": 45.33,
+   "micro": 45.33,
+   "diff": 0.001,
+   "diff_sem_peso": 0.711,
+   "diff_ausentes": -10.214,
+   "n_avaliados": 3536
+  },
+  {
+   "ano": 2024,
+   "uf": "RN",
+   "rede": "municipal",
+   "oficial": 38.16,
+   "micro": 38.16,
+   "diff": 0.0,
+   "diff_sem_peso": 0.686,
+   "diff_ausentes": -7.865,
+   "n_avaliados": 19312
+  },
+  {
+   "ano": 2024,
+   "uf": "RN",
+   "rede": "publica",
+   "oficial": 39.29,
+   "micro": 39.29,
+   "diff": 0.001,
+   "diff_sem_peso": 0.67,
+   "diff_ausentes": -8.235,
+   "n_avaliados": 22848
+  },
+  {
+   "ano": 2024,
+   "uf": "RO",
+   "rede": "estadual",
+   "oficial": 63.47,
+   "micro": 63.47,
+   "diff": -0.004,
+   "diff_sem_peso": 0.192,
+   "diff_ausentes": -6.59,
+   "n_avaliados": 1409
+  },
+  {
+   "ano": 2024,
+   "uf": "RO",
+   "rede": "municipal",
+   "oficial": 62.56,
+   "micro": 62.57,
+   "diff": 0.009,
+   "diff_sem_peso": 0.411,
+   "diff_ausentes": -6.985,
+   "n_avaliados": 18618
+  },
+  {
+   "ano": 2024,
+   "uf": "RO",
+   "rede": "publica",
+   "oficial": 62.62,
+   "micro": 62.63,
+   "diff": 0.012,
+   "diff_sem_peso": 0.4,
+   "diff_ausentes": -6.955,
+   "n_avaliados": 20027
+  },
+  {
+   "ano": 2024,
+   "uf": "RS",
+   "rede": "estadual",
+   "oficial": 45.63,
+   "micro": 45.72,
+   "diff": 0.093,
+   "diff_sem_peso": 1.194,
+   "diff_ausentes": -6.554,
+   "n_avaliados": 28509
+  },
+  {
+   "ano": 2024,
+   "uf": "RS",
+   "rede": "municipal",
+   "oficial": 44.23,
+   "micro": 44.31,
+   "diff": 0.081,
+   "diff_sem_peso": 1.049,
+   "diff_ausentes": -6.924,
+   "n_avaliados": 61053
+  },
+  {
+   "ano": 2024,
+   "uf": "RS",
+   "rede": "publica",
+   "oficial": 44.67,
+   "micro": 44.76,
+   "diff": 0.086,
+   "diff_sem_peso": 1.101,
+   "diff_ausentes": -6.805,
+   "n_avaliados": 89562
+  },
+  {
+   "ano": 2024,
+   "uf": "SC",
+   "rede": "estadual",
+   "oficial": 59.29,
+   "micro": 59.29,
+   "diff": 0.001,
+   "diff_sem_peso": 1.18,
+   "diff_ausentes": -17.721,
+   "n_avaliados": 15773
+  },
+  {
+   "ano": 2024,
+   "uf": "SC",
+   "rede": "municipal",
+   "oficial": 62.87,
+   "micro": 62.87,
+   "diff": 0.004,
+   "diff_sem_peso": 1.722,
+   "diff_ausentes": -17.366,
+   "n_avaliados": 53262
+  },
+  {
+   "ano": 2024,
+   "uf": "SC",
+   "rede": "publica",
+   "oficial": 62.02,
+   "micro": 62.02,
+   "diff": -0.0,
+   "diff_sem_peso": 1.63,
+   "diff_ausentes": -17.432,
+   "n_avaliados": 69035
+  },
+  {
+   "ano": 2024,
+   "uf": "SE",
+   "rede": "estadual",
+   "oficial": 40.94,
+   "micro": 40.93,
+   "diff": -0.005,
+   "diff_sem_peso": 0.167,
+   "diff_ausentes": -3.214,
+   "n_avaliados": 2131
+  },
+  {
+   "ano": 2024,
+   "uf": "SE",
+   "rede": "municipal",
+   "oficial": 38.05,
+   "micro": 38.05,
+   "diff": -0.003,
+   "diff_sem_peso": 0.167,
+   "diff_ausentes": -3.031,
+   "n_avaliados": 15671
+  },
+  {
+   "ano": 2024,
+   "uf": "SE",
+   "rede": "publica",
+   "oficial": 38.39,
+   "micro": 38.39,
+   "diff": 0.002,
+   "diff_sem_peso": 0.173,
+   "diff_ausentes": -3.047,
+   "n_avaliados": 17802
+  },
+  {
+   "ano": 2024,
+   "uf": "SP",
+   "rede": "estadual",
+   "oficial": 65.84,
+   "micro": 65.84,
+   "diff": 0.004,
+   "diff_sem_peso": 0.362,
+   "diff_ausentes": -5.531,
+   "n_avaliados": 96540
+  },
+  {
+   "ano": 2024,
+   "uf": "SP",
+   "rede": "municipal",
+   "oficial": 55.71,
+   "micro": 55.72,
+   "diff": 0.007,
+   "diff_sem_peso": 0.385,
+   "diff_ausentes": -6.074,
+   "n_avaliados": 298904
+  },
+  {
+   "ano": 2024,
+   "uf": "SP",
+   "rede": "publica",
+   "oficial": 58.13,
+   "micro": 58.14,
+   "diff": 0.005,
+   "diff_sem_peso": 0.433,
+   "diff_ausentes": -5.946,
+   "n_avaliados": 395444
+  },
+  {
+   "ano": 2024,
+   "uf": "TO",
+   "rede": "municipal",
+   "oficial": 50.07,
+   "micro": 50.05,
+   "diff": -0.016,
+   "diff_sem_peso": 0.052,
+   "diff_ausentes": -7.4,
+   "n_avaliados": 16799
+  },
+  {
+   "ano": 2024,
+   "uf": "TO",
+   "rede": "publica",
+   "oficial": 50.07,
+   "micro": 50.05,
+   "diff": -0.016,
+   "diff_sem_peso": 0.052,
+   "diff_ausentes": -7.4,
+   "n_avaliados": 16799
+  }
+ ],
+ "validacao_resumo": [
+  {
+   "nivel": "MUN",
+   "grupos": 22795,
+   "mediana_correta": 0.004,
+   "med_sem_peso": 0.268,
+   "med_ausentes": 4.994,
+   "dentro_05": 22572
+  },
+  {
+   "nivel": "UF",
+   "grupos": 141,
+   "mediana_correta": 0.003,
+   "med_sem_peso": 0.516,
+   "med_ausentes": 6.542,
+   "dentro_05": 139
+  }
+ ],
+ "universalizacao": [
+  {
+   "ano": 2025,
+   "taxa": 66.0,
+   "dist_100": 34.0,
+   "meta_2030": 80.0,
+   "dist_meta_2030": 14.0
+  }
+ ],
+ "execucoes": [
+  {
+   "run_id": "20261001T193739Z-f0dbac",
+   "inicio": "2026-10-01T19:40:06.025724+00:00",
+   "sucesso": true,
+   "duracao_s": 140.0,
+   "bytes_faturados": null,
+   "etapas": [
+    {
+     "step": "bronze.alunos",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_brasil",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.dicionario",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.diretorio_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "dbt.silver",
+     "status": "SUCCEEDED",
+     "duracao_s": 63.1,
+     "rows_out": null,
+     "acao": null,
+     "erro": null
+    },
+    {
+     "step": "dbt.gold",
+     "status": "SUCCEEDED",
+     "duracao_s": 48.7,
+     "rows_out": null,
+     "acao": null,
+     "erro": null
+    },
+    {
+     "step": "publish.gold",
+     "status": "SUCCEEDED",
+     "duracao_s": 26.5,
+     "rows_out": 204528,
+     "acao": null,
+     "erro": null
+    }
+   ]
+  },
+  {
+   "run_id": "20261001T172800Z-b20784",
+   "inicio": "2026-10-01T17:32:08.197246+00:00",
+   "sucesso": false,
+   "duracao_s": 59.6,
+   "bytes_faturados": null,
+   "etapas": [
+    {
+     "step": "bronze.alunos",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.3,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_brasil",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.1,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.dicionario",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.3,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.diretorio_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "dbt.silver",
+     "status": "FAILED",
+     "duracao_s": 57.8,
+     "rows_out": null,
+     "acao": null,
+     "erro": "QualityGateFailed: 1 regra(s) bloqueante(s) reprovada(s) em silver: ['unique_combination_indicador_municipio_ano__id_municipio__rede_codigo']"
+    }
+   ]
+  },
+  {
+   "run_id": "20261001T162153Z-ca83f9",
+   "inicio": "2026-10-01T16:26:11.455918+00:00",
+   "sucesso": true,
+   "duracao_s": 156.2,
+   "bytes_faturados": null,
+   "etapas": [
+    {
+     "step": "bronze.alunos",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_brasil",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.dicionario",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.diretorio_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.3,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "dbt.silver",
+     "status": "SUCCEEDED",
+     "duracao_s": 75.9,
+     "rows_out": null,
+     "acao": null,
+     "erro": null
+    },
+    {
+     "step": "dbt.gold",
+     "status": "SUCCEEDED",
+     "duracao_s": 53.7,
+     "rows_out": null,
+     "acao": null,
+     "erro": null
+    },
+    {
+     "step": "publish.gold",
+     "status": "SUCCEEDED",
+     "duracao_s": 24.9,
+     "rows_out": 204528,
+     "acao": null,
+     "erro": null
+    }
+   ]
+  },
+  {
+   "run_id": "20261001T161436Z-9e8b7f",
+   "inicio": "2026-10-01T16:17:38.196127+00:00",
+   "sucesso": true,
+   "duracao_s": 94.3,
+   "bytes_faturados": null,
+   "etapas": [
+    {
+     "step": "bronze.alunos",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_brasil",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.dicionario",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.diretorio_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.4,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "dbt.silver",
+     "status": "SUCCEEDED",
+     "duracao_s": 92.6,
+     "rows_out": null,
+     "acao": null,
+     "erro": null
+    }
+   ]
+  },
+  {
+   "run_id": "20261001T140713Z-bb3655",
+   "inicio": "2026-10-01T14:11:01.067460+00:00",
+   "sucesso": false,
+   "duracao_s": 131.0,
+   "bytes_faturados": null,
+   "etapas": [
+    {
+     "step": "bronze.alunos",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_brasil",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.dicionario",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.diretorio_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "dbt.silver",
+     "status": "SUCCEEDED",
+     "duracao_s": 71.2,
+     "rows_out": null,
+     "acao": null,
+     "erro": null
+    },
+    {
+     "step": "dbt.gold",
+     "status": "FAILED",
+     "duracao_s": 58.1,
+     "rows_out": null,
+     "acao": null,
+     "erro": "DbtExecutionError: erros de execução: ['status_meta_distingue_sem_meta_de_nao_atingiu']"
+    }
+   ]
+  },
+  {
+   "run_id": "20261001T133227Z-c655ab",
+   "inicio": "2026-10-01T13:37:56.034161+00:00",
+   "sucesso": false,
+   "duracao_s": 125.3,
+   "bytes_faturados": null,
+   "etapas": [
+    {
+     "step": "bronze.alunos",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_brasil",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.2,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.1,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.dicionario",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.1,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.diretorio_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 0.1,
+     "rows_out": 0,
+     "acao": "PULADA_FONTE_INALTERADA",
+     "erro": null
+    },
+    {
+     "step": "dbt.silver",
+     "status": "SUCCEEDED",
+     "duracao_s": 72.6,
+     "rows_out": null,
+     "acao": null,
+     "erro": null
+    },
+    {
+     "step": "dbt.gold",
+     "status": "FAILED",
+     "duracao_s": 51.3,
+     "rows_out": null,
+     "acao": null,
+     "erro": "DbtExecutionError: erros de execução: ['resultado_oficial']"
+    }
+   ]
+  },
+  {
+   "run_id": "20261001T131455Z-325f14",
+   "inicio": "2026-10-01T13:19:26.867120+00:00",
+   "sucesso": false,
+   "duracao_s": 89.4,
+   "bytes_faturados": 342884352,
+   "etapas": [
+    {
+     "step": "bronze.alunos",
+     "status": "SUCCEEDED",
+     "duracao_s": 4.6,
+     "rows_out": 3867999,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 3.7,
+     "rows_out": 23995,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 2.7,
+     "rows_out": 145,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_brasil",
+     "status": "SUCCEEDED",
+     "duracao_s": 2.9,
+     "rows_out": 3,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_uf",
+     "status": "SUCCEEDED",
+     "duracao_s": 3.3,
+     "rows_out": 81,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.meta_alfabetizacao_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 2.9,
+     "rows_out": 10704,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.dicionario",
+     "status": "SUCCEEDED",
+     "duracao_s": 2.9,
+     "rows_out": 27,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "bronze.diretorio_municipio",
+     "status": "SUCCEEDED",
+     "duracao_s": 3.3,
+     "rows_out": 5571,
+     "acao": "EXPORTADA",
+     "erro": null
+    },
+    {
+     "step": "dbt.silver",
+     "status": "FAILED",
+     "duracao_s": 63.0,
+     "rows_out": null,
+     "acao": null,
+     "erro": "QualityGateFailed: 1 regra(s) bloqueante(s) reprovada(s) em silver: ['assert_join_match_bloqueante']"
+    }
+   ]
+  }
+ ],
+ "qualidade": [
+  {
+   "run_id": "20261001T193739Z-f0dbac",
+   "executado_em": "2026-10-01T19:43:36.440512+00:00",
+   "aprovados": 92,
+   "bloqueantes_reprovados": 0,
+   "informativos_alertados": 4,
+   "erros": 0
+  },
+  {
+   "run_id": "20261001T172800Z-b20784",
+   "executado_em": "2026-10-01T17:37:10.304743+00:00",
+   "aprovados": 59,
+   "bloqueantes_reprovados": 1,
+   "informativos_alertados": 1,
+   "erros": 0
+  },
+  {
+   "run_id": "20261001T162153Z-ca83f9",
+   "executado_em": "2026-10-01T16:30:44.108597+00:00",
+   "aprovados": 92,
+   "bloqueantes_reprovados": 0,
+   "informativos_alertados": 4,
+   "erros": 0
+  },
+  {
+   "run_id": "20261001T161436Z-9e8b7f",
+   "executado_em": "2026-10-01T16:23:06.877535+00:00",
+   "aprovados": 63,
+   "bloqueantes_reprovados": 0,
+   "informativos_alertados": 1,
+   "erros": 0
+  },
+  {
+   "run_id": "20261001T140713Z-bb3655",
+   "executado_em": "2026-10-01T14:18:02.094442+00:00",
+   "aprovados": 87,
+   "bloqueantes_reprovados": 0,
+   "informativos_alertados": 4,
+   "erros": 0
+  },
+  {
+   "run_id": "20261001T133227Z-c655ab",
+   "executado_em": "2026-10-01T13:41:33.155511+00:00",
+   "aprovados": 77,
+   "bloqueantes_reprovados": 2,
+   "informativos_alertados": 4,
+   "erros": 0
+  },
+  {
+   "run_id": "20261001T131455Z-325f14",
+   "executado_em": "2026-10-01T13:26:13.976120+00:00",
+   "aprovados": 62,
+   "bloqueantes_reprovados": 1,
+   "informativos_alertados": 1,
+   "erros": 0
+  }
+ ],
+ "joins": [
+  {
+   "join_name": "alunos__diretorio",
+   "severidade": "bloqueante",
+   "total": 10392,
+   "matched": 10392,
+   "taxa": 1.0,
+   "min_rate": 0.99,
+   "reprovado": false
+  },
+  {
+   "join_name": "alunos__indicador_uf",
+   "severidade": "bloqueante",
+   "total": 143,
+   "matched": 141,
+   "taxa": 0.986,
+   "min_rate": 0.95,
+   "reprovado": false
+  },
+  {
+   "join_name": "indicador_municipio__diretorio",
+   "severidade": "bloqueante",
+   "total": 23995,
+   "matched": 23995,
+   "taxa": 1.0,
+   "min_rate": 0.99,
+   "reprovado": false
+  },
+  {
+   "join_name": "indicador_municipio__meta_municipio",
+   "severidade": "bloqueante",
+   "total": 10680,
+   "matched": 10464,
+   "taxa": 0.9798,
+   "min_rate": 0.5,
+   "reprovado": false
+  },
+  {
+   "join_name": "indicador_municipio__meta_municipio",
+   "severidade": "informativa",
+   "total": 10680,
+   "matched": 10464,
+   "taxa": 0.9798,
+   "min_rate": 0.9,
+   "reprovado": false
+  },
+  {
+   "join_name": "indicador_uf__meta_uf",
+   "severidade": "bloqueante",
+   "total": 73,
+   "matched": 72,
+   "taxa": 0.9863,
+   "min_rate": 0.95,
+   "reprovado": false
+  },
+  {
+   "join_name": "indicador_uf__uf",
+   "severidade": "bloqueante",
+   "total": 145,
+   "matched": 145,
+   "taxa": 1.0,
+   "min_rate": 1.0,
+   "reprovado": false
+  },
+  {
+   "join_name": "meta_municipio__diretorio",
+   "severidade": "bloqueante",
+   "total": 10704,
+   "matched": 10704,
+   "taxa": 1.0,
+   "min_rate": 0.99,
+   "reprovado": false
+  }
+ ]
+}
