@@ -352,6 +352,10 @@ municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento qu
 - **Jobs demoram ~4 min para iniciar** (importação da imagem), o que alonga a execução batch para ~19 min,
   dos quais ~2,5 min são processamento.
 - **`terraform apply` em duas fases** e bootstrap de 2 APIs via gcloud (documentados na seção 5).
+- **Tags das imagens Docker:** as imagens no Artifact Registry foram marcadas com o identificador curto do
+  commit local da época (`d3c7c5e` … `5340a01`). O histórico foi reaplicado sobre a `main` ao abrir o PR,
+  então esses identificadores não correspondem mais a commits do repositório. A imagem em uso é
+  `pipeline:5340a01`; o código dela é o deste repositório, salvo documentação e diagramas adicionados depois.
 - **Dashboard** é uma página gerada pelo próprio pipeline; Looker Studio não foi configurado.
 - **Retention policy do bucket não travada**, para permitir desmontar o ambiente acadêmico.
 - Investigação de anomalias com 11 hipóteses e números medidos:
