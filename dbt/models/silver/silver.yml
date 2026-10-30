@@ -104,7 +104,10 @@ models:
           - between: {min_value: 2024, max_value: 2030}
 
   - name: alunos
-    description: Microdado individual. `avaliado` = presente E caderno preenchido (denominador do indicador).
+    description: >
+      Microdado individual. `avaliado` = presente E caderno preenchido.
+      Avaliado sem classificacao ou com peso nulo/nao positivo/nao finito reprova
+      o teste singular bloqueante assert_avaliados_completos (ADR-008).
     tests:
       - not_empty
       - unique_combination: {columns: [ano, id_municipio, id_escola, id_aluno]}
@@ -127,9 +130,14 @@ models:
           - between: {min_value: 0, exclusive_min: true}
           - null_rate_below: {max_rate: 0.02, where: "avaliado", config: {severity: warn}}
       - name: peso_aluno
+        description: >
+          Regra informativa geral; entre alunos avaliados, peso invalido e BLOQUEANTE
+          pelo teste assert_avaliados_completos, inclusive quando NULL ou nao finito.
         tests:
           - between: {min_value: 0, exclusive_min: true, config: {severity: warn}}
       - name: alfabetizado
-        description: Entre avaliados, alfabetizado nulo distorce o numerador.
+        description: >
+          Monitoramento historico de nulos; entre avaliados, qualquer NULL
+          tambem reprova o teste singular bloqueante assert_avaliados_completos.
         tests:
           - null_rate_below: {max_rate: 0.01, where: "avaliado", config: {severity: warn}}

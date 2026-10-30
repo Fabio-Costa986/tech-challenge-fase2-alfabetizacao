@@ -90,6 +90,8 @@ def run(layer: str, run_id: str, fault_injection: str | None = None) -> Outcome:
         raise DbtExecutionError(f"dbt falhou antes de executar: {res.exception}")
 
     rows = [(r.node.resource_type, r.node.name, str(r.status)) for r in (res.result or [])]
+    if not rows:
+        raise DbtExecutionError(f"dbt {layer} nao retornou resultados de modelos/testes")
     outcome = classify(rows)
     if outcome.exit_code == EXIT_ERROR:
         raise DbtExecutionError(f"erros de execução: {outcome.model_errors}")
@@ -97,6 +99,10 @@ def run(layer: str, run_id: str, fault_injection: str | None = None) -> Outcome:
         raise QualityGateFailed(
             f"{len(outcome.blocking_failures)} regra(s) bloqueante(s) reprovada(s) em {layer}: "
             f"{outcome.blocking_failures}")
+    # Aprovacao do modelo nao basta se o proprio dbt marcou a invocacao como mal sucedida.
+    # Falha fechada impede que o Workflow publique uma Gold baseada em build incompleto.
+    if res.success is not True:
+        raise DbtExecutionError(f"dbt {layer} retornou success={res.success}; publicacao bloqueada")
     return outcome
 
 

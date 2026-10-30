@@ -24,10 +24,13 @@ def test_selecao_por_camada_e_vars():
         run_dbt.build_args("bronze", "r", None)
 
 
-def _fake_runner(results):
+def _fake_runner(results, success=None):
+    if success is None:
+        success = not any(s in {"fail", "error"} for _t, _n, s in results)
+
     class Runner:
         def invoke(self, _args):
-            return SimpleNamespace(exception=None, result=[
+            return SimpleNamespace(success=success, exception=None, result=[
                 SimpleNamespace(node=SimpleNamespace(resource_type=t, name=n), status=s)
                 for t, n, s in results])
     return Runner
@@ -38,6 +41,22 @@ def test_regra_bloqueante_reprovada_levanta_quality_gate(monkeypatch):
     with pytest.raises(run_dbt.QualityGateFailed) as exc:
         run_dbt.run("silver", "r")
     assert exc.value.exit_code == 3
+
+
+def test_dbt_sucesso_inconsistente_ou_sem_resultados_nao_libera_publicacao(monkeypatch):
+    # Caso um dbtRunner reporte success=False sem registrar status=fail, falhar fechado.
+    monkeypatch.setattr("dbt.cli.main.dbtRunner", _fake_runner([("model", "alunos", "success")], False))
+    with pytest.raises(run_dbt.DbtExecutionError):
+        run_dbt.run("silver", "r")
+
+    monkeypatch.setattr("dbt.cli.main.dbtRunner", _fake_runner([]))
+    with pytest.raises(run_dbt.DbtExecutionError):
+        run_dbt.run("silver", "r")
+
+
+def test_dbt_aviso_sem_bloqueio_continua_valido(monkeypatch):
+    monkeypatch.setattr("dbt.cli.main.dbtRunner", _fake_runner([("test", "informativa", "warn")]))
+    assert run_dbt.run("silver", "r").exit_code == EXIT_OK
 
 
 def test_cli_propaga_codigo_de_saida(monkeypatch):

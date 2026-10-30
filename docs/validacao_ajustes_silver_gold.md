@@ -1,0 +1,97 @@
+# Validacao dos ajustes Silver/Gold (28/10/2026)
+
+**Escopo aprovado:** (1) bloqueio de avaliados inconsistentes; (3) exclusao da
+meta de t+1 sem data historica de publicacao da base de ML. **Item 2**
+(cobertura minima da validacao cruzada) **nao foi alterado**.
+
+**Base de codigo:** ZIP/RAR recebido com HEAD `08efa0f`. O projeto original
+na nuvem e suas evidencias de 01/10/2026 nao representam uma execucao desta
+alteracao. O roteiro abaixo e um **plano de aceite**, nao um relatorio de
+resultado GCP ja obtido.
+
+## 1. Preparar e validar sem publicar
+
+1. Conferir se a branch remota recebeu commits depois de `08efa0f` antes de
+   substituir qualquer arquivo; preservar a pasta `.git` do clone existente.
+2. Python 3.12, dependencias declaradas em `pyproject.toml`; usar `.env` local
+   fora do Git (ver `README.md` e `.env.example`).
+3. Executar `make test`, `python -m ruff check src tests` e `cd dbt && dbt parse
+   --profiles-dir .`. O CI tambem realiza esses checks.
+4. Testar `dbt build` no **ambiente GCP de homologacao**, nao em producao.
+   Usar os mesmos seeds, mesmos snapshots Bronze e perfil de ambiente de
+   testes da execucao aprovada para comparar os numeros.
+
+## 2. Casos de aceite - Silver
+
+| Cenario no ambiente de testes | Resultado esperado |
+|---|---|
+| Avaliado com classificacao preenchida e peso > 0 finito | Passa |
+| Nao avaliado com peso e classificacao NULL | Passa (nao integra denominador) |
+| Avaliado com `alfabetizado IS NULL` | `assert_avaliados_completos` falha, codigo 3 |
+| Avaliado com peso `NULL`, 0, negativo, NaN ou infinito | Mesmo teste falha, codigo 3 |
+| `dbtRunner` retorna `success=False` sem teste `fail` | Falha fechada, codigo 1 |
+| 1 alfabetizado (peso 3) + 1 nao alfabetizado (peso 1) | Taxa ponderada = 75% nos 3 niveis |
+
+Para os casos negativos, usar **fixtures isoladas no projeto/dataset de
+homologacao**, jamais modificar `silver.alunos` ou Bronze do ambiente de
+producao. A consulta abaixo ajuda a inspecionar dados reais (substituir projeto
+com controle de acesso apropriado):
+
+```sql
+SELECT ano, id_municipio, rede_canonica,
+       COUNTIF(alfabetizado IS NULL) AS sem_classificacao,
+       COUNTIF(peso_aluno IS NULL OR peso_aluno <= 0
+               OR IS_NAN(peso_aluno) OR IS_INF(peso_aluno)) AS peso_invalido
+FROM `<PROJETO>.silver.alunos`
+WHERE avaliado
+GROUP BY 1, 2, 3
+HAVING sem_classificacao > 0 OR peso_invalido > 0;
+```
+
+Se o teste reprovar, conferir `ops.dq_results` no `run_id` de homologacao:
+`assert_avaliados_completos`, severidade `bloqueante`, status `fail`.
+Confirmar que o Workflow parou **antes** de `dbt-gold` e `publish-gold` e
+que as tabelas `gold.*` nao mudaram (comparar `published_run_id` e
+`last_modified` antes/depois). Esta garantia se refere a falha na Silver.
+
+## 3. Casos de aceite - ML
+
+1. Conferir que `gold_staging.ml_features_municipio` nao possui
+   `feat_meta_pactuada_t_mais_1` e que `assert_ml_sem_vazamento` passa.
+2. Confirmar que `gold.meta_vs_resultado` ainda tem `meta_pactuada_pct`:
+   a mudanca nao elimina comparacao historica de metas na Gold.
+3. Validar que as demais features, o alvo e o grao
+   `(id_municipio, rede_canonica, ano_referencia)` continuam consistentes.
+4. Conferir **depois** do deploy/publicacao a tabela publicada:
+
+```sql
+SELECT table_name, column_name
+FROM `<PROJETO>.gold.INFORMATION_SCHEMA.COLUMNS`
+WHERE table_name = 'ml_features_municipio'
+  AND column_name = 'feat_meta_pactuada_t_mais_1';
+-- Esperado: zero linhas apos a Gold NOVA ser publicada.
+```
+
+5. Exportar **um novo snapshot** da Fase 3, com identificacao de versao/run_id.
+   Nao reutilizar o snapshot/Parquet de `2026-10-01` para treinamento: sua
+   estrutura e de antes da ADR-009. O export atual identifica versao por dia;
+   conferir colisao antes de executar `make export-ml` no mesmo dia.
+
+## 4. Deploy somente depois da revisao do grupo
+
+- Registrar o commit/versao da imagem; o README contem o procedimento com
+  `make deploy`, `make run-batch` e `make export-ml`.
+- **Deploy da nova imagem e execucao do workflow sao obrigatorios:**
+  editar SQL no Git **nao atualiza automaticamente** a Gold publicada.
+- Evidenciar os novos IDs de job, data, testes e contagens em `evidencias/`
+  somente apos a execucao real; nao substituir evidencias de outubro por
+  alegacoes sem consulta na nuvem.
+- Comparar o baseline da Gold antiga com a nova: volumes, pesos,
+  taxas e resultado de qualidade. Recortes sem anomalias devem permanecer
+  com as mesmas taxas (nao ha motivo para muda-las).
+- Somente apos esses passos marcar a nova versao no README como validada
+  em GCP e emitir o artefato analitico da Fase 3 atualizado.
+
+**Observacao:** a publicacao de varias tabelas no `publish.gold` atual nao e
+atomica em caso de falha durante copias; este limite ja existia e nao foi
+reprojetado por estar fora das duas decisoes aprovadas.
