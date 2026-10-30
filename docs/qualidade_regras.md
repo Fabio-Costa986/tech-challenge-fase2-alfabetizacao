@@ -23,7 +23,8 @@ execução falha**, então a reprovação fica registrada.
 |---|---|---|---|---|
 | Duplicidade | `unique_combination` no grão de cada tabela | todas as Silver e Gold | Bloqueante | 0. É o grão oficial da fonte (o mesmo do `schema.yml` da Base dos Dados) |
 | Ausentes | `not_null` em chaves | Silver | Bloqueante | 0. Chave nula não junta com nada |
-| Ausentes | `null_rate_below` em medidas | `taxa_alfabetizacao`, `proficiencia`, `alfabetizado` | Informativa | 10% (município), 5% (UF), 2%/1% (alunos avaliados). Ajustar ao baseline medido no profiling |
+| Ausentes | `null_rate_below` em medidas | `taxa_alfabetizacao`, `proficiencia`, `alfabetizado` | Informativa | 10% (município), 5% (UF), 2%/1% (alunos avaliados). O alerta de nulidade nao substitui o bloqueio abaixo |
+| **Avaliado invalido** | `assert_avaliados_completos`: classificacao nula, peso nulo/<=0/NaN/infinito | `silver.alunos` | **Bloqueante** | Zero entre alunos `avaliado=TRUE` (ADR-008); nao avaliados ficam fora do denominador |
 | Domínio | `between` 0–100 em taxas e metas; proficiência > 0 | Silver | Bloqueante | Fora disso o valor é impossível |
 | Fallback explícito | `no_unknown_category` (DESCONHECIDO = 0) | rede, série, presença, preenchimento, alfabetizado | Bloqueante | Um código novo da fonte precisa ser mapeado conscientemente, nunca absorvido por um `else` |
 | Códigos assumidos | `assert_codigos_alunos_no_dicionario` | dicionário | Bloqueante | O código usado como "presente/preenchido/alfabetizado" precisa ter essa descrição no dicionário oficial |
@@ -32,7 +33,7 @@ execução falha**, então a reprovação fica registrada.
 | Consistência entre tabelas | taxa da tabela de meta = taxa da tabela de indicador | UF: bloqueante; município: informativa | — | 0,1 p.p.: as duas tabelas vêm da mesma publicação do Inep, então a diferença esperada é só de arredondamento |
 | Consistência agregada | Brasil oficial ≈ UFs ponderadas por alunos | `fct_alfabetizacao_brasil` | Informativa | 1 p.p. |
 | Validação cruzada | microdado recalculado ≈ taxa publicada | UF com ≥ 5.000 avaliados e Brasil com cobertura completa: bloqueante; UF < 5.000 e município (n ≥ 30): informativa | — | 0,5 p.p. (bloqueante); 2 p.p. (informativa). Critério de porte/cobertura calibrado após a 1ª execução (ver investigação H2) |
-| Vazamento de alvo | `assert_ml_sem_vazamento` | `ml_features_municipio` | Bloqueante | Nenhuma coluna gap/status/atingiu/diff; exatamente 1 alvo |
+| Vazamento de alvo / meta futura | `assert_ml_sem_vazamento` | `ml_features_municipio` | Bloqueante | Nenhuma coluna gap/status/atingiu/diff; sem `feat_meta_pactuada_t_mais_1` ate existir data publica historica comprovada; exatamente 1 alvo (ADR-009) |
 | Origem do dado | `accepted_values` origem = OFICIAL | fatos e features | Bloqueante | Simulado nunca entra na base oficial de ML |
 
 ## Taxa de correspondência das junções
@@ -54,6 +55,21 @@ de formas diferentes.
 
 > Os limiares partem de premissas sobre a fonte. Depois do primeiro `python -m alfab profile` e da
 > primeira execução, eles devem ser recalibrados com o baseline medido, e a decisão registrada aqui.
+
+## Decisoes adicionais de 28/10/2026 (codigo novo; GCP a validar)
+
+- **ADR-008:** `dbt/tests/singular/assert_avaliados_completos.sql` tem tag `silver`
+  e severidade `error`, isto e, entra no `dbt build` da Silver. O denominador
+  ponderado da Gold usa exatamente `peso_avaliados`. Se um aluno avaliado
+  nao tem classificacao ou peso valido, a Silver reprova e o Workflow nao
+  invoca Gold ou publicacao. O filtro dos nao avaliados permanece intacto.
+- **ADR-009:** a meta de t+1 nao e mais feature de `ml_features_municipio`
+  porque `ano_referencia` nao comprova publicacao ate o corte t; metas para
+  comparacao historica permanecem em `meta_vs_resultado`.
+- **Sem mudanca no ponto 2:** a cobertura minima da validacao cruzada **nao**
+  foi aprovada nesta alteracao; os limiares ja existentes continuam iguais.
+- O roteiro de aceite e o estado das evidencias estao em
+  [validacao_ajustes_silver_gold.md](validacao_ajustes_silver_gold.md).
 
 ## Demonstração de falha
 

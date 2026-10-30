@@ -22,9 +22,9 @@ unit_tests:
           - {recorte: municipal, componente: municipal}
     expect:
       rows:
-        - {nivel: MUN, id_local: '3550308', recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
-        - {nivel: UF,  id_local: SP,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
-        - {nivel: BR,  id_local: BR,        recorte: municipal, n_avaliados: 2, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
+        - {nivel: MUN, id_local: '3550308', recorte: municipal, n_avaliados: 2, peso_avaliados: 4.0, peso_alfabetizados: 3.0, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
+        - {nivel: UF,  id_local: SP,        recorte: municipal, n_avaliados: 2, peso_avaliados: 4.0, peso_alfabetizados: 3.0, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
+        - {nivel: BR,  id_local: BR,        recorte: municipal, n_avaliados: 2, peso_avaliados: 4.0, peso_alfabetizados: 3.0, taxa_microdado_ponderada: 75.0, taxa_microdado_sem_peso_ERRADA: 50.0, taxa_denominador_com_ausentes_ERRADA: 25.0, pct_abaixo_corte_743: 25.0}
 
   - name: status_meta_distingue_sem_meta_de_nao_atingiu
     description: >

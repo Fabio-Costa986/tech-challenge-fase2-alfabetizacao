@@ -1,5 +1,7 @@
 -- Agregação do microdado de alunos por (ano, nível territorial, local, recorte de rede).
--- Taxa oficial = alunos AVALIADOS alfabetizados / alunos AVALIADOS, ponderado por peso_aluno.
+-- Taxa do microdado = alunos AVALIADOS alfabetizados / alunos AVALIADOS, ponderado por peso_aluno.
+-- O teste BLOQUEANTE assert_avaliados_completos garante classificacao e peso validos
+-- antes da Gold; peso_avaliados e denominador da taxa usam exatamente o mesmo universo.
 -- As variantes erradas (sem peso; denominador com ausentes) são calculadas DE PROPÓSITO, rotuladas,
 -- para quantificar o tamanho de cada armadilha em docs/investigacao_anomalias.md.
 WITH base AS (
@@ -23,7 +25,7 @@ SELECT
   SUM(IF(avaliado, peso_aluno, 0)) AS peso_avaliados,
   SUM(IF(avaliado AND alfabetizado, peso_aluno, 0)) AS peso_alfabetizados,
   100 * SAFE_DIVIDE(SUM(IF(avaliado AND alfabetizado, peso_aluno, 0)),
-                    SUM(IF(avaliado AND alfabetizado IS NOT NULL, peso_aluno, 0))) AS taxa_microdado_ponderada,
+                    SUM(IF(avaliado, peso_aluno, 0))) AS taxa_microdado_ponderada,
   100 * SAFE_DIVIDE(COUNTIF(avaliado AND alfabetizado),
                     COUNTIF(avaliado AND alfabetizado IS NOT NULL)) AS taxa_microdado_sem_peso_ERRADA,
   -- ausentes têm peso_aluno NULO na fonte (profiling 05), então esta variante só existe por contagem

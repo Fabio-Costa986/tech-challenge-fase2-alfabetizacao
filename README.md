@@ -12,14 +12,19 @@ com portões de qualidade bloqueantes, observabilidade persistida, alertas e cus
 > | Streaming na nuvem (Pub/Sub → Cloud Run → BigQuery) | **Executado**: 1.240 eventos publicados em 3 rodadas, 1.125 na Silver sem duplicatas |
 > | Demonstração de falha + alerta | **Executada**: [evidência](evidencias/qualidade/demo_falha.md); alerta em ~4 min ([incidentes](evidencias/monitoramento/incidentes.md)) |
 > | Custo medido | **Medido**: [tabela](evidencias/finops/custos_medidos.md) |
-> | Testes automatizados (`pytest`, 40 testes), `dbt parse`, `terraform validate` | Passando |
+> | Testes automatizados (`pytest`, 40 testes), `dbt parse`, `terraform validate` | **Evidencia anterior** a estes ajustes (execucoes de 01/10/2026); validar novamente no CI / GCP |
 > | Agendadores (Cloud Scheduler) | Criados **pausados** de propósito (`schedulers_paused = true`); as execuções acima foram disparadas manualmente |
 > | CI (`.github/workflows/ci.yml`) | Configurado; roda quando o repositório estiver no GitHub |
 > | Dashboard | Gerado por `python -m alfab dashboard` a partir da Gold ([evidencias/dashboard/](evidencias/dashboard/)). Looker Studio não foi usado |
 > | Vídeo executivo | Fora do escopo neste momento |
 >
-> Este README descreve no presente apenas o que existe no repositório e foi executado. Os números citados
-> vêm de `evidencias/` e podem ser reproduzidos pelos comandos indicados.
+> **Ajustes aprovados em 28/10/2026, ainda sem nova execucao autenticada no GCP:**
+> [ADR-008](docs/decisoes/ADR-008-avaliados-completos-bloqueantes.md) bloqueia avaliados sem
+> classificacao/peso valido na Silver; [ADR-009](docs/decisoes/ADR-009-metas-historicas-sem-vazamento.md)
+> remove da base de ML a meta de t+1 sem data historica comprovada de publicacao.
+> Plano de testes e publicacao: [docs/validacao_ajustes_silver_gold.md](docs/validacao_ajustes_silver_gold.md).
+> Os numeros de execucao em `evidencias/` sao historicos (01/10), anteriores a esta mudanca;
+> os artefatos Gold e snapshots ja publicados **nao mudam** so por este commit.
 
 ---
 
@@ -107,7 +112,7 @@ somente o que está implementado e foi executado; os agendadores aparecem marcad
 | uf | `indicador_uf` | `fct_alfabetizacao_uf`, `meta_vs_resultado` (UF), validação cruzada |
 | meta_alfabetizacao_brasil | `meta_linha_base`, `meta_trajetoria` | taxa nacional oficial em `fct_alfabetizacao_brasil`; `meta_vs_resultado` (BR) |
 | meta_alfabetizacao_uf | `meta_linha_base`, `meta_trajetoria` | `meta_vs_resultado` (UF); teste de consistência com `uf` |
-| meta_alfabetizacao_municipio | `meta_linha_base`, `meta_trajetoria` | `meta_vs_resultado` (MUN); `feat_meta_pactuada_t_mais_1` |
+| meta_alfabetizacao_municipio | `meta_linha_base`, `meta_trajetoria` | `meta_vs_resultado` (MUN); **nao e usada como feature de ML** sem data comprovada (ADR-009) |
 | dicionario | `dicionario`, `rede_map` | decodificação de rede, série, presença, preenchimento e alfabetizado |
 
 ## 3. Tecnologias
@@ -136,6 +141,8 @@ somente o que está implementado e foi executado; os agendadores aparecem marcad
 | **Nuvem** | Uma só (GCP): sem egress entre nuvens, um billing, um IAM | — |
 | **Chaves heterogêneas** | Vocabulário canônico de rede, com DESCONHECIDO bloqueante | [ADR-006](docs/decisoes/ADR-006-vocabulario-de-rede.md) |
 | **Publicação da Gold** | Write-Audit-Publish | [ADR-005](docs/decisoes/ADR-005-qualidade-com-dbt-e-wap.md) |
+| **Aluno avaliado inconsistente** | Bloqueio da Silver (sem exclusao silenciosa); Gold antiga preservada | [ADR-008](docs/decisoes/ADR-008-avaliados-completos-bloqueantes.md) |
+| **Meta historica como feature de ML** | Nao usar sem prova de disponibilidade em t; remover a feature t+1 | [ADR-009](docs/decisoes/ADR-009-metas-historicas-sem-vazamento.md) |
 
 ### Forma de acesso: as três perguntas do enunciado
 
@@ -240,6 +247,9 @@ Catálogo completo, limiares e justificativas: **[docs/qualidade_regras.md](docs
   categoria `DESCONHECIDO` = 0, códigos confirmados pelo dicionário, **taxa de correspondência de cada
   join**, consistência entre a tabela de meta e a de indicador (UF), validação cruzada (UF e Brasil) e
   ausência de vazamento de alvo.
+- **Avaliados com classificacao ou peso invalido:** bloqueio (`assert_avaliados_completos`,
+  `severity: error`, tag `silver`) para classificacao nula, peso nulo/nao positivo/nao finito.
+  Ausentes nao sao imputados nem contam no denominador (ADR-008).
 - **Informativas** (`severity: warn`): proporção de nulos em medidas, cobertura de metas municipais,
   consistência no nível municipal, Brasil ≈ UFs ponderadas.
 - **Interrupção real:** o job sai com código 3, o Workflow para e a Gold não é publicada (Write-Audit-Publish).
@@ -321,15 +331,19 @@ O que a medição mostrou:
 `gold.ml_features_municipio` é a base preparada para a **Fase 3** (predição da taxa municipal em t+1):
 
 - **Grão:** município × rede × ano t. Somente `origem_dado = 'OFICIAL'`.
-- **Features (informação até t):** taxa, variação, média de português, proporção por nível de
-  desempenho, alunos avaliados (ponderado), proficiência média, distância para a média da UF e a meta
-  pactuada de t+1 (conhecida antes do resultado).
+- **Features (informacao ate t):** taxa, variacao, media de portugues, proporcao por nivel de
+  desempenho, alunos avaliados (ponderado), proficiencia media e distancia para a media da UF.
+  **Meta de t+1 removida**: o `ano_referencia` da fonte nao prova quando a meta foi publicada;
+  nao presumimos uma data historica. Ver ADR-009.
 - **Alvo:** `alvo_taxa_t_mais_1`. Coluna `particao` = treino/inferência.
-- **Anti-vazamento:** nenhuma coluna derivada do alvo (gap, status, atingiu). O teste bloqueante
-  `assert_ml_sem_vazamento` lê o schema real e reprova se aparecer alguma. O split deve ser temporal.
+- **Anti-vazamento:** nenhuma coluna derivada do alvo (gap, status, atingiu), nem
+  `feat_meta_pactuada_t_mais_1` sem data de publicacao comprovada. O teste bloqueante
+  `assert_ml_sem_vazamento` le o schema real e reprova seu retorno. O split deve ser temporal.
 - **Guardada para a Fase 3** (`python -m alfab export-ml`, executado em 2026-10-01): snapshot BigQuery
   `gold.ml_features_municipio_fase3_20261001` e Parquet em
   `gs://midyear-cursor-510311-v9-alfab-lake/gold/ml/fase3/versao=2026-10-01/` (23.995 linhas, 877 KiB).
+  **Este snapshot antigo contem o esquema de antes da ADR-009 e nao deve ser usado para
+  treino historico**. Apos novo deploy e build aprovados, gerar novo snapshot e conferir o schema.
 
 Outros usos da Gold: ranking de desigualdade intra-UF (dispersão entre municípios), priorização de
 municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento quase em tempo real via
@@ -342,6 +356,11 @@ municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento qu
   base de ML.
 - **Série histórica curta** (2 ou 3 anos): a projeção para 2030 é rotulada como cenário, não previsão. A
   base de ML terá poucos exemplos de treino.
+- **Proveniencia temporal das metas:** a fonte nao apresenta a data comprovada de publicacao por
+  versao. A feature `feat_meta_pactuada_t_mais_1` foi retirada da base de ML (ADR-009),
+  embora as metas continuem disponiveis para analises descritivas na Gold.
+- **Estado de implantacao:** mudancas da ADR-008/009 ainda nao foram executadas na GCP nesta
+  revisao. O numero de testes e as evidencias antigas nao comprovam o novo build.
 - **Critério da validação cruzada calibrado após a 1ª execução** (porte ≥ 5.000 avaliados e cobertura
   completa de UFs), com a tolerância de 0,5 p.p. mantida. A decisão e os números estão na investigação (H2).
 - **Lacunas da fonte que permanecem:** o microdado de 2023 não tem São Paulo; o DF não tem indicador
@@ -370,6 +389,7 @@ municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento qu
 | Estrutura das camadas (tabelas, colunas, grão) | [evidencias/estrutura/](evidencias/estrutura/) (`analises/02_estrutura_camadas.sql`) |
 | Profiling da fonte | [evidencias/profiling/](evidencias/profiling/) (`analises/01_profiling_fonte.sql`) |
 | Demonstração de falha (workflow FAILED, Gold intacta) | [evidencias/qualidade/demo_falha.md](evidencias/qualidade/demo_falha.md) |
+| Roteiro de aceite das ADRs 008/009 (a executar em GCP) | [docs/validacao_ajustes_silver_gold.md](docs/validacao_ajustes_silver_gold.md) |
 | Incidentes de alerta e tempo de detecção | [evidencias/monitoramento/incidentes.md](evidencias/monitoramento/incidentes.md) |
 | Custos medidos | [evidencias/finops/custos_medidos.md](evidencias/finops/custos_medidos.md) |
 | Dashboard e os dados que o alimentam | [evidencias/dashboard/](evidencias/dashboard/) |

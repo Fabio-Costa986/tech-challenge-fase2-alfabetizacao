@@ -398,9 +398,9 @@ SUM(IF(alfabetizado, peso, 0)) / SUM(IF(avaliado, peso, 0)) * 100
 ## 11. Aplicação em IA (preparação da Fase 3)
 
 - `gold.ml_features_municipio`, grão município × ano *t*:
-  - **Features (até *t*):** taxa em *t*, variação *t-1→t*, proficiência média e dispersão, % de alunos avaliados, meta pactuada para *t+1*, UF/região, rede, porte.
+  - **Features (ate *t*):** taxa em *t*, variacao *t-1→t*, proficiencia media e distribuicao de niveis, alunos avaliados ponderados, UF/regiao e rede. A meta para *t+1* foi retirada por ausencia de comprovacao de data historica de publicacao (ADR-009).
   - **Alvo:** `taxa_alfabetizacao_t_mais_1` ou `atinge_meta_t_mais_1`.
-  - **Anti-vazamento:** nenhuma coluna derivada do alvo (ex.: `gap_meta_t+1`, `status_meta_t+1`) entra na tabela de features. Um teste dbt verifica isso por lista de colunas proibidas. O split é temporal, nunca aleatório.
+  - **Anti-vazamento:** nenhuma coluna derivada do alvo (ex.: `gap_meta_t+1`, `status_meta_t+1`) ou meta futura nao comprovada entra na tabela de features. `assert_ml_sem_vazamento` examina o schema. O split e temporal, nunca aleatorio.
   - Só `origem_dado = 'OFICIAL'`.
 - **Guardar para a Fase 3:** table snapshot do BigQuery e `EXPORT DATA` para `gs://.../gold/ml/fase3/versao=<data>/`, com data card (colunas, grão, período, limitações).
 - Outros usos para o README: ranking de desigualdade intra-UF (índice de Theil/Gini entre municípios), priorização de municípios distantes da meta e clusterização de perfis.
