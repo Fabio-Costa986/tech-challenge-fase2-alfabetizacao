@@ -14,6 +14,7 @@ from decimal import Decimal
 from alfab.bq import client
 from alfab.config import ROOT, settings
 from alfab.observability import log
+from alfab.ops.adr_validation import validate
 
 TEMPLATE = ROOT / "dashboard" / "template.html"
 OUT_DIR = ROOT / "evidencias" / "dashboard"
@@ -115,7 +116,11 @@ def collect(dataset: str | None = None) -> dict:
     return data
 
 
-def build(dataset: str | None = None) -> str:
+def build(dataset: str | None = None, aceite_run_id: str | None = None) -> str:
+    if aceite_run_id:
+        if dataset and dataset != settings().datasets["gold"]:
+            raise ValueError("aceite_run_id exige dashboard da Gold publicada, nao staging")
+        validate(aceite_run_id)
     data = collect(dataset)
     payload = json.dumps(data, default=_json_default, ensure_ascii=False).replace("</", "<\\/")
     html = TEMPLATE.read_text(encoding="utf-8").replace("/*__DADOS__*/null", payload)

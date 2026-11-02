@@ -4,7 +4,7 @@
 meta de t+1 sem data historica de publicacao da base de ML. **Item 2**
 (cobertura minima da validacao cruzada) **nao foi alterado**.
 
-**Base de codigo:** ZIP/RAR recebido com HEAD `08efa0f`. O projeto original
+**Base original da revisao:** ZIP/RAR recebido com HEAD `08efa0f`. O projeto original
 na nuvem e suas evidencias de 01/10/2026 nao representam uma execucao desta
 alteracao. O roteiro abaixo e um **plano de aceite**, nao um relatorio de
 resultado GCP ja obtido.
@@ -95,3 +95,19 @@ WHERE table_name = 'ml_features_municipio'
 **Observacao:** a publicacao de varias tabelas no `publish.gold` atual nao e
 atomica em caso de falha durante copias; este limite ja existia e nao foi
 reprojetado por estar fora das duas decisoes aprovadas.
+
+## 5. Procedimento executavel de evidencias (preparado para a proxima rodada)
+
+A coleta pós-ADR foi organizada em
+[ROTEIRO_EVIDENCIAS_ADR008_ADR009.md](ROTEIRO_EVIDENCIAS_ADR008_ADR009.md).
+Ela inclui comandos de aceite somente leitura, o registro nominal dos testes
+em `ops.dq_results`, a foto da Gold antes/depois da falha controlada e a
+prevenção de colisão no export de Fase 3. Esses recursos **não provam execução
+na nuvem** por si só: seus arquivos só devem ser gerados com um `run_id` real.
+
+A fixture `avaliado_incompleto` adiciona **somente linhas sintéticas à consulta
+do teste singular** em homologação, nunca grava registros na Silver. Exige
+`ALFAB_HML_PROJECT_ID` igual a `target.project` e é bloqueada fora do projeto
+explicitamente configurado. Não configurar essa variável em produção.
+
+Os números em `evidencias/` continuam históricos até a nova execução autorizada.
