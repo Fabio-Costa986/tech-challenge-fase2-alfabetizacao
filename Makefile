@@ -12,7 +12,7 @@ TFVARS  := -var project_id=$(GCP_PROJECT_ID) -var region=$(GCP_REGION) -var bq_l
            -var bronze_bucket=$(BRONZE_BUCKET) -var alert_email=$(ALERT_EMAIL)
 
 .PHONY: help setup test lint infra-init infra-plan infra build deploy profile run-batch run-batch-local \
-        demo-falha stream microbatch export-ml finops evidencias
+        demo-falha stream microbatch export-ml export-ml-adr finops evidencias
 
 help:
 	@grep -E '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':.*?## ' '{printf "  %-18s %s\n", $$1, $$2}'
@@ -65,6 +65,14 @@ microbatch: ## força um micro-lote agora
 
 export-ml: ## snapshot da base de features para a Fase 3
 	gcloud run jobs execute alfab-export-ml --project $(GCP_PROJECT_ID) --region $(GCP_REGION) --wait
+
+# Export especifico dos ADRs, com run_id comprovado e versao unica.
+# Exemplo: make export-ml-adr ACEITE_RUN_ID=20261102T... ML_VERSION=2026-11-02-21d8d75
+export-ml-adr: ## export validado da Gold atual, sem reutilizar snapshot antigo
+	@test -n "$(ACEITE_RUN_ID)" || (echo "ERRO: informe ACEITE_RUN_ID"; exit 1)
+	@test -n "$(ML_VERSION)" || (echo "ERRO: informe ML_VERSION"; exit 1)
+	gcloud run jobs execute alfab-export-ml --project $(GCP_PROJECT_ID) --region $(GCP_REGION) \
+	  --args=export-ml,--versao,$(ML_VERSION),--aceite-run-id,$(ACEITE_RUN_ID) --wait
 
 finops: ## mede custos e gera evidencias/finops/custos_medidos.md
 	$(PY) -m alfab finops

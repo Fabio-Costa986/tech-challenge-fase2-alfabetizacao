@@ -25,6 +25,7 @@ com portões de qualidade bloqueantes, observabilidade persistida, alertas e cus
 > Plano de testes e publicacao: [docs/validacao_ajustes_silver_gold.md](docs/validacao_ajustes_silver_gold.md).
 > Os numeros de execucao em `evidencias/` sao historicos (01/10), anteriores a esta mudanca;
 > os artefatos Gold e snapshots ja publicados **nao mudam** so por este commit.
+> **Próxima rodada de evidências:** [roteiro seguro de validação ADR-008/009, coleta e Fase 3](docs/ROTEIRO_EVIDENCIAS_ADR008_ADR009.md). Os resultados só serão atualizados após execução real no GCP.
 
 ---
 

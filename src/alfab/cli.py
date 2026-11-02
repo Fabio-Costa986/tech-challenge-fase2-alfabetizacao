@@ -88,22 +88,36 @@ def cmd_simulate(a) -> None:
 
 def cmd_export_ml(a) -> None:
     from alfab.ops import export_ml
-    export_ml.export(_run_id())
+    print(export_ml.export(_run_id(), a.versao, a.aceite_run_id))
 
 
 def cmd_profile(a) -> None:
     from alfab.ops import profile
-    profile.run(_run_id(), a.sql, a.saida)
+    profile.run(_run_id(), a.sql, a.saida, a.aceite_run_id)
 
 
 def cmd_evidencias(a) -> None:
     from alfab.ops import evidence
-    evidence.collect()
+    evidence.collect(a.aceite_run_id)
 
 
 def cmd_dashboard(a) -> None:
     from alfab.ops import dashboard
-    print(dashboard.build(a.dataset))
+    print(dashboard.build(a.dataset, a.aceite_run_id))
+
+
+def cmd_foto_gold(a) -> None:
+    from alfab.ops.gold_snapshot import capture
+
+    print(capture(a.momento, a.run_id))
+
+
+def cmd_validar_adrs(a) -> None:
+    from alfab.ops.adr_validation import validate
+
+    result = validate(a.run_id)
+    print(f"ACEITE GCP APROVADO: {result.run_id}; Gold: {result.gold_table}; "
+          f"linhas: {result.gold_rows}; testes: {', '.join(result.tests)}")
 
 
 def cmd_serve(a) -> None:
@@ -127,7 +141,8 @@ def parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser("dbt", help="dbt build de uma camada (portão de qualidade)")
     sp.add_argument("--layer", choices=["silver", "gold"], required=True)
-    sp.add_argument("--fault-injection", choices=["none", "duplicate_keys", "unmapped_rede"],
+    sp.add_argument("--fault-injection",
+                    choices=["none", "duplicate_keys", "unmapped_rede", "avaliado_incompleto"],
                     default=os.environ.get("ALFAB_FAULT_INJECTION", "none"))
     sp.set_defaults(fn=cmd_dbt)
 
@@ -136,7 +151,8 @@ def parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser("pipeline", help="batch completo, sequencial (uso local)")
     sp.add_argument("--force", action="store_true")
-    sp.add_argument("--fault-injection", choices=["none", "duplicate_keys", "unmapped_rede"],
+    sp.add_argument("--fault-injection",
+                    choices=["none", "duplicate_keys", "unmapped_rede", "avaliado_incompleto"],
                     default="none")
     sp.set_defaults(fn=cmd_pipeline)
 
@@ -152,19 +168,33 @@ def parser() -> argparse.ArgumentParser:
     sp.set_defaults(fn=cmd_simulate)
 
     sp = sub.add_parser("export-ml", help="snapshot da base de features para a Fase 3")
+    sp.add_argument("--versao", help="AAAA-MM-DD[-identificador] sem sobrescrever versao existente")
+    sp.add_argument("--aceite-run-id", help="exige o run_id aprovado na Gold publicada")
     sp.set_defaults(fn=cmd_export_ml)
 
     sp = sub.add_parser("profile", help="profiling da fonte -> evidencias/profiling/*.csv")
     sp.add_argument("--sql", help="arquivo .sql com blocos '-- name:' (relativo à raiz)")
     sp.add_argument("--saida", help="pasta de saída dos CSVs (relativa à raiz)")
+    sp.add_argument("--aceite-run-id", help="exige o run_id aprovado na Gold publicada")
     sp.set_defaults(fn=cmd_profile)
 
     sp = sub.add_parser("evidencias", help="contagens e execuções -> evidencias/execucao.md")
+    sp.add_argument("--aceite-run-id", help="exige o run_id aprovado na Gold publicada")
     sp.set_defaults(fn=cmd_evidencias)
 
     sp = sub.add_parser("dashboard", help="dashboard de resultados -> evidencias/dashboard/index.html")
     sp.add_argument("--dataset", help="dataset da Gold (padrão: gold publicada)")
+    sp.add_argument("--aceite-run-id", help="exige o run_id aprovado na Gold publicada")
     sp.set_defaults(fn=cmd_dashboard)
+
+    sp = sub.add_parser("foto-gold", help="evidencia antes/depois da falha ADR-008 (somente leitura GCP)")
+    sp.add_argument("--momento", choices=["antes", "depois"], required=True)
+    sp.add_argument("--run-id", help="obrigatorio para depois: run_id da falha controlada")
+    sp.set_defaults(fn=cmd_foto_gold)
+
+    sp = sub.add_parser("validar-adrs", help="aceite ADR-008/009 na Gold publicada (somente leitura)")
+    sp.add_argument("--run-id", required=True, help="run_id retornado pelo Workflow autorizado")
+    sp.set_defaults(fn=cmd_validar_adrs)
 
     sp = sub.add_parser("serve", help="sobe o event-ingestor (Cloud Run service)")
     sp.set_defaults(fn=cmd_serve)
