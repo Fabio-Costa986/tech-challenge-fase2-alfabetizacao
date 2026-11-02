@@ -8,7 +8,7 @@ com portões de qualidade bloqueantes, observabilidade persistida, alertas e cus
 > | Item | Estado |
 > |---|---|
 > | Infraestrutura no GCP (Terraform, 82 recursos) | **Provisionada** no projeto `midyear-cursor-510311-v9` ([evidência](evidencias/infra/terraform_state.txt)) |
-> | Pipeline batch na nuvem (Workflows → Cloud Run Jobs) | **Executado**: 2 execuções publicaram a Gold (`20261001T162153Z-ca83f9`, `20261001T193739Z-f0dbac`); 4 foram barradas, e estão documentadas |
+> | Pipeline batch na nuvem (Workflows → Cloud Run Jobs) | **Executado**: 3 execuções publicaram a Gold (`20261001T162153Z-ca83f9`, `20261001T193739Z-f0dbac` e `20261102T225805Z-230ae9`, esta já com as regras da ADR-008/009); 4 foram barradas, e estão documentadas |
 > | Streaming na nuvem (Pub/Sub → Cloud Run → BigQuery) | **Executado**: 1.240 eventos publicados em 3 rodadas, 1.125 na Silver sem duplicatas |
 > | Demonstração de falha + alerta | **Executada**: [evidência](evidencias/qualidade/demo_falha.md); alerta em ~4 min ([incidentes](evidencias/monitoramento/incidentes.md)) |
 > | Custo medido | **Medido**: [tabela](evidencias/finops/custos_medidos.md) |
@@ -310,20 +310,22 @@ por `python -m alfab finops`). Cadência projetada: batch a cada 6 h (120/mês) 
 | Serviço | Unidade | Quantidade medida | Como foi medida | Preço unitário | Lista (US$/mês) | Com nível gratuito |
 |---|---|---:|---|---|---:|---:|
 | BigQuery: ingestão da fonte | GiB faturado por ingestão completa | 0,32 | `INFORMATION_SCHEMA.JOBS`, camada=bronze (dry run: 0,25 GiB); 1 ingestão/mês | US$ 6,25/TiB | 0,00 | 0,00 |
-| BigQuery: Silver + Gold + testes | GiB faturado por execução | 2,0 | `INFORMATION_SCHEMA.JOBS` por `run_id`, mediana das execuções publicadas | US$ 6,25/TiB (1 TiB grátis) | 1,47 | 0,00 |
-| BigQuery: armazenamento | GiB-mês | 0,87 | `<dataset>.__TABLES__` | US$ 0,02/GiB (10 GiB grátis) | 0,02 | 0,00 |
+| BigQuery: Silver + Gold + testes | GiB faturado por execução | 2,05 | `INFORMATION_SCHEMA.JOBS` por `run_id`, mediana das 4 execuções publicadas | US$ 6,25/TiB (1 TiB grátis) | 1,50 | 0,00 |
+| BigQuery: armazenamento | GiB-mês | 0,88 | `<dataset>.__TABLES__` | US$ 0,02/GiB (10 GiB grátis) | 0,02 | 0,00 |
 | Cloud Storage (Bronze Parquet ZSTD) | GiB-mês | 0,056 | soma dos 18 objetos do bucket | US$ 0,026/GiB | 0,00 | 0,00 |
 | Pub/Sub + streaming insert | GiB/mês | 0,0014 | 1.206 entregas em `bronze.eventos_raw` | US$ 40/TiB + US$ 0,05/GiB | 0,00 | 0,00 |
-| Cloud Run Jobs | vCPU-s/mês | 156.500 | `ops.pipeline_runs`: 148 s por batch, 16,1 s por micro-lote | US$ 0,000018/vCPU-s + US$ 0,000002/GiB-s | 3,44 | 0,00 |
+| Cloud Run Jobs | vCPU-s/mês | 155.829 | `ops.pipeline_runs`: 142 s por batch, 16,1 s por micro-lote | US$ 0,000018/vCPU-s + US$ 0,000002/GiB-s | 3,43 | 0,00 |
 | Workflows + Scheduler | passos/mês | 1.440 | 12 passos × 120 execuções; 2 jobs | US$ 0,01/1.000 passos; US$ 0,10/job | 0,21 | 0,00 |
-| **Total** | | | | | **5,15** | **0,00** |
+| **Total** | | | | | **5,16** | **0,00** |
+
+Medição refeita em 02/11 com `python -m alfab finops --dias 35`. A janela precisa incluir as rodadas de streaming e de micro-lote: com a janela padrão de 7 dias elas ficam de fora e a projeção cai para US$ 2,14, um número que não representa a cadência pretendida.
 
 O que a medição mostrou:
 - **O watermark funciona:** numa execução com a fonte inalterada, as 8 entidades da Bronze são puladas em
   ~0,2 s cada, sem byte faturado. A ingestão completa (3,9 milhões de alunos) fatura 0,32 GiB.
-- **O maior custo de BigQuery é reconstruir Silver e Gold a cada 6 h** (2,0 GiB por execução), mesmo sem
+- **O maior custo de BigQuery é reconstruir Silver e Gold a cada 6 h** (2,05 GiB por execução), mesmo sem
   dado novo. Pular a transformação quando toda a Bronze foi pulada é a otimização seguinte (evolução futura).
-- **Cloud Run usa 156,5 mil dos 180 mil vCPU-s gratuitos.** O micro-lote a cada 5 min é quem consome; é o
+- **Cloud Run usa 155,8 mil dos 180 mil vCPU-s gratuitos.** O micro-lote a cada 5 min é quem consome; é o
   primeiro item a virar custo se a cadência aumentar. A medição não inclui a inicialização do container.
 
 ## 8. Aplicação em IA
@@ -339,11 +341,11 @@ O que a medição mostrou:
 - **Anti-vazamento:** nenhuma coluna derivada do alvo (gap, status, atingiu), nem
   `feat_meta_pactuada_t_mais_1` sem data de publicacao comprovada. O teste bloqueante
   `assert_ml_sem_vazamento` le o schema real e reprova seu retorno. O split deve ser temporal.
-- **Guardada para a Fase 3** (`python -m alfab export-ml`, executado em 2026-10-01): snapshot BigQuery
-  `gold.ml_features_municipio_fase3_20261001` e Parquet em
-  `gs://midyear-cursor-510311-v9-alfab-lake/gold/ml/fase3/versao=2026-10-01/` (23.995 linhas, 877 KiB).
-  **Este snapshot antigo contem o esquema de antes da ADR-009 e nao deve ser usado para
-  treino historico**. Apos novo deploy e build aprovados, gerar novo snapshot e conferir o schema.
+- **Guardada para a Fase 3** (`python -m alfab export-ml`, executado em 2026-11-02 sobre a Gold da
+  execução `20261102T225805Z-230ae9`): snapshot BigQuery `gold.ml_features_municipio_fase3_20261102` e
+  Parquet em `gs://midyear-cursor-510311-v9-alfab-lake/gold/ml/fase3/versao=2026-11-02/` (23.995 linhas,
+  847 KiB, 26 colunas, sem `feat_meta_pactuada_t_mais_1`). O snapshot de 2026-10-01, com o esquema de antes
+  da ADR-009, foi apagado do BigQuery e do Cloud Storage para não ser usado por engano.
 
 Outros usos da Gold: ranking de desigualdade intra-UF (dispersão entre municípios), priorização de
 municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento quase em tempo real via
@@ -359,8 +361,15 @@ municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento qu
 - **Proveniencia temporal das metas:** a fonte nao apresenta a data comprovada de publicacao por
   versao. A feature `feat_meta_pactuada_t_mais_1` foi retirada da base de ML (ADR-009),
   embora as metas continuem disponiveis para analises descritivas na Gold.
-- **Estado de implantacao:** mudancas da ADR-008/009 ainda nao foram executadas na GCP nesta
-  revisao. O numero de testes e as evidencias antigas nao comprovam o novo build.
+- **ADR-008/009 validadas na nuvem em 02/11** (execução `20261102T225805Z-230ae9`, imagem
+  `pipeline:fd2d72c`): 84 regras bloqueantes aprovadas, inclusive `assert_avaliados_completos` (0
+  inconsistências em 3.354.661 avaliados) e `assert_ml_sem_vazamento`. Todos os números analíticos da Gold
+  ficaram idênticos aos de outubro; a única diferença é a coluna removida da base de ML. Detalhes em
+  [docs/validacao_ajustes_silver_gold.md](docs/validacao_ajustes_silver_gold.md).
+- **Subscription da fila de descarte expirou** entre 01/10 e 02/11: o Pub/Sub apaga uma subscription após
+  31 dias sem atividade, e uma fila de descarte saudável fica justamente sem atividade. Nesse intervalo o
+  alerta "mensagens na fila de descarte" não teria disparado. O Terraform a recriou e agora ela tem
+  `expiration_policy { ttl = "" }` (`infra/pubsub.tf`).
 - **Critério da validação cruzada calibrado após a 1ª execução** (porte ≥ 5.000 avaliados e cobertura
   completa de UFs), com a tolerância de 0,5 p.p. mantida. A decisão e os números estão na investigação (H2).
 - **Lacunas da fonte que permanecem:** o microdado de 2023 não tem São Paulo; o DF não tem indicador
@@ -397,7 +406,7 @@ municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento qu
 Identificadores para conferência no console: workflow `alfab-pipeline-batch`, execuções
 `ca83f9f2-0a88-4ea3-ac9a-287f05cd47be` (publicada) e `b2078429-4134-4fbe-843b-cb64a9a49e07` (falha
 demonstrada); builds do Cloud Build `14a4b3f7-6b19-4f4a-8b71-ed810b6bb6b9` e
-`02c8a925-d10a-4ecf-ad11-dabd91c01d9c`. Prints de console ainda não foram adicionados.
+`02c8a925-d10a-4ecf-ad11-dabd91c01d9c`; execução `230ae92c-3a01-4d0b-870f-821f551a4ba4` (publicada em 02/11 com a imagem `pipeline:fd2d72c`). Prints de console ainda não foram adicionados.
 
 ## 11. Estrutura do repositório
 

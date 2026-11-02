@@ -95,3 +95,24 @@ WHERE table_name = 'ml_features_municipio'
 **Observacao:** a publicacao de varias tabelas no `publish.gold` atual nao e
 atomica em caso de falha durante copias; este limite ja existia e nao foi
 reprojetado por estar fora das duas decisoes aprovadas.
+
+## 5. Resultado da validação no GCP (02/11/2026)
+
+A validação foi feita no projeto `midyear-cursor-510311-v9`, que é o único ambiente do grupo; não há
+homologação separada. O risco foi aceito porque a Gold só é publicada se todas as regras passarem.
+
+| Passo | Resultado |
+|---|---|
+| Pré-checagem nos dados reais (consulta da seção 2) | 0 avaliados sem classificação e 0 com peso inválido, em 3.354.661 avaliados |
+| Imagem | `pipeline:fd2d72c` (HEAD da `main` após o PR #2), Cloud Build com sucesso |
+| Execução | workflow `230ae92c-3a01-4d0b-870f-821f551a4ba4`, run_id `20261102T225805Z-230ae9` |
+| Bronze | 8 entidades puladas: fonte inalterada desde a carga de outubro |
+| Silver / Gold / publicação | SUCCEEDED (62,9 s / 52,9 s / 27,5 s); 204.528 linhas publicadas |
+| Qualidade | 84 bloqueantes aprovadas (inclui `assert_avaliados_completos` e `assert_ml_sem_vazamento`); 4 informativas em alerta, as mesmas de outubro |
+| `gold.ml_features_municipio` | 26 colunas, sem `feat_meta_pactuada_t_mais_1` |
+| Comparação com a Gold de outubro | Brasil, UFs, situação dos municípios, distribuição, validação cruzada e universalização **idênticos**; mesmas contagens nas 10 tabelas |
+| Snapshot da Fase 3 | `gold.ml_features_municipio_fase3_20261102` + Parquet `versao=2026-11-02/`; o de 2026-10-01 foi apagado |
+
+Conclusão: as duas mudanças entraram em produção sem alterar nenhum resultado analítico, e a base da
+Fase 3 passou a ser a versão sem vazamento temporal.
+
