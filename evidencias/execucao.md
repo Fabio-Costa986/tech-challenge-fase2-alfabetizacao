@@ -1,6 +1,6 @@
 # Evidências de execução
 
-Coletado em 2026-11-03 00:34 UTC por `python -m alfab evidencias` no projeto `midyear-cursor-510311-v9`.
+Coletado em 2026-11-03 00:51 UTC por `python -m alfab evidencias` no projeto `midyear-cursor-510311-v9`.
 
 **Aceite ADR-008/009 verificado no GCP:** run_id `20261103T002534Z-7e1e21`; etapas de Silver, Gold e publicação concluídas, testes bloqueantes aprovados e Gold publicada sem meta futura.
 
@@ -41,7 +41,6 @@ External tables da Bronze mostram linhas vazias: os dados estão no GCS (ver ops
 | gold.fct_alfabetizacao_uf | TABLE | 145 | 0.03 | 2026-11-03 00:31:25.917000+00:00 |
 | gold.meta_vs_resultado | TABLE | 37755 | 5.19 | 2026-11-03 00:31:28.009000+00:00 |
 | gold.ml_features_municipio | TABLE | 23995 | 4.05 | 2026-11-03 00:31:29.826000+00:00 |
-| gold.ml_features_municipio_fase3_20261102 | SNAPSHOT | 23995 | 4.05 | 2026-11-02 23:09:25.446000+00:00 |
 | gold.ml_features_municipio_fase3_20261103_4531e38 | SNAPSHOT | 23995 | 4.05 | 2026-11-03 00:32:42.581000+00:00 |
 | gold.resultado_oficial | TABLE | 24171 | 2.72 | 2026-11-03 00:31:32.001000+00:00 |
 | gold.validacao_cruzada_microdado | TABLE | 24143 | 3.25 | 2026-11-03 00:31:34.728000+00:00 |

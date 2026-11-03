@@ -40,7 +40,6 @@ gold,fct_alfabetizacao_municipio,TABELA,23995,5.22,2026-11-03 00:31:24.196000+00
 gold,fct_alfabetizacao_uf,TABELA,145,0.03,2026-11-03 00:31:25.917000+00:00,
 gold,meta_vs_resultado,TABELA,37755,5.19,2026-11-03 00:31:28.009000+00:00,
 gold,ml_features_municipio,TABELA,23995,4.05,2026-11-03 00:31:29.826000+00:00,
-gold,ml_features_municipio_fase3_20261102,6,23995,4.05,2026-11-02 23:09:25.446000+00:00,
 gold,ml_features_municipio_fase3_20261103_4531e38,6,23995,4.05,2026-11-03 00:32:42.581000+00:00,
 gold,resultado_oficial,TABELA,24171,2.72,2026-11-03 00:31:32.001000+00:00,
 gold,validacao_cruzada_microdado,TABELA,24143,3.25,2026-11-03 00:31:34.728000+00:00,

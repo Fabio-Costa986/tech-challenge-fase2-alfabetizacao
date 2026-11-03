@@ -3,7 +3,8 @@
 > **Estado em 03/11/2026:** seções 4 e 5 executadas no projeto principal (aceite
 > `20261103T002534Z-7e1e21`, export `2026-11-03-4531e38`) e evidências regeneradas com
 > `--aceite-run-id`; ver `docs/validacao_ajustes_silver_gold.md`, seção 6. **Pendentes:** seções 2 e 3
-> em homologação (não há projeto de homologação) e os prints. Texto original abaixo:
+> em homologação (não há projeto de homologação). Os prints foram substituídos por exportação via API
+> (`scripts/coletar_logs_gcp.py` → `evidencias/batch/`, `evidencias/streaming/`). Texto original abaixo:
 >
 > alterações de código preparadas. Este documento **não afirma** que
 > a pipeline foi executada no GCP após os ADRs. A execução/aceite depende do

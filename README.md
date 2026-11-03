@@ -25,8 +25,8 @@ com portões de qualidade bloqueantes, observabilidade persistida, alertas e cus
 > Plano de testes e publicacao: [docs/validacao_ajustes_silver_gold.md](docs/validacao_ajustes_silver_gold.md).
 > As evidências de estrutura, execução e dashboard foram regeneradas com `--aceite-run-id 20261103T002534Z-7e1e21`, e a
 > base da Fase 3 foi exportada pelo comando com trava (`fase3_20261103_4531e38`). Ainda pendente do
-> [roteiro](docs/ROTEIRO_EVIDENCIAS_ADR008_ADR009.md): o teste negativo do ADR-008 em **homologação** (seção 3)
-> e os prints de console. Detalhes e a sequência de execuções de 02-03/11:
+> [roteiro](docs/ROTEIRO_EVIDENCIAS_ADR008_ADR009.md): o teste negativo do ADR-008 em **homologação** (seção 3).
+> Os registros de console foram exportados por API para `evidencias/batch/` e `evidencias/streaming/`. Detalhes e a sequência de execuções de 02-03/11:
 > [docs/validacao_ajustes_silver_gold.md](docs/validacao_ajustes_silver_gold.md), seção 6.
 
 ---
@@ -359,8 +359,9 @@ O que a medição mostrou:
   Parquet em `gs://midyear-cursor-510311-v9-alfab-lake/gold/ml/fase3/versao=2026-11-03-4531e38/` (23.995
   linhas, 26 colunas, sem `feat_meta_pactuada_t_mais_1`), ancorados na Gold aceita.
   - O snapshot de 2026-10-01 (esquema antigo, com a meta de t+1) foi **apagado** do BigQuery e do GCS em 02/11.
-  - Existe também `fase3_20261102` (+ `versao=2026-11-02/`), com o mesmo conteúdo, gerado pelo export
-    anterior às travas do PR #4. Não é a versão oficial.
+  - O snapshot `fase3_20261102`, gerado antes das travas do PR #4 e com o mesmo conteúdo, foi **apagado** do
+    BigQuery em 03/11. O Parquet dele (`versao=2026-11-02/`) continua no GCS: a retention policy de 30 dias
+    do bucket bloqueia a remoção até 02/12/2026.
 
 Outros usos da Gold: ranking de desigualdade intra-UF (dispersão entre municípios), priorização de
 municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento quase em tempo real via
@@ -414,12 +415,16 @@ municípios com maior `gap_pp` em relação à meta pactuada e acompanhamento qu
 | Incidentes de alerta e tempo de detecção | [evidencias/monitoramento/incidentes.md](evidencias/monitoramento/incidentes.md) (`python scripts/incidentes_alerta.py`) |
 | Custos medidos | [evidencias/finops/custos_medidos.md](evidencias/finops/custos_medidos.md) |
 | Dashboard e os dados que o alimentam | [evidencias/dashboard/](evidencias/dashboard/) |
+| Execuções batch exportadas das APIs (Workflows, Cloud Run Jobs, logs `step_finished`) | [evidencias/batch/](evidencias/batch/) (`python scripts/coletar_logs_gcp.py`) |
+| Logs do streaming (simulador, micro-lote, eventos recebidos pelo ingestor via push) | [evidencias/streaming/logs_streaming.md](evidencias/streaming/logs_streaming.md) |
 
 Identificadores para conferência no console: workflow `alfab-pipeline-batch`, execuções
 `ca83f9f2-0a88-4ea3-ac9a-287f05cd47be` (publicada) e `b2078429-4134-4fbe-843b-cb64a9a49e07` (falha
 demonstrada); builds do Cloud Build `14a4b3f7-6b19-4f4a-8b71-ed810b6bb6b9` e
 `02c8a925-d10a-4ecf-ad11-dabd91c01d9c`; execução de aceite `7e1e21db-6776-4ec8-811a-e1619bdb4490`
-(03/11, imagem `pipeline:4531e38`). Prints de console ainda não foram adicionados.
+(03/11, imagem `pipeline:4531e38`). Em vez de prints, os registros do console foram exportados pelas
+APIs do GCP com IDs e horários UTC (`evidencias/batch/` e `evidencias/streaming/`). O Cloud Logging
+guarda 30 dias, então os logs de 01/10 já expiraram; as execuções de 02-03/11 estão completas.
 
 ## 11. Estrutura do repositório
 
