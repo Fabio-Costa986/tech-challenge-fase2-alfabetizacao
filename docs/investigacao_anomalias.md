@@ -1,7 +1,8 @@
 # Investigação de anomalias
 
 > **Estado:** todas as hipóteses investigadas com dados reais em 2026-10-01: profiling
-> (`evidencias/profiling/`) e execuções do pipeline na nuvem (`ops.pipeline_runs`, `ops.dq_results`). Cada hipótese abaixo vem com a evidência que a confirma ou descarta. Ao investigar, preencher
+> (`evidencias/profiling/`) e execuções do pipeline na nuvem (`ops.pipeline_runs`, `ops.dq_results`).
+> H8 foi reconfirmada em 2026-11-02 pela regra da ADR-008 (execução `20261102T225805Z-230ae9`). Cada hipótese abaixo vem com a evidência que a confirma ou descarta. Ao investigar, preencher
 > **Observado**, **Causa** e **Decisão** com números e `job_id`. Não registrar conclusão sem número.
 
 ## H1: o flag `alfabetizado` corresponde a proficiência ≥ 743?
@@ -107,6 +108,9 @@
 - **Decisão:** o denominador ponderado já os exclui naturalmente. A coluna didática
   `taxa_denominador_com_ausentes_ERRADA` passou a ser calculada por contagem, porque por peso ela seria
   igual à correta e não mostraria a armadilha.
+- **Reconfirmado em 02/11/2026:** a regra bloqueante `assert_avaliados_completos` (ADR-008) encontrou 0
+  avaliados sem classificação e 0 com peso nulo, zero, negativo, NaN ou infinito, em 3.354.661 avaliados.
+  Os nulos de peso estão só entre os não avaliados, como observado aqui.
 
 ## H9: recorte "total" não é recomponível a partir do microdado (achado da 1ª execução)
 - **Observado:** na execução `20261001T131455Z-325f14`, a regra bloqueante `alunos__indicador_uf` reprovou
