@@ -17,6 +17,12 @@ resource "google_pubsub_subscription" "dlq_inspect" {
   topic                      = google_pubsub_topic.dlq.id
   message_retention_duration = "604800s"
   ack_deadline_seconds       = 60
+
+  # Sem isto o Pub/Sub apaga a subscription após 31 dias sem atividade, e uma DLQ saudável fica
+  # justamente sem atividade: foi o que aconteceu entre 01/10 e 02/11 (recriada pelo Terraform).
+  expiration_policy {
+    ttl = ""
+  }
 }
 
 # Push autenticado (OIDC) para o event-ingestor. Entrega at-least-once.
