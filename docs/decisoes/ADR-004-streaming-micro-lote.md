@@ -8,6 +8,9 @@
 - O ingestor valida o contrato (pydantic), carimba `ingested_at` e grava em `bronze.eventos_raw`. Evento
   inválido vai para `bronze.eventos_quarentena` com o motivo e recebe ACK. Erro de escrita retorna 5xx,
   o Pub/Sub tenta de novo com backoff e, depois de 5 tentativas, manda a mensagem para a DLQ.
+  A subscription de inspeção da DLQ (`alfab-eventos-dlq-inspect`) não expira: no padrão do Pub/Sub ela
+  seria apagada após 31 dias sem atividade, o que aconteceu entre 01/10 e 02/11/2026 e deixou o alerta
+  da DLQ sem efeito até o Terraform recriá-la.
 - Micro-lote a cada 5 min: janela por watermark com lookback de 10 min, dedup `ROW_NUMBER()` por
   `event_id`, validação referencial (o município existe) e `MERGE` na Silver (horizonte de dedup de 7 dias).
 - A Gold recebe o evento por views (`gold.vw_indicador_consolidado`, `gold.vw_eventos_tempo_real`),

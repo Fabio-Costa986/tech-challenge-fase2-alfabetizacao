@@ -16,6 +16,10 @@
 | Cadência do batch e alerta de ausência | diária / 26 h | a cada 6 h / 13 h | O watermark torna a execução sem mudança quase gratuita, e a ausência é detectada mais rápido |
 | Script de custo | `finops/medir_custos.py` | `src/alfab/ops/finops.py` (`python -m alfab finops`) | CLI única |
 | Estrutura | §10 | Ver a seção 11 do README | — |
+| Avaliados na Silver | nulos em medidas como regra informativa | ADR-008: avaliado sem classificação ou com peso inválido **bloqueia** a Silver | Um avaliado inconsistente distorce o numerador ou o denominador sem erro aparente |
+| Meta de t+1 na base de ML | feature `feat_meta_pactuada_t_mais_1` | removida (ADR-009) | A fonte não prova quando cada meta foi publicada; usar seria vazamento temporal |
+| Subscription da DLQ | padrão do Pub/Sub | `expiration_policy { ttl = "" }` | O padrão apaga a subscription após 31 dias sem atividade, o que aconteceu entre 01/10 e 02/11 |
+| Janela de medição de custo | 7 dias | 35 dias na medição oficial | A janela precisa cobrir as rodadas de streaming e micro-lote |
 
 ---
 

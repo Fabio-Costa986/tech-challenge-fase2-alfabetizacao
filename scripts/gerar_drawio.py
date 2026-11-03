@@ -125,8 +125,8 @@ def pagina_visao_geral() -> Page:
           320, 640, 312, 110, "ops")
     p.box("<b>Resultado dos testes</b><br>regras bloqueantes e informativas,<br>taxa de correspondência de cada join",
           652, 640, 312, 110, "ops")
-    p.box("<b>Alertas por e-mail</b><br>falha detectada em ~4 minutos<br>(medido em 4 falhas)", 984, 640, 312, 110, "ops")
-    p.box("<b>Custo medido</b><br>US$ 5,15/mês a preço de lista<br>US$ 0,00 dentro do nível gratuito",
+    p.box("<b>Alertas por e-mail</b><br>falha detectada em ~4 minutos<br>(medido em 5 falhas)", 984, 640, 312, 110, "ops")
+    p.box("<b>Custo medido</b><br>US$ 5,70/mês a preço de lista<br>US$ 0,00 dentro do nível gratuito",
           1316, 640, 312, 110, "ops")
 
     p.edge(fonte, batch)
@@ -201,7 +201,7 @@ def pagina_batch() -> Page:
     mon = p.box(svc("Cloud Monitoring", "políticas de alerta → e-mail", "etapa falhou · job falhou ·<br>13 h sem sucesso · orçamento"), 1420, 835, 290, 90, "ops")
     p.box("Cada job grava sua etapa em ops.pipeline_runs e emite log estruturado; o dbt grava ops.dq_results e "
           "ops.join_match_rate.", 50, 940, 900, 24, "legend")
-    p.box("Tempo medido entre a falha e a abertura do incidente: de 3 min 38 s a 4 min 31 s (4 falhas).",
+    p.box("Tempo medido entre a falha e a abertura do incidente: de 3 min 38 s a 4 min 31 s (5 falhas).",
           50, 966, 900, 24, "legend")
 
     p.edge(sched, wf, "dispara")
@@ -277,10 +277,10 @@ def pagina_streaming() -> Page:
     alert = p.box(svc("Cloud Monitoring", "4 políticas de alerta → e-mail",
                       "backlog &gt; 5 min · fila de descarte &gt; 0<br>latência p95 &gt; 60 s · quarentena &gt; 10%"),
                   870, 770, 300, 110, "ops")
-    p.box("<b>Medido na nuvem (3 rodadas)</b><br>1.240 eventos publicados · 1.206 entregas na Bronze para 1.135 distintos<br>"
-          "71 duplicatas: 39 do simulador e <b>32 reentregas reais do Pub/Sub</b><br>"
-          "1.125 na Silver, sem duplicata · 50 na quarentena<br>"
-          "latência de ingestão p50: 0,066 s (5,097 s com 5 s de atraso injetado)",
+    p.box("<b>Medido na nuvem (4 rodadas, 01/10 e 02/11)</b><br>1.880 eventos publicados · 1.826 entregas na Bronze<br>"
+          "duplicatas: as do simulador + <b>32 reentregas reais do Pub/Sub</b> (01/10)<br>"
+          "1.709 na Silver, sem duplicata · 75 na quarentena<br>"
+          "latência de ingestão p50 em 02/11: 0,057 s (5,072 s com 5 s de atraso)",
           1230, 760, 500, 130, "note")
 
     p.edge(sim, topic, "publica")

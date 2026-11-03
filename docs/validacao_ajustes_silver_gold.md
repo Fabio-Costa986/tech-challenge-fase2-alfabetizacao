@@ -110,4 +110,29 @@ do teste singular** em homologação, nunca grava registros na Silver. Exige
 `ALFAB_HML_PROJECT_ID` igual a `target.project` e é bloqueada fora do projeto
 explicitamente configurado. Não configurar essa variável em produção.
 
-Os números em `evidencias/` continuam históricos até a nova execução autorizada.
+As evidências foram regeneradas após o aceite de 03/11 (seção 6).
+
+## 6. Resultado no GCP (02-03/11/2026)
+
+Projeto `midyear-cursor-510311-v9`, o único do grupo. Execuções em ordem (UTC):
+
+| Quando | run_id / workflow | Imagem | O que foi | Resultado |
+|---|---|---|---|---|
+| 02/11 22:58 | `20261102T225805Z-230ae9` | `pipeline:fd2d72c` (main pós-PR #2) | primeira execução com ADR-008/009 | publicada; 84 bloqueantes aprovadas |
+| 02/11 23:36 | `20261102T233638Z-1e9916` | `pipeline:123b089` | teste negativo do ADR-008 **no projeto principal**, com injeção que gravava 19 avaliados sem classificação e 11 com peso zero na Silver | FAILED em `dbt.silver` (`assert_avaliados_completos`); Gold intacta; alerta em 4 min 3 s |
+| 02/11 23:41 | `20261102T234111Z-6ef6e8` | `pipeline:123b089` | batch normal para restaurar a Silver | publicada |
+| 03/11 00:25 | **`20261103T002534Z-7e1e21`** (workflow `7e1e21db-6776-4ec8-811a-e1619bdb4490`) | **`pipeline:4531e38`** (main pós-PR #4 + correção da DLQ) | execução de aceite | publicada; `validar-adrs`: **ACEITE GCP APROVADO** |
+
+Observações:
+- O teste negativo de 02/11 23:36 foi disparado um minuto antes do merge do PR #4, que passou a exigir
+  homologação e um mecanismo de injeção que não grava na Silver. Aquele modo de injeção não está na `main`.
+  O resultado fica registrado em `ops.pipeline_runs` e `ops.dq_results`, mas **não substitui** a seção 3
+  do roteiro, que continua pendente por falta de um projeto de homologação.
+- Pré-checagem nos dados reais: 0 avaliados sem classificação e 0 com peso inválido, em 3.354.661 avaliados.
+- Resultados analíticos (Brasil, UFs, municípios, validação cruzada, universalização) idênticos aos de
+  01/10; a única diferença é a coluna removida da base de ML (26 colunas).
+- Fase 3: `python -m alfab export-ml --versao 2026-11-03-4531e38 --aceite-run-id 20261103T002534Z-7e1e21`
+  gerou `gold.ml_features_municipio_fase3_20261103_4531e38` e `versao=2026-11-03-4531e38/` no GCS.
+- Evidências regeneradas com `--aceite-run-id 20261103T002534Z-7e1e21` (`profile`, `evidencias`,
+  `dashboard`); custos com `finops --dias 35`; incidentes com `scripts/incidentes_alerta.py`.
+
