@@ -14,9 +14,9 @@ com portões de qualidade bloqueantes, observabilidade persistida, alertas e cus
 > | Custo medido | **Medido**: [tabela](evidencias/finops/custos_medidos.md) |
 > | Testes automatizados (`pytest`, 58 testes), `dbt parse`, `terraform validate` | Passando localmente e no CI |
 > | Agendadores (Cloud Scheduler) | Criados **pausados** de propósito (`schedulers_paused = true`); as execuções acima foram disparadas manualmente |
-> | CI (`.github/workflows/ci.yml`) | Configurado; roda quando o repositório estiver no GitHub |
+> | CI (`.github/workflows/ci.yml`) | Roda no GitHub Actions a cada PR e push na `main` (lint, pytest, `dbt parse`, `terraform validate`) |
 > | Dashboard | Gerado por `python -m alfab dashboard` a partir da Gold ([evidencias/dashboard/](evidencias/dashboard/)). Looker Studio não foi usado |
-> | Vídeo executivo | Fora do escopo neste momento |
+> | Vídeo executivo e apresentação | **Entregues** em [entregaveis/](entregaveis/) (seção 12) |
 >
 > **Ajustes de 28/10/2026, aceitos no GCP em 03/11/2026 (`validar-adrs`, run_id `20261103T002534Z-7e1e21`):**
 > [ADR-008](docs/decisoes/ADR-008-avaliados-completos-bloqueantes.md) bloqueia avaliados sem
@@ -446,6 +446,7 @@ guarda 30 dias, então os logs de 01/10 já expiraram; as execuções de 02-03/1
 │                              # arquitetura.drawio + img/ (diagramas exportados)
 ├── scripts/gerar_drawio.py    # gera o diagrama draw.io a partir de código
 ├── evidencias/                # resultados de execução na nuvem
+├── entregaveis/               # vídeo executivo e apresentação
 ├── dashboard/template.html    # template do painel (dados embutidos por python -m alfab dashboard)
 ├── config/settings.yaml       # o que ingerir (colunas explícitas por entidade)
 ├── .env.example               # identificadores (projeto, bucket, e-mail)
@@ -454,7 +455,13 @@ guarda 30 dias, então os logs de 01/10 já expiraram; as execuções de 02-03/1
 
 ## 12. Vídeo executivo
 
-Fora do escopo neste momento.
+| Entregável | Arquivo |
+|---|---|
+| Vídeo final (MP4, ~45 MB) | [entregaveis/Pipeline_Alfabetizacao_Video_Final_Atualizado.mp4](entregaveis/Pipeline_Alfabetizacao_Video_Final_Atualizado.mp4) |
+| Apresentação usada no vídeo (PowerPoint) | [entregaveis/Pipeline_Alfabetizacao_Storytelling.pptx](entregaveis/Pipeline_Alfabetizacao_Storytelling.pptx) |
+
+O GitHub não reproduz vídeos desse tamanho no navegador: abra o link do arquivo e use **Download raw file**,
+ou baixe o repositório inteiro (**Code → Download ZIP**).
 
 ## 13. Histórico de atualizações
 
@@ -465,5 +472,8 @@ Fora do escopo neste momento.
 | 28/10/2026 | ADR-008 (avaliado inconsistente bloqueia a Silver) e ADR-009 (meta de t+1 sai da base de ML) | PR #2 |
 | 02/11/2026 | Comandos com trava `validar-adrs`, `foto-gold`, `--aceite-run-id` e export versionado; roteiro de evidências | PR #4 |
 | 02/11/2026 | Subscription da DLQ recriada e sem expiração; snapshot de 01/10 apagado; rodadas de streaming e teste negativo do ADR-008 no projeto principal | GCP |
-| 03/11/2026 | Imagem da `main` implantada; execução de aceite `20261103T002534Z-7e1e21` aprovada no `validar-adrs`; Fase 3 exportada com trava; evidências regeneradas com `--aceite-run-id` | este PR |
+| 03/11/2026 | Imagem da `main` implantada; execução de aceite `20261103T002534Z-7e1e21` aprovada no `validar-adrs`; Fase 3 exportada com trava; evidências regeneradas com `--aceite-run-id` | PR #5 |
+| 03/11/2026 | Logs de batch e streaming exportados das APIs do GCP; snapshot pré-trava `fase3_20261102` apagado do BigQuery | PR #5 |
+| 03/11/2026 | Vídeo executivo e apresentação | PR #6 |
+| 04/11/2026 | Repositório público; README aponta para os entregáveis | este PR |
 
